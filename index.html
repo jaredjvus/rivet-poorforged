@@ -640,6 +640,25 @@ body::before {
 }
 .spell-picker-count.full { color: var(--gold-bright); }
 
+.hp-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--parchment);
+}
+.hp-picker label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.hp-picker input[type="number"] {
+  width: 50px;
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  padding: 0.2rem 0.4rem;
+  font-family: inherit;
+}
+.hp-picker input[type="number"]:disabled { opacity: 0.4; }
+
 .asi-feat-tabs {
   display: flex;
   gap: 1rem;
@@ -1839,6 +1858,40 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 @media (max-width: 420px) {
   .conditions-pills { grid-template-columns: repeat(2, 1fr); }
 }
+.hp-info-btn {
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  font-size: 0.78rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+.hp-info-btn:hover { background: var(--gold); color: #fff; }
+
+.conditions-clear-btn {
+  margin-left: 0.6rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  padding: 0.15rem 0.5rem;
+  cursor: pointer;
+}
+.conditions-clear-btn:hover { background: var(--gold); color: #fff; }
+.conditions-clear-btn[hidden] { display: none; }
+
 .condition-pill {
   font-family: 'EB Garamond', serif;
   font-size: 0.82rem;
@@ -2876,7 +2929,7 @@ body.dm-mode .dm-hide { display: none; }
 
     <div class="conditions-row">
       <div class="conditions-header">
-        <div class="conditions-label">Conditions</div>
+        <div class="conditions-label">Conditions <button class="conditions-clear-btn" id="conditions-clear" hidden>Clear All</button></div>
         <div class="exhaustion-control">
           <span>Exhaustion</span>
           <input type="number" id="exhaustion-level" value="0" min="0" max="6">
@@ -2893,13 +2946,12 @@ body.dm-mode .dm-hide { display: none; }
         <div class="sub">leather + DEX</div>
       </div>
       <div class="defense-cell">
-        <div class="label">Hit Points</div>
+        <div class="label">Hit Points <button class="hp-info-btn" id="hp-info-btn" title="HP formula breakdown" aria-label="HP formula breakdown">ⓘ</button></div>
         <div class="hp-current">
           <input type="number" id="hp-current" value="9" min="0">
           <span class="sep">/</span>
           <span id="hp-max">9</span>
         </div>
-        <div class="sub" id="hp-formula">d8 + 3 (CON)</div>
         <div class="temp-hp-row">
           + <input type="number" id="temp-hp" value="0" min="0"> <span class="temp-hp-label">temp</span>
         </div>
@@ -3024,6 +3076,14 @@ body.dm-mode .dm-hide { display: none; }
         <button class="resource-toggle" id="inspiration-toggle">None</button>
       </div>
       <div id="combat-resources-dynamic"></div>
+      </div>
+    </details>
+
+    <details class="card collapsible-card" id="attack-profiles-card" style="margin-top: 2rem;" hidden open>
+      <summary><h3>Attack Profiles</h3></summary>
+      <div class="collapsible-body">
+        <p class="cunning-strikes-blurb" id="attack-profiles-blurb"></p>
+        <div id="attack-profiles-list"></div>
       </div>
     </details>
 
@@ -4393,13 +4453,24 @@ function ebBeams(level) {
   return 1;
 }
 
+// HP per-level: L1 is always max die (8). L2+ uses entry.hpMethod from
+// levelHistory: 'avgplus1' (DM default → 6), 'avg' (→ 5), 'roll' (entry.hpRolled).
+// Falls back to 'avgplus1' if no history entry exists yet.
+function hpPerLevelGain(entry) {
+  if (!entry) return 6;
+  if (entry.hpMethod === 'avg') return 5;
+  if (entry.hpMethod === 'roll') return Math.max(1, entry.hpRolled || 1);
+  return 6; // 'avgplus1' default
+}
 function computeHP(level, stats) {
-  // Phase 1: defaults to Artificer d8 per level (Rogue is also d8 in 2024).
-  // DM house rule: Average+1 per level after L1. d8 avg 5 → 6 + CON each.
   if (level < 1) return 0;
   const conMod = mod(stats.con);
-  let hp = 8 + conMod; // L1 max die
-  for (let i = 2; i <= level; i++) hp += 6 + conMod;
+  const history = state.levelHistory || [];
+  let hp = 8 + conMod; // L1 = max die
+  for (let l = 2; l <= level; l++) {
+    const entry = history[l - 1];
+    hp += hpPerLevelGain(entry) + conMod;
+  }
   return Math.max(1, hp);
 }
 
@@ -4477,7 +4548,7 @@ function render() {
   } else {
     document.getElementById('hp-current').value = Math.min(state.hpCurrent, hp);
   }
-  document.getElementById('hp-formula').textContent = hpFormulaText(level, stats);
+  // (HP formula is now reachable via the ⓘ button on the Hit Points cell.)
   document.getElementById('temp-hp').value = state.tempHp || 0;
 
   // Saves
@@ -4537,6 +4608,8 @@ function render() {
   renderInfusionsCard(level);
   // Phase 2I: Weapon Masteries card
   renderWeaponMasteriesCard(level);
+  // Phase 2M: Attack Profiles card
+  renderAttackProfilesCard(level);
   // Phase 2K: Cunning Strikes card
   renderCunningStrikesCard(level);
   // Phase 2L: Magic Items card (found loot)
@@ -4548,9 +4621,21 @@ function render() {
 
 function hpFormulaText(level, stats) {
   if (level < 1) return '—';
-  // Phase 1 default: Artificer d8s at every level. Phase 2 will derive from LEVEL_DATA.
   const conMod = mod(stats.con);
-  return `${level}d8 + ${conMod * level} CON`;
+  const history = state.levelHistory || [];
+  let rolledCount = 0, avgCount = 0, avgPlus1Count = 0;
+  for (let l = 2; l <= level; l++) {
+    const m = history[l - 1] && history[l - 1].hpMethod;
+    if (m === 'avg') avgCount++;
+    else if (m === 'roll') rolledCount++;
+    else avgPlus1Count++;
+  }
+  const parts = [`max die L1 (8)`];
+  if (avgPlus1Count) parts.push(`${avgPlus1Count}×avg+1 (6)`);
+  if (avgCount) parts.push(`${avgCount}×avg (5)`);
+  if (rolledCount) parts.push(`${rolledCount}×rolled`);
+  parts.push(`${conMod * level} CON`);
+  return parts.join(' + ');
 }
 
 function renderSurge(level) {
@@ -4888,6 +4973,24 @@ function renderDeathSaves(maxHp) {
 
 const CONDITIONS = ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious'];
 
+// 2024 PHB condition descriptions for hover tooltips.
+const CONDITION_DESCRIPTIONS = {
+  blinded:       'Can\'t see. Auto-fail any ability check requiring sight. Attack rolls vs you have Advantage; your attack rolls have Disadvantage.',
+  charmed:       'Can\'t attack the charmer or target them with harmful abilities. Charmer has Advantage on social checks against you.',
+  deafened:      'Can\'t hear. Auto-fail any ability check requiring hearing.',
+  frightened:    'Disadvantage on ability checks and attack rolls while you can see the source. Can\'t willingly move closer to the source.',
+  grappled:      'Speed is 0. Ends if the grappler is Incapacitated, or if you\'re moved away by an effect.',
+  incapacitated: 'Can\'t take Actions, Bonus Actions, or Reactions. Concentration breaks. Speed is 0. Auto-fail Initiative.',
+  invisible:     'Concealed from sight: heavily obscured for hiding. Attack rolls vs you have Disadvantage; your attack rolls have Advantage.',
+  paralyzed:     'Incapacitated + can\'t speak. Auto-fail STR and DEX saves. Attacks vs you have Advantage. Melee hits within 5 ft are crits.',
+  petrified:     'Transformed into solid inanimate substance. Incapacitated. Resistance to all damage. Immune to poison, disease. Aging halts.',
+  poisoned:      'Disadvantage on attack rolls and ability checks.',
+  prone:         'Disadvantage on attack rolls. Attackers within 5 ft have Advantage; attackers farther than 5 ft have Disadvantage. Movement costs double to crawl.',
+  restrained:    'Speed is 0. Disadvantage on attack rolls and DEX saves. Attacks vs you have Advantage.',
+  stunned:       'Incapacitated. Can\'t move. Auto-fail STR and DEX saves. Attacks vs you have Advantage.',
+  unconscious:   'Incapacitated + Prone. Drop everything held. Auto-fail STR and DEX saves. Attacks vs you have Advantage. Melee hits within 5 ft are crits.'
+};
+
 function renderConditions() {
   const container = document.getElementById('conditions-pills');
   container.innerHTML = '';
@@ -4896,6 +4999,7 @@ function renderConditions() {
     const pill = document.createElement('button');
     pill.className = 'condition-pill' + (state.conditions[key] ? ' active' : '');
     pill.textContent = name;
+    pill.title = CONDITION_DESCRIPTIONS[key] || '';
     pill.addEventListener('click', () => {
       state.conditions[key] = !state.conditions[key];
       saveState();
@@ -4904,6 +5008,10 @@ function renderConditions() {
     container.appendChild(pill);
   }
   document.getElementById('exhaustion-level').value = state.exhaustion || 0;
+  // Show/hide the Clear-all button based on any active condition
+  const anyActive = Object.values(state.conditions || {}).some(v => v);
+  const clearBtn = document.getElementById('conditions-clear');
+  if (clearBtn) clearBtn.hidden = !anyActive && (state.exhaustion || 0) === 0;
 }
 
 function renderConcentrationOptions(level) {
@@ -5218,6 +5326,107 @@ function renderMagicItemsCard(level) {
   list.querySelectorAll('[data-edit-item]').forEach(btn => {
     btn.addEventListener('click', () => openMagicItemModal(btn.dataset.editItem));
   });
+}
+
+// Choose the best ability mod for a weapon: finesse picks max(STR, DEX);
+// ranged uses DEX; everything else uses STR.
+function weaponAbilityForRoll(weapon, stats) {
+  if (weapon.category === 'simple-ranged' || weapon.category === 'martial-ranged') return 'dex';
+  const isFinesse = /Finesse/i.test(weapon.properties || '');
+  if (isFinesse) return mod(stats.dex) >= mod(stats.str) ? 'dex' : 'str';
+  return 'str';
+}
+
+function renderAttackProfilesCard(level) {
+  const card = document.getElementById('attack-profiles-card');
+  const { a, r } = classBreakdown(level);
+  const stats = computeStats(level);
+  const pb = profBonus(level);
+
+  const profiles = [];
+
+  // Armor Model special weapon (Armorer L3+, INT to hit + damage)
+  if (a >= 3) {
+    const sub = findChosenSubclass('artificer');
+    const model = sub === 'Armorer' ? findArmorModel() : null;
+    const intMod = mod(stats.int);
+    if (model === 'Dreadnaught') {
+      const dieAt15 = a >= 15 ? '2d6' : '1d10';
+      profiles.push({
+        name: 'Force Demolisher', subtitle: 'Armor Model · Dreadnaught',
+        attack: pb + intMod + (a >= 9 ? 1 : 0),
+        damage: `${dieAt15} + ${intMod}${a >= 9 ? ' + 1' : ''} force`,
+        extra: 'Reach. Push/pull 10 ft (smaller creatures).',
+        ability: `INT (Arcane Armor)`
+      });
+    } else if (model === 'Guardian') {
+      const dieAt15 = a >= 15 ? '1d10' : '1d8';
+      profiles.push({
+        name: 'Thunder Pulse', subtitle: 'Armor Model · Guardian',
+        attack: pb + intMod + (a >= 9 ? 1 : 0),
+        damage: `${dieAt15} + ${intMod}${a >= 9 ? ' + 1' : ''} thunder`,
+        extra: 'Target has Disadvantage on attacks vs anyone but you until your next turn.',
+        ability: `INT (Arcane Armor)`
+      });
+    } else if (model === 'Infiltrator') {
+      const dieAt15 = a >= 15 ? '2d6' : '1d6';
+      profiles.push({
+        name: 'Lightning Launcher', subtitle: 'Armor Model · Infiltrator',
+        attack: pb + intMod + (a >= 9 ? 1 : 0),
+        damage: `${dieAt15} + ${intMod}${a >= 9 ? ' + 1' : ''} lightning · +1d6 lightning once/turn on hit`,
+        extra: 'Range 90/300 ft.',
+        ability: `INT (Arcane Armor)`
+      });
+    }
+  }
+
+  // Each weapon mastery she's picked
+  for (const name of state.weaponMasteries || []) {
+    const w = WEAPONS_DATA.find(x => x.name === name);
+    if (!w) continue;
+    const ability = weaponAbilityForRoll(w, stats);
+    const abilityMod = mod(stats[ability]);
+    profiles.push({
+      name: w.name, subtitle: `Mastery · ${w.mastery}`,
+      attack: pb + abilityMod,
+      damage: `${w.damage.split(' ')[0]} + ${abilityMod} ${w.damage.split(' ')[1] === 'B' ? 'bludgeoning' : w.damage.split(' ')[1] === 'P' ? 'piercing' : 'slashing'}`,
+      extra: `${w.properties} · ${MASTERY_DESCRIPTIONS[w.mastery] || ''}`,
+      ability: ability.toUpperCase()
+    });
+  }
+
+  if (profiles.length === 0) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+
+  // Sneak Attack note appended once
+  let sneakNote = '';
+  if (r >= 1) {
+    const rogueData = CLASS_DATA.rogue.perLevel[r];
+    if (rogueData && rogueData.sneakAttack) {
+      sneakNote = `Sneak Attack: <strong>+${rogueData.sneakAttack}d6</strong> once per turn — requires Finesse or Ranged weapon AND (Advantage on the attack, OR an enemy of the target is within 5 ft of it).`;
+    }
+  }
+  document.getElementById('attack-profiles-blurb').innerHTML =
+    `Proficiency: <strong>+${pb}</strong>. ${sneakNote}`;
+
+  const list = document.getElementById('attack-profiles-list');
+  list.innerHTML = '';
+  for (const p of profiles) {
+    const block = document.createElement('div');
+    block.className = 'feat-block';
+    block.innerHTML = `
+      <h4>${p.name}<span class="feat-lvl">${p.subtitle}</span></h4>
+      <p style="font-family:'Major Mono Display','Courier New',monospace; color:var(--gold); letter-spacing:0.05em; margin-bottom:0.3rem;">
+        ${fmtMod(p.attack)} to hit · ${p.damage}
+        <span style="font-family:'Cinzel',serif; font-size:0.7rem; color:var(--gold-tarnish); letter-spacing:0.1em; margin-left:0.5rem;">${p.ability}</span>
+      </p>
+      <p>${p.extra}</p>
+    `;
+    list.appendChild(block);
+  }
 }
 
 function renderCunningStrikesCard(level) {
@@ -6115,6 +6324,21 @@ function buildExpertisePickerHTML(klass, classLevel) {
   </div>`;
 }
 
+// HP gain picker — appears at every level except character L1 (which is
+// always max die per RAW). Three options: Avg+1 (DM default), Avg, Roll.
+function buildHpPickerHTML(klass, classLevel) {
+  const charLevel = (state.maxLevel || 0) + 1;
+  if (charLevel === 1) return ''; // L1 always max die
+  return `<div class="modal-prompt">
+    <div class="modal-prompt-label">Hit Point Gain (d8)</div>
+    <div class="hp-picker">
+      <label><input type="radio" name="hp-method" value="avgplus1" checked> Avg + 1 (DM default) · <strong>6</strong></label>
+      <label><input type="radio" name="hp-method" value="avg"> Average · <strong>5</strong></label>
+      <label><input type="radio" name="hp-method" value="roll"> Rolled: <input type="number" id="hp-roll-value" min="1" max="8" value="5" disabled></label>
+    </div>
+  </div>`;
+}
+
 // Build the Replicate Magic Item plan picker portion of the modal. Only fires
 // at Artificer levels where Plans Known increases (2, 6, 10, 14, 18).
 function buildInfusionPickerHTML(klass, classLevel) {
@@ -6752,6 +6976,23 @@ function showLevelUpDetail(klass, classLevel) {
     while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
   }
 
+  // HP gain picker (L2+)
+  const hpHTML = buildHpPickerHTML(klass, classLevel);
+  if (hpHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = hpHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
+    // Wire the radio → enable/disable roll input
+    const rollInput = promptsEl.querySelector('#hp-roll-value');
+    promptsEl.querySelectorAll('input[name="hp-method"]').forEach(r => {
+      r.addEventListener('change', () => {
+        const mode = promptsEl.querySelector('input[name="hp-method"]:checked').value;
+        rollInput.disabled = mode !== 'roll';
+        if (mode === 'roll') rollInput.focus();
+      });
+    });
+  }
+
   // Wire up listeners for everything we just inserted
   wireSpellPickers(promptsEl);
   wireSkillsPicker(promptsEl);
@@ -6842,6 +7083,16 @@ function confirmLevelUp() {
   // Rogue 1 also gives Thieves' Cant (a language)
   if (entry.class === 'rogue' && entry.classLevel === 1) {
     state.languages = [...new Set([...(state.languages || []), 'Thieves\' Cant'])];
+  }
+
+  // Phase 2M: HP method picker (L2+)
+  const hpMethodInput = document.querySelector('input[name="hp-method"]:checked');
+  if (hpMethodInput) {
+    entry.hpMethod = hpMethodInput.value;
+    if (entry.hpMethod === 'roll') {
+      const v = parseInt(document.getElementById('hp-roll-value').value, 10);
+      entry.hpRolled = Math.max(1, Math.min(8, isNaN(v) ? 1 : v));
+    }
   }
 
   // Phase 2D: spell picks (Artificer only)
@@ -7397,6 +7648,27 @@ document.getElementById('exhaustion-level').addEventListener('input', (e) => {
   state.exhaustion = isNaN(v) || v < 0 ? 0 : Math.min(6, v);
   saveState();
   render(); // exhaustion penalty changes Initiative, saves, skills
+});
+
+document.getElementById('hp-info-btn').addEventListener('click', () => {
+  const level = state.level;
+  const stats = computeStats(level);
+  const formula = hpFormulaText(level, stats);
+  const max = computeHP(level, stats);
+  showInfo('Hit Point Formula',
+    `<div class="spell-info-subtitle">Max HP at character level ${level}: ${max}</div>` +
+    `<p style="font-family:'EB Garamond',serif; font-size:0.95rem; color:var(--parchment); line-height:1.5; margin:0;">${formula}</p>` +
+    `<p style="font-family:'EB Garamond',serif; font-size:0.85rem; color:var(--parchment-aged); font-style:italic; line-height:1.5; margin-top:0.8rem;">L1 is always max die (8). Subsequent levels use whatever method was picked during level-up (Avg+1 / Avg / Rolled). CON modifier is added once per level.</p>`
+  );
+});
+
+document.getElementById('conditions-clear').addEventListener('click', () => {
+  showConfirm('Clear all conditions and exhaustion?', '<p>This will reset every active condition pill and set exhaustion to 0.</p>', () => {
+    state.conditions = {};
+    state.exhaustion = 0;
+    saveState();
+    render();
+  }, { okLabel: 'Clear All' });
 });
 
 document.getElementById('concentration-select').addEventListener('change', (e) => {

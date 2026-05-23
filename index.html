@@ -1740,130 +1740,149 @@ body.dm-mode .dm-hide { display: none; }
   <header class="header">
     <svg class="header-ornament" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <defs>
-        <!-- 12-petal peony -->
+        <!-- Layered peony: outer + inner petal rings + heart -->
         <symbol id="peony" overflow="visible">
           <g fill="currentColor">
-            <ellipse cx="0" cy="-16" rx="7" ry="14"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(30)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(60)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(90)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(120)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(150)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(180)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(210)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(240)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(270)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(300)"/>
-            <ellipse cx="0" cy="-16" rx="7" ry="14" transform="rotate(330)"/>
-            <circle r="6"/>
+            <!-- outer ring of 10 long petals -->
+            <g>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(36)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(72)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(108)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(144)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(180)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(216)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(252)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(288)"/>
+              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(324)"/>
+            </g>
+            <!-- inner ring of 8 short petals offset by 22.5° -->
+            <g transform="rotate(22.5)">
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(45)"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(90)"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(135)"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(180)"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(225)"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(270)"/>
+              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(315)"/>
+            </g>
+            <circle r="3"/>
           </g>
         </symbol>
-        <!-- 5-petal blossom -->
+        <!-- Small refined 5-petal blossom -->
         <symbol id="blossom" overflow="visible">
           <g fill="currentColor">
-            <ellipse cx="0" cy="-8" rx="5" ry="7"/>
-            <ellipse cx="0" cy="-8" rx="5" ry="7" transform="rotate(72)"/>
-            <ellipse cx="0" cy="-8" rx="5" ry="7" transform="rotate(144)"/>
-            <ellipse cx="0" cy="-8" rx="5" ry="7" transform="rotate(216)"/>
-            <ellipse cx="0" cy="-8" rx="5" ry="7" transform="rotate(288)"/>
-            <circle r="2.5"/>
+            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z"/>
+            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(72)"/>
+            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(144)"/>
+            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(216)"/>
+            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(288)"/>
+            <circle r="1.5"/>
           </g>
         </symbol>
-        <!-- Leaf -->
+        <!-- Elegant pointed leaf with vein -->
         <symbol id="leaf" overflow="visible">
-          <path d="M -14 0 Q -7 -7 0 -6 Q 9 -3 14 0 Q 9 3 0 6 Q -7 7 -14 0 Z" fill="currentColor"/>
-          <path d="M -11 0 L 11 0" stroke="rgba(255,255,255,0.5)" stroke-width="0.8" fill="none"/>
+          <path d="M 0 0 C 4 -5 14 -7 22 -2 C 14 5 4 5 0 0 Z" fill="currentColor"/>
+          <path d="M 2 0 Q 12 -2 20 -1" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" fill="none"/>
         </symbol>
-        <!-- Tulip -->
+        <!-- Tendril curl that tapers -->
+        <symbol id="tendril" overflow="visible">
+          <path d="M 0 0 C 14 -4 28 0 32 10 C 34 18 28 22 22 18 C 18 14 22 10 26 12" stroke="currentColor" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+        </symbol>
+        <!-- Bell tulip with paired leaves -->
         <symbol id="tulip" overflow="visible">
-          <path d="M 0 0 C -11 -14, -9 -34, 0 -44 C 9 -34, 11 -14, 0 0 Z" fill="currentColor"/>
-          <path d="M -5 -36 C -5 -28, 0 -22, 0 -22" stroke="rgba(255,255,255,0.45)" stroke-width="0.8" fill="none"/>
-          <path d="M 5 -36 C 5 -28, 0 -22, 0 -22" stroke="rgba(255,255,255,0.45)" stroke-width="0.8" fill="none"/>
-          <path d="M 0 0 L 0 16" stroke="currentColor" stroke-width="1.4" fill="none"/>
+          <path d="M 0 0 C -10 -12 -8 -32 0 -42 C 8 -32 10 -12 0 0 Z" fill="currentColor"/>
+          <path d="M -4 -34 Q 0 -28 4 -34" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" fill="none"/>
+          <path d="M 0 0 L 0 14" stroke="currentColor" stroke-width="0.9" fill="none"/>
+          <path d="M 0 6 Q 10 4 16 10 Q 8 7 0 9" fill="currentColor"/>
+          <path d="M 0 10 Q -10 8 -16 14 Q -8 11 0 13" fill="currentColor"/>
+        </symbol>
+        <!-- Bud (tiny closed flower on stem) -->
+        <symbol id="bud" overflow="visible">
+          <path d="M 0 0 C -3 -4 -3 -10 0 -12 C 3 -10 3 -4 0 0 Z" fill="currentColor"/>
         </symbol>
       </defs>
 
-      <g stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round">
 
-        <!-- LEFT FLORAL CLUSTER -->
-        <g transform="translate(190 140)">
-          <!-- main vine sweeping through the cluster -->
-          <path d="M 130 80 C 80 60 30 80 -20 60 C -90 40 -130 -20 -110 -60 C -90 -90 -40 -90 0 -70" stroke-width="1.6"/>
-          <!-- secondary vine -->
-          <path d="M 60 -20 C 30 -60 -30 -80 -80 -50" stroke-width="1.2"/>
-          <!-- peony -->
-          <use href="#peony" transform="translate(-30 -10) scale(0.95)"/>
-          <!-- tulip dropping down -->
-          <use href="#tulip" transform="translate(60 80)"/>
-          <!-- secondary blossoms -->
-          <use href="#blossom" transform="translate(-110 -50) scale(1.3)"/>
-          <use href="#blossom" transform="translate(110 30) scale(1.1)"/>
-          <use href="#blossom" transform="translate(20 -90) scale(0.9)"/>
-          <!-- leaves -->
-          <use href="#leaf" transform="translate(-60 30) rotate(-25)"/>
-          <use href="#leaf" transform="translate(70 -10) rotate(40) scale(0.9)"/>
-          <use href="#leaf" transform="translate(-90 10) rotate(15) scale(0.85)"/>
-          <use href="#leaf" transform="translate(30 70) rotate(-10) scale(0.8)"/>
-          <use href="#leaf" transform="translate(-40 -70) rotate(-60) scale(0.75)"/>
-          <!-- curling tendril -->
-          <path d="M 110 60 q 30 -30 50 -10 q 15 25 -15 35 q -30 5 -30 -25" stroke-width="1.1"/>
-          <!-- buds -->
-          <g fill="currentColor" stroke="none">
-            <ellipse cx="-120" cy="20" rx="3" ry="6" transform="rotate(-30 -120 20)"/>
-            <ellipse cx="90" cy="-50" rx="3" ry="6" transform="rotate(40 90 -50)"/>
-          </g>
-          <!-- filler dots -->
-          <g fill="currentColor" stroke="none">
-            <circle cx="-100" cy="80" r="2"/>
-            <circle cx="50" cy="-40" r="1.8"/>
-            <circle cx="130" cy="-10" r="1.8"/>
-            <circle cx="-50" cy="-100" r="1.5"/>
-            <circle cx="-130" cy="-30" r="1.5"/>
-            <circle cx="90" cy="100" r="1.5"/>
-          </g>
+        <!-- LEFT CLUSTER -->
+        <g transform="translate(180 140)">
+          <!-- Primary sweeping vine -->
+          <path d="M 150 90 C 90 70 30 95 -20 75 C -90 55 -140 -10 -120 -60 C -100 -100 -50 -110 -10 -90"/>
+          <!-- Secondary curving vine (upper branch) -->
+          <path d="M 30 -30 C 0 -80 -60 -100 -110 -80" stroke-width="0.8"/>
+          <!-- Lower secondary -->
+          <path d="M 100 50 C 60 80 0 90 -50 80" stroke-width="0.8"/>
+
+          <!-- Anchor: large peony -->
+          <use href="#peony" transform="translate(-30 -20)"/>
+
+          <!-- Medium blossoms on branches -->
+          <use href="#blossom" transform="translate(-105 -75) scale(1.4)"/>
+          <use href="#blossom" transform="translate(110 35) scale(1.2)"/>
+
+          <!-- Small accent blossoms -->
+          <use href="#blossom" transform="translate(40 -75) scale(0.85)"/>
+          <use href="#blossom" transform="translate(-65 75) scale(0.85)"/>
+
+          <!-- Tulip dropping down -->
+          <use href="#tulip" transform="translate(80 90) scale(0.95)"/>
+
+          <!-- Leaves (varied size and angle) -->
+          <use href="#leaf" transform="translate(-50 30) rotate(-25) scale(1.1)"/>
+          <use href="#leaf" transform="translate(50 -10) rotate(35)"/>
+          <use href="#leaf" transform="translate(-95 -10) rotate(15) scale(0.9)"/>
+          <use href="#leaf" transform="translate(20 60) rotate(-15) scale(0.8)"/>
+          <use href="#leaf" transform="translate(-35 -60) rotate(-55) scale(0.85)"/>
+          <use href="#leaf" transform="translate(90 60) rotate(-40) scale(0.7)"/>
+          <use href="#leaf" transform="translate(-110 30) rotate(-5) scale(0.7)"/>
+
+          <!-- Buds along vines -->
+          <use href="#bud" transform="translate(-130 -50) rotate(-25)"/>
+          <use href="#bud" transform="translate(70 -55) rotate(40)"/>
+          <use href="#bud" transform="translate(140 70) rotate(60) scale(0.85)"/>
+          <use href="#bud" transform="translate(-80 95) rotate(-15) scale(0.75)"/>
+
+          <!-- Tendrils -->
+          <use href="#tendril" transform="translate(130 80)"/>
+          <use href="#tendril" transform="translate(-130 -80) rotate(-30) scale(0.85)"/>
+          <use href="#tendril" transform="translate(-140 60) rotate(180) scale(0.8)"/>
         </g>
 
-        <!-- RIGHT FLORAL CLUSTER (mirrored) -->
-        <g transform="translate(910 140) scale(-1 1)">
-          <path d="M 130 80 C 80 60 30 80 -20 60 C -90 40 -130 -20 -110 -60 C -90 -90 -40 -90 0 -70" stroke-width="1.6"/>
-          <path d="M 60 -20 C 30 -60 -30 -80 -80 -50" stroke-width="1.2"/>
-          <use href="#peony" transform="translate(-30 -10) scale(0.95)"/>
-          <use href="#tulip" transform="translate(60 80)"/>
-          <use href="#blossom" transform="translate(-110 -50) scale(1.3)"/>
-          <use href="#blossom" transform="translate(110 30) scale(1.1)"/>
-          <use href="#blossom" transform="translate(20 -90) scale(0.9)"/>
-          <use href="#leaf" transform="translate(-60 30) rotate(-25)"/>
-          <use href="#leaf" transform="translate(70 -10) rotate(40) scale(0.9)"/>
-          <use href="#leaf" transform="translate(-90 10) rotate(15) scale(0.85)"/>
-          <use href="#leaf" transform="translate(30 70) rotate(-10) scale(0.8)"/>
-          <use href="#leaf" transform="translate(-40 -70) rotate(-60) scale(0.75)"/>
-          <path d="M 110 60 q 30 -30 50 -10 q 15 25 -15 35 q -30 5 -30 -25" stroke-width="1.1"/>
-          <g fill="currentColor" stroke="none">
-            <ellipse cx="-120" cy="20" rx="3" ry="6" transform="rotate(-30 -120 20)"/>
-            <ellipse cx="90" cy="-50" rx="3" ry="6" transform="rotate(40 90 -50)"/>
-          </g>
-          <g fill="currentColor" stroke="none">
-            <circle cx="-100" cy="80" r="2"/>
-            <circle cx="50" cy="-40" r="1.8"/>
-            <circle cx="130" cy="-10" r="1.8"/>
-            <circle cx="-50" cy="-100" r="1.5"/>
-            <circle cx="-130" cy="-30" r="1.5"/>
-            <circle cx="90" cy="100" r="1.5"/>
-          </g>
+        <!-- RIGHT CLUSTER (mirror) -->
+        <g transform="translate(920 140) scale(-1 1)">
+          <path d="M 150 90 C 90 70 30 95 -20 75 C -90 55 -140 -10 -120 -60 C -100 -100 -50 -110 -10 -90"/>
+          <path d="M 30 -30 C 0 -80 -60 -100 -110 -80" stroke-width="0.8"/>
+          <path d="M 100 50 C 60 80 0 90 -50 80" stroke-width="0.8"/>
+          <use href="#peony" transform="translate(-30 -20)"/>
+          <use href="#blossom" transform="translate(-105 -75) scale(1.4)"/>
+          <use href="#blossom" transform="translate(110 35) scale(1.2)"/>
+          <use href="#blossom" transform="translate(40 -75) scale(0.85)"/>
+          <use href="#blossom" transform="translate(-65 75) scale(0.85)"/>
+          <use href="#tulip" transform="translate(80 90) scale(0.95)"/>
+          <use href="#leaf" transform="translate(-50 30) rotate(-25) scale(1.1)"/>
+          <use href="#leaf" transform="translate(50 -10) rotate(35)"/>
+          <use href="#leaf" transform="translate(-95 -10) rotate(15) scale(0.9)"/>
+          <use href="#leaf" transform="translate(20 60) rotate(-15) scale(0.8)"/>
+          <use href="#leaf" transform="translate(-35 -60) rotate(-55) scale(0.85)"/>
+          <use href="#leaf" transform="translate(90 60) rotate(-40) scale(0.7)"/>
+          <use href="#leaf" transform="translate(-110 30) rotate(-5) scale(0.7)"/>
+          <use href="#bud" transform="translate(-130 -50) rotate(-25)"/>
+          <use href="#bud" transform="translate(70 -55) rotate(40)"/>
+          <use href="#bud" transform="translate(140 70) rotate(60) scale(0.85)"/>
+          <use href="#bud" transform="translate(-80 95) rotate(-15) scale(0.75)"/>
+          <use href="#tendril" transform="translate(130 80)"/>
+          <use href="#tendril" transform="translate(-130 -80) rotate(-30) scale(0.85)"/>
+          <use href="#tendril" transform="translate(-140 60) rotate(180) scale(0.8)"/>
         </g>
 
-        <!-- MIDDLE BRIDGE — thin, low, just two tiny blossoms + scatter -->
-        <g>
-          <path d="M 400 240 Q 550 252 700 240" stroke-width="1"/>
-          <use href="#blossom" transform="translate(470 242) scale(0.65)"/>
-          <use href="#blossom" transform="translate(630 242) scale(0.65)"/>
-          <g fill="currentColor" stroke="none">
-            <circle cx="430" cy="245" r="1.4"/>
-            <circle cx="670" cy="245" r="1.4"/>
-            <circle cx="550" cy="252" r="1.4"/>
-            <circle cx="510" cy="248" r="1"/>
-            <circle cx="590" cy="248" r="1"/>
-          </g>
+        <!-- MIDDLE: a single fine sweeping vine high above the name with a few leaves only -->
+        <g stroke-width="0.7">
+          <path d="M 360 35 Q 550 12 740 35"/>
+          <use href="#leaf" transform="translate(430 30) rotate(195) scale(0.7)"/>
+          <use href="#leaf" transform="translate(670 30) rotate(345) scale(0.7)"/>
+          <use href="#bud" transform="translate(550 22) rotate(180) scale(0.7)"/>
         </g>
       </g>
     </svg>

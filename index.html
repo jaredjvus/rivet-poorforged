@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caelen Ravenshade — Character Sheet</title>
+<title>Rivet, the Poorforged — Character Sheet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #0a0608;
-  --ink-deep: #050304;
-  --parchment: #e8dcc4;
-  --parchment-aged: #c9b994;
-  --parchment-dim: #8a7d62;
-  --blood: #6b1a1f;
-  --blood-bright: #962025;
-  --gold: #b8893a;
-  --gold-bright: #d4a253;
-  --gold-tarnish: #7a5a25;
-  --shadow: #1a1416;
-  --silver-crack: #9c8e72;
+  /* Rivet palette: porcelain ground, Delft cobalt detail, brass-coil rust as warning */
+  --ink: #f3ead4;            /* porcelain cream — the page itself */
+  --ink-deep: #ebe0c4;       /* slightly deeper cream for card grounds */
+  --parchment: #1c2541;      /* deep navy — primary text */
+  --parchment-aged: #3e4b75; /* mid blue-grey for secondary text */
+  --parchment-dim: #7d89aa;  /* dim blue-grey for placeholders / locked text */
+  --blood: #8a3a1c;          /* burnt copper — "used/danger" accent (was crimson) */
+  --blood-bright: #b35930;   /* brighter copper for hover/active */
+  --gold: #1f4ea3;           /* Delft cobalt — primary accent (was gold) */
+  --gold-bright: #2c63b0;    /* brighter cobalt for hover */
+  --gold-tarnish: #7d99c4;   /* muted Delft for borders/secondary */
+  --shadow: #d6c7a6;         /* warm shadow on the cream ground */
+  --silver-crack: #b88f4a;   /* brass-leaf — kintsugi crack detail */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,10 +29,11 @@ html { scroll-behavior: smooth; }
 
 body {
   background: var(--ink);
+  /* Soft Delft-blue washes on a porcelain ground, evoking glaze pooling at the rim. */
   background-image:
-    radial-gradient(ellipse at 20% 10%, rgba(107, 26, 31, 0.15), transparent 50%),
-    radial-gradient(ellipse at 80% 90%, rgba(184, 137, 58, 0.08), transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(20, 16, 18, 0.4), transparent 70%);
+    radial-gradient(ellipse at 18% 8%, rgba(31, 78, 163, 0.10), transparent 55%),
+    radial-gradient(ellipse at 82% 92%, rgba(184, 143, 74, 0.08), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(214, 199, 166, 0.45), transparent 75%);
   color: var(--parchment);
   font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
   font-size: 17px;
@@ -96,7 +98,7 @@ body::before {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   letter-spacing: 0.06em;
   color: var(--parchment);
-  text-shadow: 0 0 30px rgba(184, 137, 58, 0.2);
+  text-shadow: 0 0 30px rgba(31, 78, 163, 0.2);
   line-height: 1;
   margin-bottom: 1rem;
 }
@@ -177,7 +179,7 @@ body::before {
   border: 2px solid var(--gold);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(150, 32, 37, 0.6);
+  box-shadow: 0 0 8px rgba(179, 89, 48, 0.6);
 }
 .level-slider::-moz-range-thumb {
   width: 18px;
@@ -197,7 +199,7 @@ body::before {
   text-align: center;
   padding: 0.2rem 0.8rem;
   border: 1px solid var(--gold);
-  background: rgba(10, 6, 8, 0.6);
+  background: rgba(28, 37, 65, 0.6);
 }
 
 .level-classes {
@@ -319,13 +321,71 @@ body::before {
 
 .stat-block {
   border: 1px solid var(--gold-tarnish);
-  background: linear-gradient(180deg, rgba(184, 137, 58, 0.05), rgba(10, 6, 8, 0.4));
+  background: linear-gradient(180deg, rgba(31, 78, 163, 0.05), rgba(28, 37, 65, 0.4));
   padding: 1.2rem 0.5rem;
   text-align: center;
   position: relative;
   transition: all 0.4s ease;
 }
 .stat-block.primary { border-color: var(--blood-bright); }
+.stat-input {
+  display: block;
+  margin: 0.3rem auto 0.2rem;
+  width: 48px;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.2rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.stat-input:focus { border-color: var(--gold); }
+
+.point-buy-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--gold-tarnish);
+  background: rgba(28, 37, 65, 0.4);
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-tarnish);
+  flex-wrap: wrap;
+}
+.pb-label { color: var(--gold); }
+.pb-spent {
+  font-size: 1.15rem;
+  color: var(--parchment);
+  font-weight: 600;
+}
+.pb-cap { color: var(--gold-tarnish); }
+.pb-status {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--parchment-dim);
+  font-size: 0.95rem;
+  margin-left: 0.4rem;
+}
+.point-buy-tracker.over {
+  border-color: var(--blood);
+  background: rgba(138, 58, 28, 0.18);
+}
+.point-buy-tracker.over .pb-spent { color: var(--blood-bright); }
+.point-buy-tracker.over .pb-status { color: var(--blood-bright); font-style: normal; }
+.point-buy-tracker.done {
+  border-color: var(--gold);
+}
+.point-buy-tracker.done .pb-status { color: var(--gold); }
 .stat-block.primary::before {
   content: '';
   position: absolute;
@@ -375,7 +435,7 @@ body::before {
   border: 1px solid var(--gold-tarnish);
   padding: 1rem;
   text-align: center;
-  background: rgba(10, 6, 8, 0.4);
+  background: rgba(28, 37, 65, 0.4);
 }
 
 .defense-cell .label {
@@ -484,7 +544,7 @@ body::before {
   margin-bottom: 2rem;
   padding: 0.7rem 1.2rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(10, 6, 8, 0.5);
+  background: rgba(28, 37, 65, 0.5);
 }
 .concentration-label {
   font-family: 'Cinzel', serif;
@@ -541,7 +601,7 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.4rem;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.25);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.25);
 }
 .resource-row:last-child { border-bottom: none; }
 .resource-row[hidden] { display: none; }
@@ -613,7 +673,7 @@ body::before {
 .font-of-magic {
   margin: 0.4rem 0 0.6rem;
   padding: 0.6rem 0.4rem;
-  border-top: 1px dotted rgba(184, 137, 58, 0.25);
+  border-top: 1px dotted rgba(31, 78, 163, 0.25);
 }
 .fom-section {
   display: flex;
@@ -704,11 +764,11 @@ body::before {
 .ds-pip.fail { border-color: var(--blood); }
 .ds-pip.checked.success {
   background: var(--gold);
-  box-shadow: 0 0 4px rgba(184, 137, 58, 0.6);
+  box-shadow: 0 0 4px rgba(31, 78, 163, 0.6);
 }
 .ds-pip.checked.fail {
   background: var(--blood-bright);
-  box-shadow: 0 0 4px rgba(150, 32, 37, 0.6);
+  box-shadow: 0 0 4px rgba(179, 89, 48, 0.6);
 }
 .ds-pip:hover { transform: scale(1.15); }
 
@@ -720,7 +780,7 @@ body::before {
   margin-top: 1.5rem;
   padding: 0.8rem 1rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(10, 6, 8, 0.4);
+  background: rgba(28, 37, 65, 0.4);
 }
 .conditions-header {
   display: flex;
@@ -813,7 +873,7 @@ body::before {
 /* CARD */
 .card {
   border: 1px solid var(--gold-tarnish);
-  background: linear-gradient(180deg, rgba(20, 16, 18, 0.6), rgba(10, 6, 8, 0.8));
+  background: linear-gradient(180deg, rgba(214, 199, 166, 0.6), rgba(28, 37, 65, 0.8));
   padding: 1.8rem;
   position: relative;
 }
@@ -877,7 +937,7 @@ body::before {
 .card li {
   padding: 0.5rem 0 0.5rem 1.5rem;
   position: relative;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.2);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.2);
 }
 .card li:last-child { border-bottom: none; }
 .card li::before {
@@ -919,7 +979,7 @@ body::before {
 
 .spell-table td {
   padding: 0.7rem 0.5rem;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.2);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.2);
   vertical-align: top;
 }
 
@@ -927,7 +987,7 @@ body::before {
   opacity: 0.55;
 }
 .spell-table tr.preview td {
-  background: rgba(150, 32, 37, 0.04);
+  background: rgba(179, 89, 48, 0.04);
 }
 
 /* WILD MAGIC SURGE */
@@ -979,12 +1039,12 @@ body::before {
   color: var(--gold);
   padding: 0.5rem 1rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(10, 6, 8, 0.5);
+  background: rgba(28, 37, 65, 0.5);
   text-align: center;
   transition: background 0.3s;
   user-select: none;
 }
-.surge-details summary:hover { background: rgba(184, 137, 58, 0.1); }
+.surge-details summary:hover { background: rgba(31, 78, 163, 0.1); }
 .surge-details summary::-webkit-details-marker { display: none; }
 .surge-details summary::before {
   content: '+ ';
@@ -1011,7 +1071,7 @@ body::before {
 }
 .surge-table td {
   padding: 0.55rem 0.6rem;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.18);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.18);
   vertical-align: top;
   color: var(--parchment-aged);
 }
@@ -1022,7 +1082,7 @@ body::before {
   white-space: nowrap;
 }
 .surge-table tr.hit td {
-  background: rgba(184, 137, 58, 0.12);
+  background: rgba(31, 78, 163, 0.12);
   color: var(--parchment);
 }
 .surge-table tr.hit .surge-range {
@@ -1125,7 +1185,7 @@ body::before {
   transition: background 0.2s, border-color 0.2s;
 }
 .cast-popover-option:hover {
-  background: rgba(184, 137, 58, 0.15);
+  background: rgba(31, 78, 163, 0.15);
   border-color: var(--gold);
 }
 .cast-popover-option .tier-count {
@@ -1162,7 +1222,7 @@ body::before {
   align-items: center;
   gap: 1rem;
   padding: 0.6rem 0;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.2);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.2);
   flex-wrap: wrap;
 }
 .slot-row:last-child { border-bottom: none; }
@@ -1192,7 +1252,7 @@ body::before {
 .pip.filled {
   background: var(--blood-bright);
   border-color: var(--blood-bright);
-  box-shadow: 0 0 6px rgba(150, 32, 37, 0.5);
+  box-shadow: 0 0 6px rgba(179, 89, 48, 0.5);
 }
 .pip:hover { transform: scale(1.15); }
 
@@ -1210,7 +1270,7 @@ body::before {
   display: flex;
   justify-content: space-between;
   padding: 0.3rem 0;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.15);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.15);
 }
 
 .skill-row.proficient .skill-name { color: var(--parchment); }
@@ -1256,7 +1316,7 @@ body::before {
 
 /* COMBAT LOOPS */
 .loop {
-  background: rgba(107, 26, 31, 0.08);
+  background: rgba(138, 58, 28, 0.08);
   border-left: 3px solid var(--blood-bright);
   padding: 1.2rem 1.5rem;
   margin-bottom: 1rem;
@@ -1285,7 +1345,7 @@ body::before {
   align-items: flex-start;
   gap: 0.6rem;
   padding: 0.5rem 0;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.2);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.2);
   position: relative;
 }
 .inv-item::before { display: none !important; }
@@ -1342,14 +1402,14 @@ body::before {
 .add-btn:hover {
   border-color: var(--gold);
   color: var(--gold-bright);
-  background: rgba(184, 137, 58, 0.05);
+  background: rgba(31, 78, 163, 0.05);
 }
 
 /* NOTES */
 .notes-area {
   width: 100%;
   min-height: 120px;
-  background: rgba(10, 6, 8, 0.4);
+  background: rgba(28, 37, 65, 0.4);
   border: 1px solid var(--gold-tarnish);
   color: var(--parchment);
   font-family: 'EB Garamond', serif;
@@ -1366,7 +1426,7 @@ body::before {
 .alt-control {
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(184, 137, 58, 0.05);
+  background: rgba(31, 78, 163, 0.05);
   border-left: 2px solid var(--gold);
 }
 
@@ -1453,11 +1513,11 @@ body::before {
 }
 .level-table td {
   padding: 0.5rem;
-  border-bottom: 1px dotted rgba(184, 137, 58, 0.2);
+  border-bottom: 1px dotted rgba(31, 78, 163, 0.2);
   font-size: 0.95rem;
 }
 .level-table tr.current {
-  background: rgba(150, 32, 37, 0.12);
+  background: rgba(179, 89, 48, 0.12);
 }
 .level-table tr.current td {
   color: var(--parchment);
@@ -1488,7 +1548,7 @@ body::before {
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  background: rgba(10, 6, 8, 0.9);
+  background: rgba(28, 37, 65, 0.9);
   border: 1px solid var(--gold-tarnish);
   padding: 0.4rem 0.8rem;
   pointer-events: none;
@@ -1577,14 +1637,14 @@ body.dm-mode .dm-hide { display: none; }
   color: var(--gold);
   padding: 0.7rem 1.2rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(10, 6, 8, 0.6);
+  background: rgba(28, 37, 65, 0.6);
   text-align: center;
   font-size: 0.78rem;
   transition: background 0.3s, border-color 0.3s;
   user-select: none;
 }
 .backstory-details summary:hover {
-  background: rgba(184, 137, 58, 0.1);
+  background: rgba(31, 78, 163, 0.1);
   border-color: var(--gold);
 }
 .backstory-details summary::-webkit-details-marker { display: none; }
@@ -1651,14 +1711,14 @@ body.dm-mode .dm-hide { display: none; }
 
   <!-- HEADER -->
   <header class="header">
-    <div class="eyebrow">A Record of the Bearer · Neverwinter, Year of the Reborn Hero</div>
-    <h1 class="name">Caelen Ravenshade</h1>
-    <div class="epithet">Heir to the Pendant · Vessel of the Hollow Choir</div>
+    <div class="eyebrow">A Field Log · Neverwinter · Subject ID R-1V3T</div>
+    <h1 class="name">Rivet</h1>
+    <div class="epithet">the Poorforged · Toymaker's Mistake</div>
     <div class="titlebar">
-      <span>Aasimar</span>
-      <span id="title-classes">Hexblade Warlock 1</span>
-      <span>Entertainer · Musician</span>
-      <span>Neutral Good</span>
+      <span>Warforged Scout</span>
+      <span id="title-classes">Artificer Armorer · Rogue Thief</span>
+      <span>The Toymaker's Mistake</span>
+      <span>Chaotic Neutral</span>
     </div>
   </header>
 
@@ -1689,37 +1749,48 @@ body.dm-mode .dm-hide { display: none; }
     <div class="stats-grid">
       <div class="stat-block">
         <div class="stat-label">STR</div>
+        <input class="stat-input" id="pb-str" type="number" min="8" max="15" value="8">
         <div class="stat-value" id="str-val">8</div>
         <div class="stat-mod" id="str-mod">−1</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">DEX</div>
-        <div class="stat-value" id="dex-val">14</div>
-        <div class="stat-mod" id="dex-mod">+2</div>
+        <input class="stat-input" id="pb-dex" type="number" min="8" max="15" value="8">
+        <div class="stat-value" id="dex-val">8</div>
+        <div class="stat-mod" id="dex-mod">−1</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">CON</div>
-        <div class="stat-value" id="con-val">16</div>
-        <div class="stat-mod" id="con-mod">+3</div>
+        <input class="stat-input" id="pb-con" type="number" min="8" max="15" value="8">
+        <div class="stat-value" id="con-val">9</div>
+        <div class="stat-mod" id="con-mod">−1</div>
       </div>
-      <div class="stat-block">
+      <div class="stat-block primary">
         <div class="stat-label">INT</div>
+        <input class="stat-input" id="pb-int" type="number" min="8" max="15" value="8">
         <div class="stat-value" id="int-val">10</div>
         <div class="stat-mod" id="int-mod">+0</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">WIS</div>
-        <div class="stat-value" id="wis-val">10</div>
-        <div class="stat-mod" id="wis-mod">+0</div>
+        <input class="stat-input" id="pb-wis" type="number" min="8" max="15" value="8">
+        <div class="stat-value" id="wis-val">8</div>
+        <div class="stat-mod" id="wis-mod">−1</div>
       </div>
-      <div class="stat-block primary">
+      <div class="stat-block">
         <div class="stat-label">CHA</div>
-        <div class="stat-value" id="cha-val">19</div>
-        <div class="stat-mod" id="cha-mod">+4</div>
+        <input class="stat-input" id="pb-cha" type="number" min="8" max="15" value="8">
+        <div class="stat-value" id="cha-val">8</div>
+        <div class="stat-mod" id="cha-mod">−1</div>
       </div>
     </div>
+    <div class="point-buy-tracker">
+      <span class="pb-label">Point Buy</span>
+      <span class="pb-spent" id="pb-spent">0</span> / <span class="pb-cap">27</span>
+      <span class="pb-status" id="pb-status">empty pool — set her scores</span>
+    </div>
     <p style="text-align:center; font-style:italic; color:var(--parchment-aged); font-size:0.9rem; margin-top: 0.5rem;">
-      Ability score bonuses from Entertainer background: +2 CHA, +1 CON. Starting array: STR 8 · DEX 14 · CON 15 · INT 10 · WIS 10 · CHA 17.
+      Background bonuses (The Toymaker's Mistake): <strong>+2 INT</strong>, <strong>+1 CON</strong>. Edit the inputs above to set her point-buy scores.
     </p>
 
     <div class="conditions-row">
@@ -1773,60 +1844,30 @@ body.dm-mode .dm-hide { display: none; }
 
   <!-- THE BEARER -->
   <section class="section">
-    <h2 class="section-title">The Bearer</h2>
+    <h2 class="section-title">The Subject</h2>
     <div class="two-col">
       <div class="card">
-        <h3>Origins</h3>
+        <h3>Assembly Notes</h3>
         <ul>
-          <li><strong>Name</strong><br>Caelen Ravenshade</li>
-          <li><strong>Species</strong><br>Aasimar — half-elven mother, celestial father. Has chosen the "fallen" path in flavor though not in alignment.</li>
-          <li><strong>Age</strong><br>19</li>
-          <li><strong>Height / Build</strong><br>5'9", slender, faintly luminous skin even in shadow</li>
-          <li><strong>Eyes</strong><br>Pale gold by day. Something colder after dark.</li>
-          <li><strong>Hair</strong><br>Black, shoulder-length, often tied back for performance</li>
-          <li><strong>Marks</strong><br>Fingertips darkened to charcoal grey at the nails. A cracked silver pendant worn under the collar at all times.</li>
+          <li><strong>Designation</strong><br>Rivet (adopted she/her — statistical analysis showed organic subjects are 37% more compliant with female designation)</li>
+          <li><strong>Chassis</strong><br>Warforged Scout. Dented copper cage, mismatched gears from a broken defense turret, glowing unstable capacitor at the core.</li>
+          <li><strong>Active Time</strong><br>2 months</li>
+          <li><strong>Dimensions</strong><br>2'5" tall, 30 lbs. Small size category.</li>
+          <li><strong>Faceplate</strong><br>Upper half of a broken porcelain rabbit mask — white with blue floral filigree. Iron-grate jaw beneath.</li>
+          <li><strong>Optics</strong><br>Mismatched bulbs. One amber, one flickering red.</li>
+          <li><strong>Antennae</strong><br>Two asymmetrical "rabbit ears" of bent wire, unspooled guitar strings, and rusted brass telescope casing. Twitch when channeling.</li>
         </ul>
       </div>
       <div class="card">
-        <h3>Calling</h3>
+        <h3>Operating Parameters</h3>
         <ul>
-          <li><strong>Patron</strong><br>The Hollow Choir — a bound entity inherited through the maternal line, contained in a silver pendant until the seal cracked.</li>
-          <li><strong>Sorcerous Origin</strong><br>Wild Magic — celestial blood and aberrant ancestry colliding under pressure from the Choir.</li>
-          <li><strong>Pact Boon</strong><br>Pact of the Chain (at Warlock 3). Familiar: <em>Vex</em>, an imp who suspects his real master is not Caelen but the thing inside the pendant.</li>
-          <li><strong>Languages</strong><br>Common, Celestial, Elvish</li>
-          <li><strong>Faith</strong><br>None openly. Privately, prays to a celestial father he has never met.</li>
+          <li><strong>Background</strong><br>The Toymaker's Mistake. Hammered together by an unstable (intoxicated, inconclusive) artificer on a cluttered workbench, meant to be a mechanical pet. A piece of an ancient soul-infused artifact was jammed into her headpiece instead of a simple logic gear.</li>
+          <li><strong>Alignment</strong><br>Chaotic Neutral. "Property" does not compute.</li>
+          <li><strong>Right Arm</strong><br>Sleek polished brass, fine-tuned clicking gears. <em>Her favorite arm.</em></li>
+          <li><strong>Left Arm</strong><br>Bulky hydraulic piston wrapped in electrical conduit. <em>The punching arm.</em></li>
+          <li><strong>Mode</strong><br>Calculated. Easily distracted. Curious. Mumbles analyses to herself. Default response to stress: dive behind a larger humanoid or into a satchel.</li>
         </ul>
       </div>
-    </div>
-  </section>
-
-  <!-- COMBAT -->
-  <section class="section dm-hide">
-    <h2 class="section-title">The Engine</h2>
-    <div class="two-col">
-      <div class="card">
-        <h3>Eldritch Blast</h3>
-        <p><strong>To Hit</strong> · <span id="eb-tohit">+6</span> · ranged spell attack, 120 ft</p>
-        <p><strong>Damage Per Beam</strong> · <span id="eb-damage">1d10 + 0</span> force</p>
-        <p><strong>Beams</strong> · <span id="eb-beams">1</span> at this level</p>
-        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dotted rgba(184, 137, 58, 0.3);" id="eb-invocations">
-          <em>Agonizing Blast and Repelling Blast unlock at Warlock 2.</em>
-        </p>
-      </div>
-      <div class="card">
-        <h3>Hexblade's Curse</h3>
-        <p>Bonus action. Target one creature within 30 ft you can see. Until you finish a short or long rest, the cursed target:</p>
-        <ul>
-          <li>Takes +<span id="curse-bonus">2</span> bonus damage from your attacks (proficiency bonus)</li>
-          <li>Your weapon and spell attacks score a critical hit on a roll of 19 or 20 against it</li>
-          <li>If it drops to 0 HP, you regain HP equal to your warlock level + CHA mod (<span id="curse-heal">5</span>)</li>
-        </ul>
-        <p style="margin-top: 1rem;"><em>Recharges on a short or long rest.</em></p>
-      </div>
-    </div>
-
-    <div style="margin-top: 2rem;" id="combat-loops">
-      <!-- Filled by JS based on level -->
     </div>
   </section>
 
@@ -1839,7 +1880,7 @@ body.dm-mode .dm-hide { display: none; }
         <div class="skills-grid" style="grid-template-columns: 1fr;" id="saves-grid">
           <!-- filled by JS -->
         </div>
-        <p style="margin-top: 1rem; font-style: italic; font-size: 0.9rem;" id="saves-note">Warlock grants Wisdom and Charisma save proficiency.</p>
+        <p style="margin-top: 1rem; font-style: italic; font-size: 0.9rem;" id="saves-note">Save proficiencies appear once Rivet takes her first class level.</p>
       </div>
       <div class="card">
         <h3>Skills</h3>
@@ -1851,187 +1892,90 @@ body.dm-mode .dm-hide { display: none; }
     </div>
   </section>
 
-  <!-- SPELLS & SLOTS -->
+  <!-- RESOURCES -->
   <section class="section">
-    <h2 class="section-title">Magic</h2>
+    <h2 class="section-title">Resources</h2>
 
-    <div class="concentration-tracker" id="concentration-wrap">
+    <div class="card combat-resources" id="combat-resources-card">
+      <h3>Combat Resources</h3>
+      <div class="rest-buttons">
+        <button class="rest-btn" id="short-rest-btn" title="Restores short-rest resources">Short Rest</button>
+        <button class="rest-btn" id="long-rest-btn" title="Restores HP, slots, all once-per-long-rest features, clears Temp HP and death saves">Long Rest</button>
+      </div>
+      <div class="resource-row" id="resource-inspiration">
+        <span class="resource-label has-tip" title="Spend Heroic Inspiration to gain advantage on one d20 roll (or reroll a d20 once and use either result). You can only have one Inspiration at a time. Awarded by the DM, some species, feats, and class features.">Heroic Inspiration</span>
+        <button class="resource-toggle" id="inspiration-toggle">None</button>
+      </div>
+    </div>
+
+    <div class="concentration-tracker" id="concentration-wrap" style="margin-top: 2rem;">
       <span class="concentration-label">Concentrating on</span>
       <select id="concentration-select">
         <option value="">— not concentrating —</option>
       </select>
     </div>
-
-    <div class="two-col">
-      <div class="card">
-        <h3>Spell Slots</h3>
-        <div id="slots-container">
-          <!-- filled by JS -->
-        </div>
-        <p style="margin-top: 1rem; font-size: 0.9rem; font-style: italic;">Click pips to track usage. Spell Save DC: <span id="spell-dc">12</span> · Spell Attack: <span id="spell-atk">+6</span></p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem; font-style: italic;" id="sorcery-display">
-          Sorcery points unlock at character level 6 (Sorcerer 2).
-        </p>
-      </div>
-      <div class="card">
-        <h3>Musician (Origin Feat)</h3>
-        <p>After a short or long rest, distribute <strong>Bardic Inspiration dice</strong> (d6) equal to your proficiency bonus among allies (including yourself) within 30 ft who can hear you play.</p>
-        <p style="margin-top: 1rem;">Inspiration dice last 1 hour and add to one attack roll, ability check, or saving throw.</p>
-        <p style="margin-top: 1rem;"><em>Instrument: lute.</em></p>
-        <p style="margin-top: 1rem;"><strong>Dice to distribute:</strong> <span id="musician-dice">2</span></p>
-      </div>
-    </div>
-
-    <div class="card combat-resources" id="combat-resources-card" style="margin-top: 2rem;">
-      <h3>Combat Resources</h3>
-      <div class="rest-buttons">
-        <button class="rest-btn" id="short-rest-btn" title="Restores Pact slots; refreshes Hexblade's Curse and Magical Cunning">Short Rest</button>
-        <button class="rest-btn" id="long-rest-btn" title="Restores HP, all slots, Sorcery Points, Innate Sorcery, Magical Cunning, Heavenly Wings, clears Temp HP">Long Rest</button>
-      </div>
-      <div class="resource-row" id="resource-inspiration">
-        <span class="resource-label has-tip" title="Spend Heroic Inspiration to gain advantage on one d20 roll (or reroll a d20 once and use either result). You can only have one Inspiration at a time. Awarded by the DM, some races (Human Resourceful), feats, and class features.">Heroic Inspiration</span>
-        <button class="resource-toggle" id="inspiration-toggle">None</button>
-      </div>
-      <div class="resource-row" id="resource-sp" hidden>
-        <span class="resource-label">Sorcery Points</span>
-        <div class="resource-value">
-          <input type="number" id="sorcery-points" value="0" min="0">
-          <span class="resource-max">/ <span id="sorcery-points-max">0</span></span>
-        </div>
-      </div>
-      <div class="font-of-magic" id="font-of-magic-ui" hidden>
-        <div class="fom-section">
-          <div class="fom-label">Slot → SP</div>
-          <div class="fom-buttons" id="slot-to-sp-buttons"></div>
-        </div>
-        <div class="fom-section">
-          <div class="fom-label">SP → Slot</div>
-          <div class="fom-buttons" id="sp-to-slot-buttons"></div>
-        </div>
-      </div>
-      <div class="resource-row" id="resource-innate" hidden>
-        <span class="resource-label has-tip" title="Bonus action: for 1 minute, +1 to your Sorcerer spell save DC and advantage on Sorcerer spell attack rolls. 2 uses per Long Rest.">Innate Sorcery</span>
-        <div class="resource-pips" id="innate-pips"></div>
-      </div>
-      <div class="resource-row" id="resource-tides" hidden>
-        <span class="resource-label has-tip" title="Manipulate chaos for Advantage on one d20 Test (declare before you roll). Once used, you must cast a Sorcerer spell with a slot (auto-rolls on the Wild Magic Surge table) or finish a Long Rest to regain it.">Tides of Chaos</span>
-        <button class="resource-toggle" id="tides-toggle">Available</button>
-      </div>
-      <div class="resource-row" id="resource-curse">
-        <span class="resource-label has-tip" title="Bonus action: curse a creature within 30 ft you can see for 1 minute. While cursed it takes +PB damage from your attacks, you score critical hits against it on 19–20, and if it drops you regain HP equal to warlock level + CHA mod. Once per Short or Long Rest.">Hexblade's Curse</span>
-        <button class="resource-toggle" id="hexblade-curse-toggle">Available</button>
-      </div>
-      <div class="resource-row" id="resource-cunning" hidden>
-        <span class="resource-label has-tip" title="Esoteric rite for 1 minute. Regain expended Pact Magic spell slots up to half your maximum (round up). Once per Long Rest.">Magical Cunning</span>
-        <button class="resource-toggle" id="magical-cunning-toggle">Available</button>
-      </div>
-      <div class="resource-row" id="resource-wings" hidden>
-        <span class="resource-label has-tip" title="Bonus action: sprout two spectral wings for 1 minute. Gain a Fly Speed equal to your Speed. Shared Celestial Revelation rider: once per turn deal extra radiant damage equal to your Proficiency Bonus on a hit. Once per Long Rest.">Heavenly Wings</span>
-        <button class="resource-toggle" id="heavenly-wings-toggle">Available</button>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top: 2rem;">
-      <h3>Known Spells <span class="header-action">Updated automatically with level</span></h3>
-      <input type="search" id="spell-search" class="spell-search-input" placeholder="Filter spells by name…" autocomplete="off">
-      <table class="spell-table">
-        <thead>
-          <tr><th style="width: 100px;">Level</th><th>Spell</th><th>Notes</th></tr>
-        </thead>
-        <tbody id="spells-tbody">
-          <!-- filled by JS -->
-        </tbody>
-      </table>
-    </div>
-
-    <div class="card" id="surge-card" style="margin-top: 2rem;" hidden>
-      <h3>Wild Magic Surge</h3>
-      <div class="surge-controls">
-        <button class="surge-roll-btn" id="surge-roll-btn" title="Roll 1d100 on the Wild Magic Surge table">↻ Roll Surge</button>
-        <div class="surge-result" id="surge-result">no roll yet</div>
-      </div>
-      <details class="surge-details">
-        <summary>Show / Hide Surge table</summary>
-        <table class="surge-table" id="surge-table">
-          <thead><tr><th style="width: 90px;">d100</th><th>Effect</th></tr></thead>
-          <tbody id="surge-tbody"></tbody>
-        </table>
-      </details>
-    </div>
   </section>
 
   <!-- FEATURES -->
   <section class="section">
-    <h2 class="section-title">Features &amp; Inheritances</h2>
+    <h2 class="section-title">Features &amp; Wiring</h2>
     <div class="two-col">
       <div class="card">
-        <h3>Aasimar</h3>
-        <div id="aasimar-features">
+        <h3>Warforged Scout</h3>
+        <div id="species-features">
           <div class="feature-block">
-            <h4>Darkvision</h4>
-            <p>60 ft. Sees in dim light as if bright, in darkness as if dim. Black and white only.</p>
+            <h4>Constructed Resilience</h4>
+            <p>You don't need to eat, drink, or breathe. You don't need to sleep, and magic can't put you to sleep. You can spend long rests in a motionless state, awake but inattentive.</p>
           </div>
           <div class="feature-block">
-            <h4>Celestial Resistance</h4>
-            <p>Resistance to necrotic and radiant damage.</p>
+            <h4>Sentry's Rest</h4>
+            <p>You must spend long rests motionless, but you remain conscious during them.</p>
           </div>
           <div class="feature-block">
-            <h4>Light Bearer</h4>
-            <p>Know the Light cantrip. Charisma is the spellcasting ability for it.</p>
+            <h4>Integrated Protection</h4>
+            <p>You gain a +1 bonus to AC. Armor must be physically attached to your body over the course of 1 hour to count as worn.</p>
           </div>
           <div class="feature-block">
-            <h4>Healing Hands</h4>
-            <p>Magic action. Touch a creature, roll <span id="healing-hands-dice">2</span>d4s, restore HP equal to the total. Once per long rest.</p>
-          </div>
-          <div class="feature-block" data-level="3">
-            <h4>Heavenly Wings <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· Celestial Revelation</span></h4>
-            <p>Bonus action, transform for 1 minute (or until you end it): two spectral wings sprout from your back, granting a Fly Speed equal to your Speed. Once per turn while transformed, deal extra radiant damage on one hit equal to proficiency bonus (<span id="revelation-bonus">+2</span>). Once per long rest.</p>
+            <h4>Specialized Design</h4>
+            <p>One skill proficiency and one tool proficiency of your choice. (Scout flavor: Stealth + Tinker's Tools.)</p>
           </div>
         </div>
       </div>
       <div class="card">
         <h3>Class Features</h3>
         <div id="class-features">
-          <!-- filled by JS -->
+          <p style="color: var(--parchment-dim); font-style: italic;">Class features appear here as Rivet levels up. Use the level-up modal to add her first level.</p>
         </div>
-      </div>
-    </div>
-
-    <!-- ALTERNATES -->
-    <div class="card" style="margin-top: 2rem;" id="alternates-card">
-      <h3>Feat &amp; Invocation Choices <span class="header-action">Click to swap alternates</span></h3>
-      <div id="alternates-list">
-        <!-- filled by JS -->
       </div>
     </div>
   </section>
 
   <!-- INVENTORY -->
   <section class="section">
-    <h2 class="section-title">Carried</h2>
+    <h2 class="section-title">Salvaged</h2>
     <div class="two-col">
       <div class="card">
         <h3>Armament <button class="header-action" data-add="armament">+ Add Item</button></h3>
         <ul class="inventory-list" id="inv-armament"></ul>
       </div>
       <div class="card">
-        <h3>On His Person <button class="header-action" data-add="person">+ Add Item</button></h3>
+        <h3>Stored on Her Chassis <button class="header-action" data-add="person">+ Add Item</button></h3>
         <ul class="inventory-list" id="inv-person"></ul>
       </div>
     </div>
     <div class="card" style="margin-top: 2rem;">
-      <h3>Coin &amp; Notes</h3>
+      <h3>Coin &amp; Field Log</h3>
       <p style="margin-bottom: 1rem; display: flex; align-items: baseline; gap: 0.6rem;"><strong>Coin:</strong>
-        <input type="text" id="coin" style="background:transparent;border:none;border-bottom:1px solid var(--gold-tarnish);color:var(--parchment);font-family:inherit;font-size:1rem;padding:0.2rem;outline:none;flex:1;min-width:0;" value="65 gp in mixed coin, including 50 gp from his last booking">
+        <input type="text" id="coin" placeholder="Coin and shiny things…" style="background:transparent;border:none;border-bottom:1px solid var(--gold-tarnish);color:var(--parchment);font-family:inherit;font-size:1rem;padding:0.2rem;outline:none;flex:1;min-width:0;">
       </p>
-      <textarea class="notes-area" id="notes" placeholder="Session notes, NPCs met, leads to follow, things the Choir said..."></textarea>
+      <textarea class="notes-area" id="notes" placeholder="Field notes. Things observed. Suspected purpose. Inconclusive."></textarea>
     </div>
   </section>
 
   <!-- QUOTE -->
   <div class="quote">
-    <p>I tell people I am a wandering scholar. The voices laugh every time I say it.</p>
-    <cite>— Caelen Ravenshade, in a letter never sent</cite>
+    <p><em>Scanning. . . Purpose? What is that? Where is that? What are those? What am I?</em></p>
+    <cite>— field log, day one</cite>
   </div>
 
   <!-- LEVELING PATH -->
@@ -2056,44 +2000,44 @@ body.dm-mode .dm-hide { display: none; }
     <details class="backstory-details">
       <summary>Show / Hide Backstory</summary>
       <div class="backstory-content">
-        <h3>Caelen Ravenshade</h3>
-        <p class="backstory-subtitle">Heir to the Pendant, Vessel of the Hollow Choir</p>
+        <h3>Rivet, the Poorforged</h3>
+        <p class="backstory-subtitle">Subject ID R-1V3T · The Toymaker's Mistake</p>
 
-        <p>Caelen Ravenshade was born in Luskan to a half-elven hedge mage named Sarielle and to a celestial who stayed for one summer and then walked back into a column of dawn light and left her. She raised him alone in a stone house above the docks. She taught him cantrips when he was four and the lute when he was six. She made him promise on his seventh birthday that he would never take off the silver pendant she put around his neck.</p>
+        <p>Unlike most warforged, who are built with intention, Rivet was haphazardly hammered together on a cluttered workbench by an unstable artificer. He was probably intoxicated. <em>Inconclusive.</em></p>
 
-        <p>The pendant was not a keepsake. Eight hundred years ago an ancestor of his, a witch named Maerithel, bound a sentient cursed thing into the silver to stop it from devouring a village in the High Forest. The thing called itself the Hollow Choir. It slept as long as a living descendant of Maerithel's blood wore the pendant against their skin. Each generation passed it on. Each generation slept lightly.</p>
+        <p>Meant to be a mechanical pet, a performing panhandler, a pilferer, Rivet was built tiny and "cute" (to a drunken artificer's standards). The artificer was messy. He used a discarded, dented metal chassis, mismatched gears from a broken defense turret, and a highly unstable, glowing capacitor for Rivet's core. The face of a porcelain rabbit with ears fashioned from an antenna.</p>
 
-        <p>On Caelen's sixteenth birthday a thug in the Luskan market shoved him into a stone pillar. The silver cracked. His mother saw the fracture three days later and her face went the color of bone meal. She did not sleep for two nights. On the third night she came into his room with a knife and a face full of love and she tried to end the bloodline before the Choir could finish waking.</p>
+        <p>Somehow, this artificer got his hands on a piece of an ancient, soul-infused artifact. It was jammed into Rivet's headpiece instead of the intended simple logic gear.</p>
 
-        <p>Caelen screamed. The pendant sang back. What came out of him was three things at once — the celestial fire that had been sleeping in his blood since the day he was born, a wild aberrant something his mother had never told him about, and the Choir itself, finally and completely free. The three forces met in his ribs and tore each other apart and remade him in the only shape they could agree on, which was the shape of a boy with shadows where his wings should be.</p>
+        <p><em>Crack.</em> <strong>ZAP.</strong> Rivet's eyes, a set of mismatched bulbs, hummed to life.</p>
 
-        <p>He rose out of the ruined bed and the air around him was full of small black things that were not flies and were not feathers and were not really there at all. His mother was crumpled against the wall sobbing his name. The Choir, finally free and now finally trapped in something better than silver, coiled around his ribs and whispered, in a voice that was kind in a way nothing kind should ever sound, <em>thank you, child. We have so much to do.</em></p>
-
-        <p>He took the cracked pendant and the few coins in her purse and he ran. He has not seen her since. He has written her seven letters from seven different towns. He has not sent any of them. He keeps them folded in the bottom of his pack.</p>
+        <p>The clockwork toy made of scrapped parts snapped into awareness. Overclocked, deeply confused. So many noises, lights, and trinkets to scan. The hydraulic limbs Rivet was equipped with hissed as they launched toward the artificer. <strong>ZAP.</strong> When the artificer cursed and swiped back in retaliation, the small, rabbit-shaped bundle of cogs and rattling metal crashed through the window set behind the creator, into the night.</p>
 
         <div class="scene-break">· · ·</div>
 
-        <p>The Choir is still inside him. He has counted at least three voices. One sounds like a woman who has been old for a very long time. One sounds like a boy of about nine who is trying very hard not to seem afraid. One sounds like a man whose patience is the patience of a thing that has already decided what is going to happen.</p>
+        <p><em>Scanning. . . Purpose? What is that? Where is that? What are those? What am I?</em></p>
 
-        <p>They feed him power. The Hexblade's Curse is their work. So are the shadows that lean very slightly toward him in any room he stands in. So is the small black mist that sometimes drifts up off his skin when he is upset and that he has to brush away the way other people brush away cobwebs.</p>
+        <p>Wandering through a sleepy village, Rivet's body twitched and crackled, learning to navigate, learning to move, learning to <em>learn</em>. The artifact trapped behind a rabbit's face hummed in response to new information. She watched as others moved about — some shambling around, holding bottles. Some holding hands. Some holding conversation. The curvier humanoids got a lot of attention. <strong>Protection.</strong></p>
 
-        <p>When he calls his wings they come out of his shoulder blades in long curling tendrils of something that is almost smoke and almost feathers and almost fingers. They cast no shadow because they are already shadow. When he beats them the air around him goes cold and the candles in the room go out. But the damage rider comes out of him as a pale gold light, and this is his father's heritage, and it is the only thing in his arsenal that does not come from the Choir. The Choir lets him use the wings because the celestial light hurts them both, him and it, and they are the closest thing he has to a weapon against the thing inside him. The price of using it is that he has to wear the Choir's shape to wield his father's light.</p>
+        <p><em>Statistical analysis shows organic subjects are 37% more compliant when addressed by a female designation. She/her. I have adopted the matrix. Lowers the humanoid guard. Efficient.</em></p>
+
+        <p><em>Humanoids trade shiny things for other things that range from shiny to not-shiny. Sometimes these things go into their mouthparts. Collection of shiny things will be beneficial. Collection produces… satisfaction? Continue to study.</em></p>
 
         <div class="scene-break">· · ·</div>
 
-        <p>Caelen came to Neverwinter eighteen months ago, after almost two years of moving south down the Sword Coast in a slow, panicked drift. He plays lute five nights a week at a tavern on the Protector's Enclave called the Driftwood Tankard. The owner pays him in copper and meals and lets him sleep in the storeroom on cold nights. He is nineteen years old. He wears gloves most of the time because his fingertips have started to darken at the nails. He sleeps in pieces and never the full dark deep sleep his body wants.</p>
+        <p>Rivet is calculated but easily distracted. She is inherently curious and is consistently overwhelmed and enraptured by research and understanding. She often mumbles to herself, talking through analysis and observations. If she decides to pay attention, she is a fantastic problem-solver; the only problem she cannot seem to solve is her wandering mind.</p>
 
-        <p>A scholar named Sister Garaele has been teaching him for fourteen months to bend his magic into something that does not eat him alive. She does not know about the Choir. She suspects he is hiding something large. He has not told her. He cannot tell her. The Choir has made very clear what it will do if he tries.</p>
+        <p>She can experience emotion, but does not know how to process it. Generally, she is very subdued, often lost in thought, but her anger is electric and unpredictable. Her default response to stress and fear is to run and hide. She will dart behind larger humanoids, dive headfirst into a satchel or a bale of hay. The rabbit face slapped onto her body was, unintentionally, very fitting.</p>
 
-        <p>He is in Neverwinter for three reasons, and he tells himself one at a time so he does not have to look at all three at once. There is a rumor from the Mintarn trade caravans of a silver-haired half-elven woman asking questions about an entity called the Hollow Choir, and he does not know if it is his mother or a trap. The Many-Starred Cloak's archives are said to hold the original binding ritual Maerithel used, and if he finds it he can redo it, though he understands what redoing it would cost. And there are places in this city where the voices in his head go suddenly silent — the ruins under the Cloak Tower, the wells of Blacklake, the old graveyard beyond the Neverdeath gate — and he does not know what the Choir is looking for, only that it is looking.</p>
+        <p>She's also a bit of a thief. She will pilfer through anything, everything, to find something that catches her eye. She is often weighed down with useless junk that she is convinced she can repurpose. Or just because it's new and shiny. Rivet does not care who or where things come from — the concept of "property" does not compute.</p>
 
-        <p>He is, despite everything, hopeful. He has not stopped hoping. He thinks if he can find the ritual and if his mother is alive and if he can convince her, just for the few minutes it would take, that he is still him under all of this, then he can give her back a son. He understands the odds. He has decided to hope anyway.</p>
+        <p>She tends to come off as rude. She doesn't understand social cues because… why would she? She takes note of facial expressions and body language, but more as a field research task than as an attempt to build an empathetic understanding. Give her a break, she's a kid.</p>
       </div>
     </details>
   </section>
 
   <footer class="footer">
-    Recorded in Neverwinter, beneath a sky that does not quite belong to him.
+    Field log, Neverwinter. Subject R-1V3T continues to operate within unexpected parameters.
   </footer>
 
 </div>
@@ -2110,20 +2054,23 @@ body.dm-mode .dm-hide { display: none; }
 // BUILD DATA — single source of truth
 // ============================================================
 
-// Pure 27-point-buy row (max 15 per score). The background bonuses below
-// bring CHA to 17 and CON to 15 at character level 1.
-//   PB cost: 0 (STR 8) + 7 (DEX 14) + 7 (CON 14) + 2 (INT 10) + 2 (WIS 10) + 9 (CHA 15) = 27.
-const BASE_STATS = { str: 8, dex: 14, con: 14, int: 10, wis: 10, cha: 15 };
-// Custom Entertainer background bonuses (DM-approved): +2 CHA, +1 CON.
-const BG_BONUS = { cha: 2, con: 1 };
+// Rivet's stats are point-buy editable from the sheet (see state.baseStats below).
+// Pre-bonus defaults are an even 8s — user adjusts via the stat inputs.
+//   PB cost: 0 each = 0 total. Spend all 27 points to set scores up to a max of 15.
+const BASE_STATS_DEFAULT = { str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8 };
+// "The Toymaker's Mistake" custom background bonuses (DM-approved): +2 INT, +1 CON.
+const BG_BONUS = { int: 2, con: 1 };
 
-// Per-level data. Each entry describes the CHANGES at that level.
-// Stat increases (asi) are CUMULATIVE.
+// Per-level data is populated via the Level Up modal (Phase 2) as Rivet chooses
+// her class for each level. Each entry: { class: 'artificer' | 'rogue', subclass: ..., classGain: ..., asi: {...} }.
+// For Phase 1 the array stays empty and the Build Log just shows the current level.
 const LEVEL_DATA = [
-  null, // padding so index = level
-  // L1
-  { warlock: 1, sorcerer: 0, classGain: 'Pact Magic, Hexblade\'s Curse, Hex Warrior, Eldritch Blast; Eldritch Invocation: Agonizing Blast; Musician (Entertainer Origin Feat)', subclass: 'Hexblade' },
-  // L2
+  null // padding so index = level
+];
+const _LEVEL_DATA_PLACEHOLDER_HEAD = [
+  // (Placeholder — original Caelen array left here as commented-out reference for the
+  //  Phase 2 modal implementation; safe to delete once the modal lands.)
+  // L2 — Caelen-era examples below kept as reference for Phase 2.
   { warlock: 2, sorcerer: 0, classGain: 'Magical Cunning; +2 Eldritch Invocations: Repelling Blast, Devil\'s Sight' },
   // L3
   { warlock: 3, sorcerer: 0, classGain: 'Pact of the Chain (summon Vex, imp familiar)' },
@@ -2194,8 +2141,10 @@ const LEVEL_DATA = [
   { warlock: 4, sorcerer: 16, classGain: 'ASI / Feat (final character level)', asi: { con: 2 } }
 ];
 
-// Spell scaling: when each spell is gained (charLevel)
-const SPELLS = [
+// Phase 1: spell list is empty. The level-up modal in Phase 2 will populate Artificer
+// (half-caster) spells and Rogue features as Rivet picks them.
+const SPELLS = [];
+const _SPELLS_PLACEHOLDER_HEAD = [
   // Cantrips
   { name: 'Eldritch Blast', level: 'Cantrip', class: 'Warlock', gained: 1, notes: 'The Engine. Force damage, 120 ft, ranged spell attack.' },
   { name: 'Light', level: 'Cantrip', class: 'Aasimar', gained: 1, notes: 'Touch object, sheds bright light 20 ft.' },
@@ -2272,42 +2221,21 @@ function pactSlots(warlockLevel) {
   return { count: 2, level: 2 }; // 4 = 2 slots at 2nd
 }
 
-// Class features that gate on level
-const CLASS_FEATURES = [
-  // Warlock
-  { id: 'pact-magic', name: 'Pact Magic', level: 1, source: 'Warlock', desc: 'Spell slots recover on a short or long rest. All pact slots are the same level.' },
-  { id: 'hex-warrior', name: 'Hex Warrior', level: 1, source: 'Warlock (Hexblade)', desc: 'Use CHA instead of STR/DEX for attack and damage with one bonded weapon (the sickle).' },
-  { id: 'hexblades-curse', name: "Hexblade's Curse", level: 1, source: 'Warlock (Hexblade)', desc: 'See "The Engine" section above.' },
-  { id: 'agonizing', name: 'Agonizing Blast', level: 1, source: 'Eldritch Invocation', desc: 'Add CHA mod to each beam of Eldritch Blast.' },
-  { id: 'repelling', name: 'Repelling Blast', level: 2, source: 'Eldritch Invocation', desc: 'Push targets 10 ft on Eldritch Blast hit.' },
-  { id: 'devils-sight', name: "Devil's Sight", level: 2, source: 'Eldritch Invocation', desc: 'See in normal and magical darkness up to 120 ft.' },
-  { id: 'magical-cunning', name: 'Magical Cunning', level: 2, source: 'Warlock', desc: 'Esoteric rite (1 minute) regains expended Pact Magic slots up to half your maximum (round up). Once per Long Rest.' },
-  { id: 'pact-chain', name: 'Pact of the Chain', level: 3, source: 'Warlock', desc: 'Summon a familiar (Imp: Vex). 60-ft telepathy, invisibility, can deliver touch spells.' },
-  // Sorcerer
-  { id: 'innate-sorcery', name: 'Innate Sorcery', level: 5, source: 'Sorcerer', desc: 'Twice per day, bonus action: +1 spell save DC and advantage on spell attack rolls for 1 minute.' },
-  { id: 'font-of-magic', name: 'Font of Magic', level: 6, source: 'Sorcerer', desc: 'Sorcery points = Sorcerer level. Convert slots to points and back.' },
-  { id: 'metamagic', name: 'Metamagic', level: 6, source: 'Sorcerer', desc: 'Quickened Spell (cast as bonus action) + Subtle Spell (no verbal/somatic).' },
-  { id: 'wild-magic-table', name: 'Wild Magic Surge', level: 7, source: 'Sorcerer (Wild Magic)', desc: 'When you cast a Sorcerer spell of 1st level or higher, you may roll on the surge table. Tides of Chaos can force a surge.' },
-  { id: 'sorcerous-restoration', name: 'Sorcerous Restoration', level: 9, source: 'Sorcerer', desc: 'When you finish a Short Rest, you can regain expended Sorcery Points, but no more than a number equal to half your Sorcerer level (round down). Once you use this feature, you can\'t do so again until you finish a Long Rest.' },
-  { id: 'bend-luck', name: 'Bend Luck', level: 10, source: 'Wild Magic', desc: 'Spend 2 sorcery points to add or subtract a d4 from a roll within 30 ft (reaction).' },
-  { id: 'sorcery-incarnate', name: 'Sorcery Incarnate', level: 11, source: 'Sorcerer', desc: 'If you have no uses of Innate Sorcery left, you can use it if you spend 2 Sorcery Points when you take the Bonus Action to activate it. In addition, while your Innate Sorcery feature is active, you can use up to two of your Metamagic options on each spell you cast.' },
-  { id: 'controlled-chaos', name: 'Controlled Chaos', level: 18, source: 'Wild Magic', desc: 'When you roll on the Wild Magic table, roll twice and pick the result.' }
-];
+// Class features list populated by the Level-Up modal in Phase 2.
+const CLASS_FEATURES = [];
 
-// Combat loops by level
-const COMBAT_LOOPS = [
-  { minLevel: 1, name: 'Standard Turn (Levels 1-6)', desc: 'Hex on the priority target (bonus action) → Eldritch Blast (action). Maintain Hex; move it to a new target as a bonus action when one drops.' },
-  { minLevel: 7, name: 'Standard Turn (Level 7+)', desc: 'Eldritch Blast (action) → Quickened Spell, 2 sorcery points → Eldritch Blast (bonus action). Two full attack sequences per turn.' },
-  { minLevel: 1, name: 'Hard Fight Opener', desc: 'Turn 1: Hex (bonus action), Eldritch Blast. Turn 2: Hexblade\'s Curse (bonus action), Eldritch Blast. Turn 3+: settle into the Standard Loop.' },
-  { minLevel: 9, name: 'Emergency Turn', desc: 'Counterspell on their big spell (reaction) → Eldritch Blast (action) → Shield or Silvery Barbs as needed (reaction).' }
-];
+// Combat loops empty for Phase 1 — depend on her chosen build.
+const COMBAT_LOOPS = [];
 
+// Standard 5e skill list. Proficiencies will be set by the Level-Up modal in Phase 2
+// based on her starting class + species + Specialized Design pick. For Phase 1 all
+// are unproficient until she takes a level.
 const SKILL_LIST = [
   { name: 'Athletics', ability: 'str' },
-  { name: 'Acrobatics', ability: 'dex', prof: true },
+  { name: 'Acrobatics', ability: 'dex' },
   { name: 'Sleight of Hand', ability: 'dex' },
   { name: 'Stealth', ability: 'dex' },
-  { name: 'Arcana', ability: 'int', prof: true },
+  { name: 'Arcana', ability: 'int' },
   { name: 'History', ability: 'int' },
   { name: 'Investigation', ability: 'int' },
   { name: 'Nature', ability: 'int' },
@@ -2317,25 +2245,19 @@ const SKILL_LIST = [
   { name: 'Medicine', ability: 'wis' },
   { name: 'Perception', ability: 'wis' },
   { name: 'Survival', ability: 'wis' },
-  { name: 'Deception', ability: 'cha', prof: true },
-  { name: 'Intimidation', ability: 'cha', prof: true },
-  { name: 'Performance', ability: 'cha', prof: true },
+  { name: 'Deception', ability: 'cha' },
+  { name: 'Intimidation', ability: 'cha' },
+  { name: 'Performance', ability: 'cha' },
   { name: 'Persuasion', ability: 'cha' }
 ];
 
 const DEFAULT_INVENTORY = {
-  armament: [
-    'Sickle · simple melee weapon, the bonded blade for Hex Warrior. Was his mother\'s, for cutting herbs.',
-    'Daggers (2) · sheathed at the small of the back. Last resort.',
-    'Light Crossbow · with 20 bolts. Carried but rarely fired.',
-    'Leather Armor · soft, oiled, dark.',
-    'Arcane Focus · a fragment of obsidian set into the cracked silver pendant.'
-  ],
+  armament: [],
   person: [
-    'The Pendant · cracked silver, his mother\'s. Worn always.',
-    'A Lute · second-hand, three pegs replaced. The one true joy he allows himself.',
-    'Scholar\'s Pack · book of cantrips, ink, parchment, ten torches, ten days\' rations, waterskin.',
-    'Letters · seven, sealed, addressed to "Sarielle Ravenshade, anywhere." Never sent.'
+    'Porcelain Rabbit Mask Fragment · the upper-half of a smashed bunny mask, white with blue floral filigree. Bolted to her chassis.',
+    'Capacitor Core · glowing, unstable. Don\'t poke it.',
+    'Antenna Ears · bent wire, unspooled guitar strings, rusted brass telescope casing. Vibrate when she channels something (or shorts out).',
+    'Pocket of Shiny Things · a magpie hoard. Rivet does not remember where most of these came from.'
   ]
 };
 
@@ -2343,32 +2265,27 @@ const DEFAULT_INVENTORY = {
 // STATE MANAGEMENT
 // ============================================================
 
-const STORAGE_KEY = 'caelen-sheet-v1';
+const STORAGE_KEY = 'rivet-sheet-v1';
 
 const DEFAULT_STATE = {
   schemaVersion: 1,
-  updatedAt: null, // ISO string, set on every local save; used to compare with cloud
+  updatedAt: null,
   level: 1,
-  hpCurrent: null, // null = match max
-  tempHp: 0,       // temporary HP, doesn't stack with itself (Inspiring Leader, etc.)
-  coin: '65 gp in mixed coin, including 50 gp from his last booking',
+  baseStats: { ...BASE_STATS_DEFAULT },  // user-editable point-buy row
+  classSaveProfs: [],                    // set by level-up modal (e.g., ['con','int'] for Artificer start)
+  hpCurrent: null,                       // null = match max
+  tempHp: 0,
+  coin: '',
   notes: '',
   inventory: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
-  alternates: {}, // featId -> optionId
-  usedSlots: { warlock: 0, sorc1: 0, sorc2: 0, sorc3: 0, sorc4: 0, sorc5: 0, sorc6: 0, sorc7: 0, sorc8: 0 },
-  sorceryPoints: 0,           // current; max = Sorcerer level (sorc 2+)
-  innateSorceryUsed: 0,       // 0 / 1 / 2 (max uses = 2 / long rest)
-  magicalCunningUsed: false,  // 1 / long rest
-  heavenlyWingsUsed: false,   // 1 / long rest (the transformation itself)
-  hexbladesCurseUsed: false,  // 1 / short or long rest
-  concentratingOn: null,      // spell name string, or null
-  deathSavesSuccess: 0,       // 0-3
-  deathSavesFail: 0,          // 0-3
-  conditions: {},             // { blinded: true, frightened: true, ... }
-  exhaustion: 0,              // 0-6 (2024 exhaustion levels)
-  heroicInspiration: false,   // 2024 PHB universal mechanic; advantage on one d20 roll
-  tidesOfChaosUsed: false,    // Wild Magic sorc 3 feature; resets on long rest OR DM-triggered surge
-  lastSurgeRoll: null         // 1-100 of the last Wild Magic Surge roll, persists for DM visibility
+  alternates: {},
+  usedSlots: { sorc1: 0, sorc2: 0, sorc3: 0, sorc4: 0, sorc5: 0 }, // Artificer half-caster max 5th-level slots
+  concentratingOn: null,
+  deathSavesSuccess: 0,
+  deathSavesFail: 0,
+  conditions: {},
+  exhaustion: 0,
+  heroicInspiration: false
 };
 
 let state = loadState();
@@ -2394,7 +2311,7 @@ function loadState() {
 
 const SUPABASE_PROJECT = 'amnfbhhmwhsythzkvcra';
 const SUPABASE_KEY = 'sb_publishable_f4f6TevmVgjSLw07PuJLgQ_ED8xhitb';
-const ROW_ID = 'c9dbc72f-beed-4c2b-8d67-03dce25b0f7a';
+const ROW_ID = 'dcb7e8f3-78c1-425e-bdaa-b4f08d416053';
 const SB_REST = `https://${SUPABASE_PROJECT}.supabase.co/rest/v1/character_sheets`;
 const SB_AUTH = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
 
@@ -2495,25 +2412,17 @@ function mod(score) { return Math.floor((score - 10) / 2); }
 function fmtMod(m) { return m >= 0 ? '+' + m : '−' + Math.abs(m); }
 
 function computeStats(level) {
-  // Start with base + background
-  const stats = { ...BASE_STATS };
-  for (const [k, v] of Object.entries(BG_BONUS)) stats[k] += v;
+  // Start with the player-editable point-buy base (state.baseStats) plus the
+  // custom background bonuses.
+  const stats = { ...(state.baseStats || BASE_STATS_DEFAULT) };
+  for (const [k, v] of Object.entries(BG_BONUS)) stats[k] = (stats[k] || 0) + v;
 
-  // Apply level-based ASIs cumulatively
+  // Apply level-based ASIs cumulatively. LEVEL_DATA is empty in Phase 1.
   for (let l = 1; l <= level; l++) {
     const ld = LEVEL_DATA[l];
     if (!ld) continue;
-    // Built-in ASI
     if (ld.asi) {
       for (const [k, v] of Object.entries(ld.asi)) stats[k] += v;
-    }
-    // Feat-based ASI (depends on alternate choice)
-    if (ld.feat) {
-      const chosen = state.alternates[ld.feat.id] || ld.feat.default;
-      const opt = ld.feat.options.find(o => o.id === chosen);
-      if (opt && opt.asi) {
-        for (const [k, v] of Object.entries(opt.asi)) stats[k] += v;
-      }
     }
   }
   // Cap at 20
@@ -2530,16 +2439,24 @@ function profBonus(level) {
 }
 
 function classBreakdown(level) {
-  if (level < 1) return { w: 0, s: 0 };
-  const ld = LEVEL_DATA[level];
-  return { w: ld.warlock, s: ld.sorcerer };
+  // Phase 1 placeholder: LEVEL_DATA is empty so this returns 0/0 until the
+  // level-up modal records picks. Phase 2 will read class assignments per level.
+  let a = 0, r = 0;
+  for (let l = 1; l <= level; l++) {
+    const ld = LEVEL_DATA[l];
+    if (!ld) continue;
+    if (ld.class === 'artificer') a++;
+    else if (ld.class === 'rogue') r++;
+  }
+  return { a, r };
 }
 
 function classString(level) {
-  const { w, s } = classBreakdown(level);
+  const { a, r } = classBreakdown(level);
   const parts = [];
-  if (w > 0) parts.push(`Hexblade Warlock ${w}`);
-  if (s > 0) parts.push(`Wild Magic Sorcerer ${s}`);
+  if (a > 0) parts.push(`Artificer Armorer ${a}`);
+  if (r > 0) parts.push(`Rogue Thief ${r}`);
+  if (parts.length === 0) return 'Level Up to assign her first class';
   return parts.join(' / ');
 }
 
@@ -2551,22 +2468,22 @@ function ebBeams(level) {
 }
 
 function computeHP(level, stats) {
-  // DM house rule: Average+1 HP per level after L1.
-  // Warlock d8 average 5 → 6 + CON per level (2+).
-  // Sorcerer d6 average 4 → 5 + CON per level.
-  // L1 still uses the full die (8 + CON).
+  // Phase 1: defaults to Artificer d8 per level (Rogue is also d8 in 2024).
+  // DM house rule: Average+1 per level after L1. d8 avg 5 → 6 + CON each.
+  if (level < 1) return 0;
   const conMod = mod(stats.con);
-  const { w, s } = classBreakdown(level);
   let hp = 8 + conMod; // L1 max die
-  for (let i = 2; i <= w; i++) hp += 6 + conMod;
-  for (let i = 1; i <= s; i++) hp += 5 + conMod;
+  for (let i = 2; i <= level; i++) hp += 6 + conMod;
   return Math.max(1, hp);
 }
 
 function hasSaveProf(stat, level) {
-  // Warlock saves: WIS + CHA
-  if (stat === 'wis' || stat === 'cha') return true;
-  // Check if Resilient(CON) was taken
+  // Phase 1: starting class proficiencies appear only once she takes her first
+  // class level. Artificer multiclass: CON + INT. Rogue multiclass: DEX + INT.
+  // For now we read from state.classSaveProfs (set by Phase 2's level-up modal).
+  const profs = state.classSaveProfs || [];
+  if (profs.includes(stat)) return true;
+  // Level-data-based feat save profs (Resilient, etc.)
   for (let l = 1; l <= level; l++) {
     const ld = LEVEL_DATA[l];
     if (ld && ld.feat) {
@@ -2597,106 +2514,60 @@ function render() {
   const level = state.level;
   const stats = computeStats(level);
   const pb = profBonus(level);
-  const { w, s } = classBreakdown(level);
   const hp = computeHP(level, stats);
+  const exhaustPen = getExhaustionPenalty();
 
   // Title bar
   document.getElementById('title-classes').textContent = classString(level);
   document.getElementById('level-display').textContent = level;
 
-  // Stats
+  // Stat blocks
   for (const stat of ['str','dex','con','int','wis','cha']) {
     const v = stats[stat];
     const valEl = document.getElementById(`${stat}-val`);
     const oldVal = parseInt(valEl.textContent, 10);
     valEl.textContent = v;
     document.getElementById(`${stat}-mod`).textContent = fmtMod(mod(v));
-    // Flash if changed
     if (oldVal !== v) {
       valEl.classList.add('changed');
       setTimeout(() => valEl.classList.remove('changed'), 1500);
     }
   }
 
-  // Defense (apply exhaustion penalty to initiative — it's a d20 test)
-  const exhaustPen = getExhaustionPenalty();
-  document.getElementById('ac-val').textContent = 11 + mod(stats.dex); // leather + DEX (AC isn't a d20 test)
+  // Defense (AC base = 10 + DEX for unarmored; Warforged Integrated Protection adds +1)
+  document.getElementById('ac-val').textContent = 11 + mod(stats.dex);
   document.getElementById('hp-max').textContent = hp;
   document.getElementById('init-val').textContent = fmtMod(mod(stats.dex) - exhaustPen);
 
-  // Speed (apply immobilizing conditions, plus Speedy feat if taken)
+  // Speed (Warforged 30 ft walking; conditions can zero it)
   const condEffects = getConditionEffects();
   const baseSpeed = getBaseSpeed(level);
-  const speedyTaken = baseSpeed > 30;
   document.getElementById('speed-val').textContent = condEffects.speedZero ? '0 ft' : (baseSpeed + ' ft');
-  let speedSub;
-  if (condEffects.speedZero) {
-    speedSub = 'immobilized';
-  } else {
-    speedSub = speedyTaken ? 'walking · +10 Speedy' : 'walking';
-  }
-  document.getElementById('speed-sub').textContent = speedSub;
+  document.getElementById('speed-sub').textContent = condEffects.speedZero ? 'immobilized' : 'walking';
 
-  // HP current
+  // HP current + Temp HP
   if (state.hpCurrent === null) {
     document.getElementById('hp-current').value = hp;
   } else {
     document.getElementById('hp-current').value = Math.min(state.hpCurrent, hp);
   }
-  document.getElementById('hp-formula').textContent =
-    `${w > 0 ? `${w}d8` : ''}${w > 0 && s > 0 ? ' + ' : ''}${s > 0 ? `${s}d6` : ''} + ${mod(stats.con) * (w + s)} CON`;
-
-  // Temp HP + Inspiring Leader button (only visible once the feat is taken)
+  document.getElementById('hp-formula').textContent = hpFormulaText(level, stats);
   document.getElementById('temp-hp').value = state.tempHp || 0;
-  const inspiringTaken = level >= 4 && (state.alternates['lvl4-feat'] || 'inspiring') === 'inspiring';
-  document.getElementById('inspiring-btn').hidden = !inspiringTaken;
-
-  // EB
-  const beams = ebBeams(level);
-  const chaMod = mod(stats.cha);
-  const hasAgonizing = level >= 1;
-  const ebDamage = hasAgonizing ? `1d10 + ${chaMod}` : '1d10';
-  document.getElementById('eb-tohit').textContent = fmtMod(pb + chaMod - exhaustPen);
-  document.getElementById('eb-damage').textContent = ebDamage;
-  document.getElementById('eb-beams').textContent = beams;
-  // Invocations note
-  const invNote = document.getElementById('eb-invocations');
-  if (level >= 2) {
-    invNote.innerHTML = `<em>Agonizing Blast: +${chaMod} per beam. Repelling Blast: push 10 ft on hit.</em>`;
-  } else {
-    invNote.innerHTML = `<em>Agonizing Blast: +${chaMod} per beam. Repelling Blast unlocks at Warlock 2.</em>`;
-  }
-
-  // Curse
-  document.getElementById('curse-bonus').textContent = pb;
-  document.getElementById('curse-heal').textContent = w + chaMod;
-
-  // Healing Hands (PB d4s) & Celestial Revelation damage rider (PB radiant for Heavenly Wings)
-  document.getElementById('healing-hands-dice').textContent = pb;
-  document.getElementById('revelation-bonus').textContent = '+' + pb;
-  // Celestial Revelation locked under level 3
-  const revelationBlock = document.querySelector('[data-level="3"]');
-  if (revelationBlock) {
-    if (level < 3) revelationBlock.classList.add('locked');
-    else revelationBlock.classList.remove('locked');
-  }
 
   // Saves
   const savesGrid = document.getElementById('saves-grid');
   savesGrid.innerHTML = '';
+  const labels = { str: 'Strength', dex: 'Dexterity', con: 'Constitution', int: 'Intelligence', wis: 'Wisdom', cha: 'Charisma' };
   for (const stat of ['str','dex','con','int','wis','cha']) {
     const proficient = hasSaveProf(stat, level);
     const value = mod(stats[stat]) + (proficient ? pb : 0) - exhaustPen;
-    const labels = { str: 'Strength', dex: 'Dexterity', con: 'Constitution', int: 'Intelligence', wis: 'Wisdom', cha: 'Charisma' };
     const row = document.createElement('div');
     row.className = 'skill-row' + (proficient ? ' proficient' : '');
     row.innerHTML = `<span class="skill-name">${labels[stat]}</span><span class="skill-value">${fmtMod(value)}</span>`;
     savesGrid.appendChild(row);
   }
-  const conProf = hasSaveProf('con', level);
-  document.getElementById('saves-note').textContent = conProf
-    ? 'Warlock grants Wisdom and Charisma save proficiency. Resilient (CON) adds Constitution — concentration is rock solid.'
-    : 'Warlock grants Wisdom and Charisma save proficiency.';
+  const savesNote = document.getElementById('saves-note');
+  if (savesNote) savesNote.textContent = 'Save proficiencies appear once Rivet takes her first class level.';
 
   // Skills
   const skillsGrid = document.getElementById('skills-grid');
@@ -2709,53 +2580,31 @@ function render() {
     row.innerHTML = `<span class="skill-name">${skill.name} (${skill.ability.toUpperCase()})</span><span class="skill-value">${fmtMod(value)}</span>`;
     skillsGrid.appendChild(row);
   }
-
   document.getElementById('prof-bonus').textContent = fmtMod(pb);
 
-  // Spell DC / Attack
-  document.getElementById('spell-dc').textContent = 8 + chaMod + pb;       // DC isn't a d20 test you roll
-  document.getElementById('spell-atk').textContent = fmtMod(chaMod + pb - exhaustPen);
-
-  // Musician dice = PB
-  document.getElementById('musician-dice').textContent = pb;
-
-  // Spell slots
-  renderSlots(level);
-
-  // Sorcery points
-  const sp = document.getElementById('sorcery-display');
-  if (s >= 2) {
-    sp.textContent = `Sorcery points: ${s} (= Sorcerer level). Convert pact slots for more.`;
-  } else {
-    sp.textContent = 'Sorcery points unlock at character level 6 (Sorcerer 2).';
-  }
-
-  // Spells
-  renderSpells(level);
-
-  // Class features
-  renderClassFeatures(level);
-
-  // Alternates
-  renderAlternates(level);
-
-  // Combat loops
-  renderCombatLoops(level);
-
-  // Level table
-  renderLevelTable(level);
-
-  // Inventory
+  // Inventory + notes + coin
   renderInventory();
   document.getElementById('coin').value = state.coin;
   document.getElementById('notes').value = state.notes;
 
-  // Combat resources + concentration dropdown + death saves + conditions + Wild Magic Surge
+  // Combat resources + concentration + death saves + conditions
   renderCombatResources(level);
   renderConcentrationOptions(level);
   renderDeathSaves(hp);
   renderConditions();
-  renderSurge(level);
+
+  // Level table (will populate once LEVEL_DATA fills in via the level-up modal)
+  renderLevelTable(level);
+
+  // Point-buy tracker
+  renderPointBuy();
+}
+
+function hpFormulaText(level, stats) {
+  if (level < 1) return '—';
+  // Phase 1 default: Artificer d8s at every level. Phase 2 will derive from LEVEL_DATA.
+  const conMod = mod(stats.con);
+  return `${level}d8 + ${conMod * level} CON`;
 }
 
 function renderSurge(level) {
@@ -2785,78 +2634,12 @@ function renderSurge(level) {
 }
 
 function renderCombatResources(level) {
-  const sorcLevel = classBreakdown(level).s;
-
-  // Sorcery Points (sorc 2+)
-  const spRow = document.getElementById('resource-sp');
-  if (sorcLevel >= 2) {
-    spRow.hidden = false;
-    document.getElementById('sorcery-points').value = state.sorceryPoints || 0;
-    document.getElementById('sorcery-points-max').textContent = sorcLevel;
-  } else { spRow.hidden = true; }
-
-  // Innate Sorcery (sorc 1+ = char L5+)
-  const innateRow = document.getElementById('resource-innate');
-  if (sorcLevel >= 1) {
-    innateRow.hidden = false;
-    const pipsContainer = document.getElementById('innate-pips');
-    pipsContainer.innerHTML = '';
-    const used = state.innateSorceryUsed || 0;
-    const max = 2;
-    for (let i = 0; i < max; i++) {
-      const pip = document.createElement('div');
-      pip.className = 'pip' + (i < max - used ? ' filled' : '');
-      pip.addEventListener('click', () => {
-        // Used eats from the right: filled pip on click → used := max - i; empty pip on click → used := max - i - 1.
-        const u = state.innateSorceryUsed || 0;
-        state.innateSorceryUsed = (i < max - u) ? max - i : max - i - 1;
-        saveState();
-        renderCombatResources(state.level);
-      });
-      pipsContainer.appendChild(pip);
-    }
-  } else { innateRow.hidden = true; }
-
-  // Magical Cunning (warlock 2 = char L2+)
-  const cunningRow = document.getElementById('resource-cunning');
-  if (level >= 2) {
-    cunningRow.hidden = false;
-    const btn = document.getElementById('magical-cunning-toggle');
-    btn.textContent = state.magicalCunningUsed ? 'Used' : 'Available';
-    btn.classList.toggle('used', !!state.magicalCunningUsed);
-  } else { cunningRow.hidden = true; }
-
-  // Heavenly Wings (Celestial Revelation L3+)
-  const wingsRow = document.getElementById('resource-wings');
-  if (level >= 3) {
-    wingsRow.hidden = false;
-    const btn = document.getElementById('heavenly-wings-toggle');
-    btn.textContent = state.heavenlyWingsUsed ? 'Used' : 'Available';
-    btn.classList.toggle('used', !!state.heavenlyWingsUsed);
-  } else { wingsRow.hidden = true; }
-
-  // Hexblade's Curse (legacy XGE Hexblade subclass at warlock 1 — always available for this build)
-  const curseBtn = document.getElementById('hexblade-curse-toggle');
-  curseBtn.textContent = state.hexbladesCurseUsed ? 'Used' : 'Available';
-  curseBtn.classList.toggle('used', !!state.hexbladesCurseUsed);
-
-  // Heroic Inspiration (universal 2024 mechanic). Inverted semantics: "Available" = gold (good),
-  // "None" = .used class to muted-red so absence is visually obvious.
+  // Phase 1: only Heroic Inspiration is class-agnostic. Class-specific rows
+  // (Sorcery Points, Innate Sorcery, Hexblade's Curse, etc.) will appear here
+  // once Phase 2's level-up modal records picks.
   const inspBtn = document.getElementById('inspiration-toggle');
   inspBtn.textContent = state.heroicInspiration ? 'Available' : 'None';
   inspBtn.classList.toggle('used', !state.heroicInspiration);
-
-  // Tides of Chaos (Wild Magic sorc 3+)
-  const tidesRow = document.getElementById('resource-tides');
-  if (sorcLevel >= 3) {
-    tidesRow.hidden = false;
-    const btn = document.getElementById('tides-toggle');
-    btn.textContent = state.tidesOfChaosUsed ? 'Used' : 'Available';
-    btn.classList.toggle('used', !!state.tidesOfChaosUsed);
-  } else { tidesRow.hidden = true; }
-
-  // Font of Magic conversion (sorc 2+)
-  renderFontOfMagic(level);
 }
 
 const WILD_MAGIC_SURGES = [
@@ -3327,12 +3110,11 @@ function renderLevelTable(currentLevel) {
     const tr = document.createElement('tr');
     if (l === currentLevel) tr.className = 'current';
     else if (l > currentLevel) tr.className = 'future';
-    const classStr = ld.warlock > 0 && ld.sorcerer === 0
-      ? `Hexblade Warlock ${ld.warlock}`
-      : ld.sorcerer > 0 && ld.warlock === 0
-        ? `Wild Magic Sorcerer ${ld.sorcerer}`
-        : `Warlock ${ld.warlock} / Sorcerer ${ld.sorcerer}`;
-    tr.innerHTML = `<td><strong>${l}</strong></td><td>${classStr}</td><td>${ld.classGain}</td>`;
+    const classStr = ld
+      ? (ld.class === 'artificer' ? `Artificer ${l}` : ld.class === 'rogue' ? `Rogue ${l}` : '—')
+      : '—';
+    const gain = ld && ld.classGain ? ld.classGain : '—';
+    tr.innerHTML = `<td><strong>${l}</strong></td><td>${classStr}</td><td>${gain}</td>`;
     tbody.appendChild(tr);
   }
 }
@@ -3406,82 +3188,57 @@ document.getElementById('temp-hp').addEventListener('input', (e) => {
   saveState();
 });
 
-document.getElementById('inspiring-btn').addEventListener('click', () => {
-  // Inspiring Leader: temp HP = character level + CHA mod. Temp HP doesn't
-  // stack — taking the higher of current and incoming.
-  const stats = computeStats(state.level);
-  const incoming = state.level + mod(stats.cha);
-  const newTemp = Math.max(state.tempHp || 0, incoming);
-  state.tempHp = newTemp;
-  document.getElementById('temp-hp').value = newTemp;
-  saveState();
-});
-
-// Combat resources
-document.getElementById('sorcery-points').addEventListener('input', (e) => {
-  const v = parseInt(e.target.value, 10);
-  state.sorceryPoints = isNaN(v) || v < 0 ? 0 : v;
-  saveState();
-});
-
-document.getElementById('magical-cunning-toggle').addEventListener('click', () => {
-  state.magicalCunningUsed = !state.magicalCunningUsed;
-  saveState();
-  renderCombatResources(state.level);
-});
-
-document.getElementById('heavenly-wings-toggle').addEventListener('click', () => {
-  state.heavenlyWingsUsed = !state.heavenlyWingsUsed;
-  saveState();
-  renderCombatResources(state.level);
-});
-
-document.getElementById('hexblade-curse-toggle').addEventListener('click', () => {
-  state.hexbladesCurseUsed = !state.hexbladesCurseUsed;
-  saveState();
-  renderCombatResources(state.level);
-});
-
+// Heroic Inspiration toggle (the only Phase 1 Combat Resource that needs wiring)
 document.getElementById('inspiration-toggle').addEventListener('click', () => {
   state.heroicInspiration = !state.heroicInspiration;
   saveState();
   renderCombatResources(state.level);
 });
 
-document.getElementById('tides-toggle').addEventListener('click', () => {
-  state.tidesOfChaosUsed = !state.tidesOfChaosUsed;
-  saveState();
-  renderCombatResources(state.level);
-});
-
-document.getElementById('surge-roll-btn').addEventListener('click', () => {
-  const roll = Math.floor(Math.random() * 100) + 1; // 1-100
-  state.lastSurgeRoll = roll;
-  saveState();
-  renderSurge(state.level);
-  // Auto-scroll the hit row into view if the table is open
-  const hit = document.querySelector('#surge-table tr.hit');
-  if (hit && document.querySelector('.surge-details[open]')) {
-    hit.scrollIntoView({ behavior: 'smooth', block: 'center' });
+// Point Buy editor
+const PB_COSTS = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
+function pointBuyCost(score) {
+  if (score < 8) return 0;
+  if (score > 15) return 9; // shouldn't happen via input min/max, but be safe
+  return PB_COSTS[score] || 0;
+}
+function renderPointBuy() {
+  const bs = state.baseStats || BASE_STATS_DEFAULT;
+  let total = 0;
+  for (const stat of ['str','dex','con','int','wis','cha']) {
+    const v = bs[stat] || 8;
+    total += pointBuyCost(v);
+    const input = document.getElementById('pb-' + stat);
+    if (input && document.activeElement !== input) input.value = v;
   }
-});
+  const spent = document.getElementById('pb-spent');
+  const status = document.getElementById('pb-status');
+  const tracker = document.querySelector('.point-buy-tracker');
+  spent.textContent = total;
+  tracker.classList.toggle('over', total > 27);
+  tracker.classList.toggle('done', total === 27);
+  if (total > 27) status.textContent = `over budget by ${total - 27}`;
+  else if (total === 27) status.textContent = 'all 27 points spent';
+  else status.textContent = `${27 - total} points remaining`;
+}
+for (const stat of ['str','dex','con','int','wis','cha']) {
+  document.getElementById('pb-' + stat).addEventListener('input', (e) => {
+    let v = parseInt(e.target.value, 10);
+    if (isNaN(v)) v = 8;
+    v = Math.max(8, Math.min(15, v));
+    if (!state.baseStats) state.baseStats = { ...BASE_STATS_DEFAULT };
+    state.baseStats[stat] = v;
+    saveState();
+    render();          // recompute all derived stats
+    renderPointBuy();  // refresh tracker + (re)sync inputs that aren't focused
+  });
+}
 
 document.getElementById('exhaustion-level').addEventListener('input', (e) => {
   const v = parseInt(e.target.value, 10);
   state.exhaustion = isNaN(v) || v < 0 ? 0 : Math.min(6, v);
   saveState();
-  render(); // exhaustion penalty changes Initiative, attacks, saves, skills
-});
-
-// Spell search: filter visible rows by name. Transient, not persisted to state.
-document.getElementById('spell-search').addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  const tbody = document.getElementById('spells-tbody');
-  for (const tr of tbody.children) {
-    const nameCell = tr.querySelector('.spell-name');
-    const name = nameCell ? nameCell.textContent.toLowerCase() : '';
-    tr.style.display = (q === '' || name.includes(q)) ? '' : 'none';
-  }
+  render(); // exhaustion penalty changes Initiative, saves, skills
 });
 
 document.getElementById('concentration-select').addEventListener('change', (e) => {
@@ -3491,29 +3248,21 @@ document.getElementById('concentration-select').addEventListener('change', (e) =
 
 // Rest buttons
 document.getElementById('short-rest-btn').addEventListener('click', () => {
-  // Pact Magic slots recover on a Short Rest
-  state.usedSlots.warlock = 0;
-  // Hexblade's Curse: once per short OR long rest (legacy XGE)
-  state.hexbladesCurseUsed = false;
-  // (Magical Cunning is long-rest only per RAW; not reset here.)
+  // Phase 1: short rest does nothing class-specific yet. Class-specific resets
+  // (e.g. Artificer Flash of Genius, Rogue Cunning Action recharges) will hook
+  // in here as Phase 2 wires in class features.
   saveState();
   render();
 });
 
 document.getElementById('long-rest-btn').addEventListener('click', () => {
-  state.hpCurrent = null;     // back to max
-  state.tempHp = 0;           // IL grant only lasts 1h anyway
-  state.usedSlots = { warlock: 0, sorc1: 0, sorc2: 0, sorc3: 0, sorc4: 0, sorc5: 0, sorc6: 0, sorc7: 0, sorc8: 0 };
-  state.sorceryPoints = classBreakdown(state.level).s;
-  state.innateSorceryUsed = 0;
-  state.magicalCunningUsed = false;
-  state.heavenlyWingsUsed = false;
-  state.hexbladesCurseUsed = false;
-  state.tidesOfChaosUsed = false; // Wild Magic Tides of Chaos refreshes on LR (or DM-triggered surge)
+  state.hpCurrent = null;        // back to max
+  state.tempHp = 0;
+  state.usedSlots = { sorc1: 0, sorc2: 0, sorc3: 0, sorc4: 0, sorc5: 0 };
   state.deathSavesSuccess = 0;
   state.deathSavesFail = 0;
-  // concentratingOn left as-is — concentration isn't reset by rest, only by damage / new spell / death.
-  // Conditions and exhaustion are intentionally NOT reset (some persist through rests; the player clears manually).
+  // concentratingOn left as-is (not reset by rest in RAW).
+  // Conditions and exhaustion are NOT auto-reset — player clears manually.
   saveState();
   render();
 });

@@ -9,19 +9,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Rivet palette: porcelain ground, Delft cobalt detail, brass-coil rust as warning */
-  --ink: #f3ead4;            /* porcelain cream — the page itself */
-  --ink-deep: #ebe0c4;       /* slightly deeper cream for card grounds */
-  --parchment: #1c2541;      /* deep navy — primary text */
-  --parchment-aged: #3e4b75; /* mid blue-grey for secondary text */
-  --parchment-dim: #7d89aa;  /* dim blue-grey for placeholders / locked text */
-  --blood: #8a3a1c;          /* burnt copper — "used/danger" accent (was crimson) */
-  --blood-bright: #b35930;   /* brighter copper for hover/active */
-  --gold: #1f4ea3;           /* Delft cobalt — primary accent (was gold) */
-  --gold-bright: #2c63b0;    /* brighter cobalt for hover */
-  --gold-tarnish: #7d99c4;   /* muted Delft for borders/secondary */
-  --shadow: #d6c7a6;         /* warm shadow on the cream ground */
-  --silver-crack: #b88f4a;   /* brass-leaf — kintsugi crack detail */
+  /* Rivet palette: Delftware — true porcelain white with deep cobalt detail. */
+  --ink: #fbfaf6;            /* near-white porcelain — the page itself */
+  --ink-deep: #eff2f8;       /* faintly blue-tinted white for card grounds */
+  --parchment: #0d1d3f;      /* deep navy — primary text */
+  --parchment-aged: #2c4275; /* mid Delft for secondary text */
+  --parchment-dim: #6982ad;  /* dim Delft for placeholders / faded text */
+  --blood: #8a3a1c;          /* burnt copper — "used/danger" warning */
+  --blood-bright: #b35930;   /* brighter copper for hover/active warnings */
+  --gold: #143573;           /* Delft cobalt — primary accent */
+  --gold-bright: #1f4ea3;    /* brighter cobalt for hover */
+  --gold-tarnish: #4666a6;   /* mid cobalt for borders/secondary */
+  --shadow: #c5cee0;         /* cool blue-grey shadow on porcelain */
+  --silver-crack: #4666a6;   /* cobalt vein — Delft brushwork */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,11 +29,11 @@ html { scroll-behavior: smooth; }
 
 body {
   background: var(--ink);
-  /* Soft Delft-blue washes on a porcelain ground, evoking glaze pooling at the rim. */
+  /* Soft cobalt washes on a porcelain ground, evoking glaze pooling at the rim. */
   background-image:
-    radial-gradient(ellipse at 18% 8%, rgba(31, 78, 163, 0.10), transparent 55%),
-    radial-gradient(ellipse at 82% 92%, rgba(184, 143, 74, 0.08), transparent 55%),
-    radial-gradient(ellipse at 50% 50%, rgba(214, 199, 166, 0.45), transparent 75%);
+    radial-gradient(ellipse at 18% 8%, rgba(20, 53, 115, 0.07), transparent 55%),
+    radial-gradient(ellipse at 82% 92%, rgba(70, 102, 166, 0.06), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.6), transparent 75%);
   color: var(--parchment);
   font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
   font-size: 17px;
@@ -199,7 +199,7 @@ body::before {
   text-align: center;
   padding: 0.2rem 0.8rem;
   border: 1px solid var(--gold);
-  background: rgba(28, 37, 65, 0.6);
+  background: rgba(255, 255, 255, 0.90);
 }
 
 .level-classes {
@@ -321,7 +321,7 @@ body::before {
 
 .stat-block {
   border: 1px solid var(--gold-tarnish);
-  background: linear-gradient(180deg, rgba(31, 78, 163, 0.05), rgba(28, 37, 65, 0.4));
+  background: linear-gradient(180deg, rgba(31, 78, 163, 0.05), rgba(255, 255, 255, 0.70));
   padding: 1.2rem 0.5rem;
   text-align: center;
   position: relative;
@@ -352,7 +352,7 @@ body::before {
   margin-top: 1.2rem;
   padding: 0.55rem 1rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(28, 37, 65, 0.4);
+  background: rgba(255, 255, 255, 0.70);
   font-family: 'Cinzel', serif;
   font-size: 0.8rem;
   letter-spacing: 0.18em;
@@ -435,7 +435,7 @@ body::before {
   border: 1px solid var(--gold-tarnish);
   padding: 1rem;
   text-align: center;
-  background: rgba(28, 37, 65, 0.4);
+  background: rgba(255, 255, 255, 0.70);
 }
 
 .defense-cell .label {
@@ -544,7 +544,7 @@ body::before {
   margin-bottom: 2rem;
   padding: 0.7rem 1.2rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(28, 37, 65, 0.5);
+  background: rgba(255, 255, 255, 0.80);
 }
 .concentration-label {
   font-family: 'Cinzel', serif;
@@ -780,7 +780,7 @@ body::before {
   margin-top: 1.5rem;
   padding: 0.8rem 1rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(28, 37, 65, 0.4);
+  background: rgba(255, 255, 255, 0.70);
 }
 .conditions-header {
   display: flex;
@@ -873,7 +873,7 @@ body::before {
 /* CARD */
 .card {
   border: 1px solid var(--gold-tarnish);
-  background: linear-gradient(180deg, rgba(214, 199, 166, 0.6), rgba(28, 37, 65, 0.8));
+  background: linear-gradient(180deg, rgba(220, 230, 245, 0.6), rgba(28, 37, 65, 0.8));
   padding: 1.8rem;
   position: relative;
 }
@@ -1039,7 +1039,7 @@ body::before {
   color: var(--gold);
   padding: 0.5rem 1rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(28, 37, 65, 0.5);
+  background: rgba(255, 255, 255, 0.80);
   text-align: center;
   transition: background 0.3s;
   user-select: none;
@@ -1409,7 +1409,7 @@ body::before {
 .notes-area {
   width: 100%;
   min-height: 120px;
-  background: rgba(28, 37, 65, 0.4);
+  background: rgba(255, 255, 255, 0.70);
   border: 1px solid var(--gold-tarnish);
   color: var(--parchment);
   font-family: 'EB Garamond', serif;
@@ -1637,7 +1637,7 @@ body.dm-mode .dm-hide { display: none; }
   color: var(--gold);
   padding: 0.7rem 1.2rem;
   border: 1px solid var(--gold-tarnish);
-  background: rgba(28, 37, 65, 0.6);
+  background: rgba(255, 255, 255, 0.90);
   text-align: center;
   font-size: 0.78rem;
   transition: background 0.3s, border-color 0.3s;

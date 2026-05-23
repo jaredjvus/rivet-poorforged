@@ -2518,6 +2518,56 @@ const CLASS_DATA = {
     isHalfCaster: true,
     spellcastingAbility: 'int',
     subclasses: ['Alchemist', 'Armorer', 'Artillerist', 'Battle Smith', 'Cartographer'],
+    subclassData: {
+      Armorer: {
+        // Spells that are always-prepared at the given Artificer level (don't count against prepared count)
+        alwaysPrepared: {
+          3:  ['Magic Missile', 'Thunderwave'],
+          5:  ['Mirror Image', 'Shatter'],
+          9:  ['Hypnotic Pattern', 'Lightning Bolt'],
+          13: ['Fire Shield', 'Greater Invisibility'],
+          17: ['Passwall', 'Wall of Force']
+        },
+        // Features that unlock at the given Artificer level
+        perLevel: {
+          3: [
+            { name: 'Tools of the Trade', desc: 'Training with Heavy armor. Proficiency with Smith\'s Tools (or another Artisan\'s tool if redundant). Crafting nonmagical or magical armor takes half the usual time.' },
+            { name: 'Arcane Armor', desc: 'Magic action with Smith\'s Tools to turn worn armor into Arcane Armor. No STR requirement. Don/doff as a Utilize action; can\'t be removed against your will. Doubles as your Spellcasting Focus.' },
+            { name: 'Armor Model', desc: 'Pick Dreadnaught, Guardian, or Infiltrator. Each model gives a special weapon (attack with INT) and unique benefits. Swap models on a short or long rest with Smith\'s Tools.' }
+          ],
+          5: [
+            { name: 'Extra Attack', desc: 'Attack twice when you take the Attack action on your turn.' }
+          ],
+          9: [
+            { name: 'Improved Armorer', desc: 'Armor Replication: learn one extra Replicate Magic Item plan in the Armor category; can create one extra item. Improved Arsenal: +1 to attack and damage with your Armor Model\'s special weapon.' }
+          ],
+          15: [
+            { name: 'Perfected Armor', desc: 'Your Armor Model gains upgrades — see the Dreadnaught / Guardian / Infiltrator entries for the level-15 boost.' }
+          ]
+        },
+        // Per-armor-model details. Used to render the "Armor Model: X" feature card.
+        models: {
+          Dreadnaught: {
+            description: 'Towering juggernaut. Wrecking-ball reach melee weapon.',
+            level3: 'Force Demolisher (1d10 force, reach, push/pull 10 ft against smaller targets). Giant Stature (bonus action, 1 min: reach +5 ft, become Large; INT mod uses / long rest).',
+            level9: '+1 to attack and damage with the Force Demolisher.',
+            level15: 'Force Demolisher damage die becomes 2d6. Giant Stature: reach +10 ft, can grow to Large or Huge, Advantage on STR checks/saves while transformed.'
+          },
+          Guardian: {
+            description: 'Front-line bulwark. Thunder-pulse melee strikes.',
+            level3: 'Thunder Pulse (1d8 thunder; hit target has Disadvantage on attacks vs anyone but you until your next turn). Defensive Field (bonus action while Bloodied: temp HP = Artificer level; lost on doff).',
+            level9: '+1 to attack and damage with the Thunder Pulse.',
+            level15: 'Thunder Pulse damage die becomes 1d10. Reaction: when a Huge-or-smaller creature ends its turn within 30 ft, force a STR save (your spell DC); on fail, pull up to 25 ft and make a melee attack if it lands within 5 ft. INT mod uses / long rest.'
+          },
+          Infiltrator: {
+            description: 'Subtle agent. Long-range lightning launcher.',
+            level3: 'Lightning Launcher (1d6 lightning, 90/300 ft; +1d6 lightning once per turn on hit). Powered Steps (+5 ft speed). Dampening Field (Advantage on Stealth — cancels armor disadvantage).',
+            level9: '+1 to attack and damage with the Lightning Launcher.',
+            level15: 'Lightning Launcher damage die becomes 2d6. Lightning-damaged targets glimmer (Dim Light 5 ft, Disadvantage on attacks against you) until your next turn. Bonus action: gain a fly speed of 2× your Speed until end of turn; INT mod uses / long rest.'
+          }
+        }
+      }
+    },
     // Per-class-level progression. Each entry:
     //   features: list of {name, desc} the player gains at this class level
     //   asi: true if it's an ASI/feat level
@@ -2574,6 +2624,25 @@ const CLASS_DATA = {
     multiclassTools: ['Thieves\' Tools'],
     isHalfCaster: false,
     subclasses: ['Arcane Trickster', 'Assassin', 'Scion of the Three', 'Soulknife', 'Thief'],
+    subclassData: {
+      Thief: {
+        perLevel: {
+          3: [
+            { name: 'Fast Hands', desc: 'Bonus action: Sleight of Hand check with Thieves\' Tools (pick lock / disarm trap / pickpocket), OR Utilize action / Magic action to use a magic item.' },
+            { name: 'Second Story Work', desc: 'Climber: Climb Speed equal to your walking Speed. Jumper: jump distance uses DEX instead of STR.' }
+          ],
+          9: [
+            { name: 'Supreme Sneak (Stealth Attack)', desc: 'New Cunning Strike option — Stealth Attack (Cost: 1d6): if you used the Hide action\'s Invisible condition, this attack doesn\'t end Invisible if you end the turn behind ¾ or Total Cover.' }
+          ],
+          13: [
+            { name: 'Use Magic Device', desc: 'Attunement cap rises to 4 magic items. Charges: when you spend an item charge, roll 1d6 — on a 6, no charge consumed. Scrolls: cast any Spell Scroll using INT. Cantrip / 1st-level scrolls cast reliably; higher-level scrolls require an INT (Arcana) check (DC 10 + spell level) or the scroll disintegrates.' }
+          ],
+          17: [
+            { name: 'Thief\'s Reflexes', desc: 'During the first round of combat, you take TWO turns — one at your normal Initiative, one at Initiative − 10.' }
+          ]
+        }
+      }
+    },
     perLevel: [
       null,
       { features: [
@@ -3440,17 +3509,92 @@ function renderClassFeatures(level) {
     const levelData = cls.perLevel[entry.classLevel];
     if (!levelData || !levelData.features) return;
     const charLevel = idx + 1;
+    const chosenSubclass = findChosenSubclass(entry.class, history);
+
     for (const f of levelData.features) {
+      // Replace 'Subclass Feature' stub with actual subclass features when we know them
+      if (f.name === 'Subclass Feature' && chosenSubclass && cls.subclassData && cls.subclassData[chosenSubclass]) {
+        const subFeatures = cls.subclassData[chosenSubclass].perLevel[entry.classLevel] || [];
+        for (const sf of subFeatures) {
+          const block = document.createElement('div');
+          block.className = 'feature-block';
+          block.innerHTML = `<h4>${sf.name} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${chosenSubclass} · ${cls.name} ${entry.classLevel} (char L${charLevel})</span></h4><p>${sf.desc}</p>`;
+          container.appendChild(block);
+        }
+        // Append Armor Model upgrade detail at Artificer 15 with Armorer
+        if (entry.class === 'artificer' && entry.classLevel === 15 && chosenSubclass === 'Armorer') {
+          const model = findArmorModel(history);
+          if (model) {
+            const modelData = cls.subclassData.Armorer.models[model];
+            const block = document.createElement('div');
+            block.className = 'feature-block';
+            block.innerHTML = `<h4>Perfected Armor (${model}) <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· Armorer · char L${charLevel}</span></h4><p>${modelData.level15}</p>`;
+            container.appendChild(block);
+          }
+        }
+        if (subFeatures.length === 0) {
+          const block = document.createElement('div');
+          block.className = 'feature-block';
+          block.innerHTML = `<h4>${f.name} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${cls.name} ${entry.classLevel} (char L${charLevel})</span></h4><p>${f.desc}</p>`;
+          container.appendChild(block);
+        }
+        continue;
+      }
       const block = document.createElement('div');
       block.className = 'feature-block';
       block.innerHTML = `<h4>${f.name} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${cls.name} ${entry.classLevel} (char L${charLevel})</span></h4><p>${f.desc}</p>`;
       container.appendChild(block);
     }
-    if (entry.subclass) {
+
+    // When subclass is FIRST picked (at the L3 entry), show the L3 subclass features inline
+    if (entry.subclass && entry.classLevel === 3) {
+      const subData = cls.subclassData && cls.subclassData[entry.subclass];
+      const l3Features = subData && subData.perLevel[3];
+      if (l3Features) {
+        for (const sf of l3Features) {
+          const block = document.createElement('div');
+          block.className = 'feature-block';
+          block.innerHTML = `<h4>${sf.name} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${entry.subclass} · ${cls.name} 3 (char L${charLevel})</span></h4><p>${sf.desc}</p>`;
+          container.appendChild(block);
+        }
+      } else {
+        // No data encoded yet
+        const block = document.createElement('div');
+        block.className = 'feature-block';
+        block.innerHTML = `<h4>Subclass: ${entry.subclass} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· chosen at ${cls.name} 3 (char L${charLevel})</span></h4><p style="color: var(--parchment-dim); font-style: italic;">Subclass feature data not yet encoded.</p>`;
+        container.appendChild(block);
+      }
+      // Armor Model — Armorer-specific
+      if (entry.class === 'artificer' && entry.subclass === 'Armorer' && entry.armorModel) {
+        const modelData = cls.subclassData.Armorer.models[entry.armorModel];
+        if (modelData) {
+          const block = document.createElement('div');
+          block.className = 'feature-block';
+          block.innerHTML = `<h4>Armor Model: ${entry.armorModel} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· char L${charLevel}</span></h4><p><em>${modelData.description}</em></p><p>${modelData.level3}</p>`;
+          container.appendChild(block);
+        }
+      }
+    }
+
+    // Armorer always-prepared spells (informational)
+    if (entry.class === 'artificer' && chosenSubclass === 'Armorer' && cls.subclassData.Armorer.alwaysPrepared[entry.classLevel]) {
+      const spells = cls.subclassData.Armorer.alwaysPrepared[entry.classLevel];
       const block = document.createElement('div');
       block.className = 'feature-block';
-      block.innerHTML = `<h4>Subclass: ${entry.subclass} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· chosen at ${cls.name} 3 (char L${charLevel})</span></h4><p style="color: var(--parchment-dim); font-style: italic;">Subclass features auto-fill once their per-level data is added.</p>`;
+      block.innerHTML = `<h4>Armorer Spells — always prepared <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${cls.name} ${entry.classLevel} (char L${charLevel})</span></h4><p>${spells.join(', ')}</p>`;
       container.appendChild(block);
+    }
+
+    // Improved Armorer (Artificer 9) — add the +1 attack/damage detail per model
+    if (entry.class === 'artificer' && entry.classLevel === 9 && chosenSubclass === 'Armorer') {
+      const model = findArmorModel(history);
+      if (model) {
+        const modelData = cls.subclassData.Armorer.models[model];
+        const block = document.createElement('div');
+        block.className = 'feature-block';
+        block.innerHTML = `<h4>Improved Arsenal (${model}) <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· Armorer · char L${charLevel}</span></h4><p>${modelData.level9}</p>`;
+        container.appendChild(block);
+      }
     }
   });
 }
@@ -3611,6 +3755,24 @@ document.getElementById('inspiration-toggle').addEventListener('click', () => {
 // Pending pick while the modal is open (set when user clicks a class on step 1).
 let _levelUpPending = null;
 
+// Find the previously-chosen subclass for a given class from state.levelHistory.
+function findChosenSubclass(klass, history) {
+  history = history || state.levelHistory || [];
+  for (const e of history) {
+    if (e.class === klass && e.subclass) return e.subclass;
+  }
+  return null;
+}
+
+// Find the previously-chosen Armorer Armor Model.
+function findArmorModel(history) {
+  history = history || state.levelHistory || [];
+  for (const e of history) {
+    if (e.class === 'artificer' && e.armorModel) return e.armorModel;
+  }
+  return null;
+}
+
 function openLevelUpModal() {
   const overlay = document.getElementById('levelup-overlay');
   const current = state.maxLevel || 0;
@@ -3695,11 +3857,55 @@ function showLevelUpDetail(klass, classLevel) {
     featuresEl.appendChild(profDiv);
   }
 
+  // Resolve the subclass: if this level is the pick-level, defer to the dropdown;
+  // otherwise read the previously-chosen subclass from history.
+  const chosenSubclass = data.subclassPick ? null : findChosenSubclass(klass);
+
   for (const f of data.features) {
+    // Replace the generic "Subclass Feature" stub with the actual subclass features
+    if (f.name === 'Subclass Feature' && chosenSubclass && cls.subclassData && cls.subclassData[chosenSubclass]) {
+      const subFeatures = cls.subclassData[chosenSubclass].perLevel[classLevel] || [];
+      for (const sf of subFeatures) {
+        const div = document.createElement('div');
+        div.className = 'feature';
+        div.innerHTML = `<h5>${sf.name} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${chosenSubclass}</span></h5><p>${sf.desc}</p>`;
+        featuresEl.appendChild(div);
+      }
+      // Apply Armor Model upgrade text at Artificer 15 if Perfected Armor
+      if (klass === 'artificer' && classLevel === 15 && chosenSubclass === 'Armorer') {
+        const model = findArmorModel();
+        if (model) {
+          const modelData = cls.subclassData.Armorer.models[model];
+          const div = document.createElement('div');
+          div.className = 'feature';
+          div.innerHTML = `<h5>Perfected Armor (${model}) <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· Armorer</span></h5><p>${modelData.level15}</p>`;
+          featuresEl.appendChild(div);
+        }
+      }
+      if (subFeatures.length === 0) {
+        // Subclass data not yet encoded — show a placeholder
+        const div = document.createElement('div');
+        div.className = 'feature';
+        div.innerHTML = `<h5>${f.name}</h5><p>${f.desc}</p>`;
+        featuresEl.appendChild(div);
+      }
+      continue;
+    }
     const div = document.createElement('div');
     div.className = 'feature';
     div.innerHTML = `<h5>${f.name}</h5><p>${f.desc}</p>`;
     featuresEl.appendChild(div);
+  }
+
+  // Always-prepared subclass spells (Armorer / etc.) for this Artificer level
+  if (chosenSubclass && cls.subclassData && cls.subclassData[chosenSubclass] && cls.subclassData[chosenSubclass].alwaysPrepared) {
+    const prepared = cls.subclassData[chosenSubclass].alwaysPrepared[classLevel];
+    if (prepared && prepared.length > 0) {
+      const div = document.createElement('div');
+      div.className = 'feature';
+      div.innerHTML = `<h5>${chosenSubclass} Spells — always prepared</h5><p>${prepared.join(', ')}</p>`;
+      featuresEl.appendChild(div);
+    }
   }
 
   // Spell slot / cantrip / prepared spell deltas (Artificer only)
@@ -3731,15 +3937,37 @@ function showLevelUpDetail(klass, classLevel) {
   const promptsEl = document.getElementById('levelup-detail-prompts');
   promptsEl.innerHTML = '';
   if (data.subclassPick) {
+    const defaultSubclass = klass === 'artificer' ? 'Armorer' : 'Thief';
     const p = document.createElement('div');
     p.className = 'modal-prompt';
     p.innerHTML = `
       <div class="modal-prompt-label">Choose your ${cls.name} subclass</div>
       <select id="modal-subclass-select">
-        ${cls.subclasses.map(sc => `<option value="${sc}">${sc}</option>`).join('')}
+        ${cls.subclasses.map(sc => `<option value="${sc}"${sc === defaultSubclass ? ' selected' : ''}>${sc}</option>`).join('')}
       </select>
     `;
     promptsEl.appendChild(p);
+
+    // Armor Model nested choice for Artificer + Armorer
+    if (klass === 'artificer') {
+      const armorPrompt = document.createElement('div');
+      armorPrompt.className = 'modal-prompt';
+      armorPrompt.id = 'modal-armor-model-prompt';
+      armorPrompt.innerHTML = `
+        <div class="modal-prompt-label">Armor Model (Armorer only)</div>
+        <select id="modal-armor-model-select">
+          <option value="Dreadnaught">Dreadnaught — reach melee, growth bonus action</option>
+          <option value="Guardian">Guardian — front-line, Thunder Pulse, Bloodied temp HP</option>
+          <option value="Infiltrator">Infiltrator — Lightning Launcher (90/300), Stealth advantage</option>
+        </select>
+      `;
+      promptsEl.appendChild(armorPrompt);
+      const subSel = document.getElementById('modal-subclass-select');
+      const armorEl = armorPrompt;
+      const toggle = () => { armorEl.style.display = subSel.value === 'Armorer' ? '' : 'none'; };
+      subSel.addEventListener('change', toggle);
+      toggle();
+    }
   }
   if (data.asi) {
     const p = document.createElement('div');
@@ -3772,6 +4000,11 @@ function confirmLevelUp() {
   if (data.subclassPick) {
     const sel = document.getElementById('modal-subclass-select');
     entry.subclass = sel ? sel.value : null;
+    // Armor Model nested choice for Artificer Armorer
+    if (entry.class === 'artificer' && entry.subclass === 'Armorer') {
+      const armorSel = document.getElementById('modal-armor-model-select');
+      entry.armorModel = armorSel ? armorSel.value : null;
+    }
   }
 
   // If first level of class, copy save profs from class (only for the FIRST class taken)

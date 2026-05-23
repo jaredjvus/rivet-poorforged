@@ -3799,7 +3799,12 @@ const DEFAULT_STATE = {
   toolProfs: [],            // tool names she's proficient with
   languages: ['Common'],    // languages known
   // Phase 2I: Weapon Masteries (Rogue L1, pick 2; swap on long rest)
-  weaponMasteries: []       // weapon names she's currently mastering (max from class data)
+  weaponMasteries: [],      // weapon names she's currently mastering (max from class data)
+  // Phase 2J: Active feature trackers (INT-mod-per-long-rest features)
+  tinkersMagicUsed: 0,       // Artificer L1: Tinker's Magic create-mundane-item uses
+  giantStatureUsed: 0,       // Armorer Dreadnaught L3: bonus-action growth uses
+  infiltratorFlyUsed: 0,     // Armorer Infiltrator L15: bonus-action fly uses
+  strokeOfLuckUsed: 0        // Rogue L20: 1 use / short or long rest
 };
 
 let state = loadState();
@@ -4219,6 +4224,51 @@ function renderCombatResources(level) {
     }
   }
 
+  // Helper: add an INT-mod-uses-per-rest pip row.
+  function addIntModRow(stateKey, label, tip, requireMin1) {
+    const usesMax = requireMin1 ? Math.max(1, intMod) : Math.max(0, intMod);
+    if (usesMax <= 0) return;
+    const used = Math.min(state[stateKey] || 0, usesMax);
+    const row = document.createElement('div');
+    row.className = 'resource-row';
+    row.innerHTML = `
+      <span class="resource-label has-tip" title="${tip}">${label} <span class="resource-meta">+${intMod}</span></span>
+      <div class="resource-pips" data-resource="${stateKey}"></div>
+    `;
+    const pipsBox = row.querySelector('.resource-pips');
+    for (let i = 0; i < usesMax; i++) {
+      const pip = document.createElement('div');
+      pip.className = 'pip' + (i >= usesMax - used ? ' used' : '');
+      pip.title = `${label} use ${i + 1}`;
+      pip.addEventListener('click', () => toggleIntModResource(stateKey, i, usesMax));
+      pipsBox.appendChild(pip);
+    }
+    dynRows.appendChild(row);
+  }
+
+  // ---- Tinker's Magic ---- (Artificer L1+, INT mod / long rest, min 1)
+  if (a >= 1) {
+    addIntModRow('tinkersMagicUsed', 'Tinker\'s Magic',
+      'Action with Tinker\'s Tools to create a small mundane item (lasts until next long rest). INT mod uses per long rest (min 1).',
+      true);
+  }
+
+  // ---- Armorer-subclass bonus-action features ----
+  const chosenSub = a >= 3 ? findChosenSubclass('artificer') : null;
+  const armorModel = chosenSub === 'Armorer' ? findArmorModel() : null;
+  // Giant Stature — Armorer Dreadnaught L3
+  if (a >= 3 && armorModel === 'Dreadnaught') {
+    addIntModRow('giantStatureUsed', 'Giant Stature',
+      'Bonus action, 1 minute: reach +5 ft, become Large (Huge at L15). INT mod uses per long rest.',
+      true);
+  }
+  // Infiltrator's bonus-action fly speed — Armorer Infiltrator L15
+  if (a >= 15 && armorModel === 'Infiltrator') {
+    addIntModRow('infiltratorFlyUsed', 'Infiltrator Fly',
+      'Bonus action: gain a fly speed of 2x your Speed until end of turn. INT mod uses per long rest.',
+      true);
+  }
+
   // ---- Flash of Genius ---- (Artificer L7+)
   if (a >= 7) {
     const fogMax = Math.max(1, intMod);
@@ -4242,6 +4292,23 @@ function renderCombatResources(level) {
     }
     dynRows.appendChild(row);
   }
+
+  // ---- Stroke of Luck ---- (Rogue L20: once per short/long rest)
+  if (r >= 20) {
+    const used = Math.min(state.strokeOfLuckUsed || 0, 1);
+    const row = document.createElement('div');
+    row.className = 'resource-row';
+    row.innerHTML = `
+      <span class="resource-label has-tip" title="Once per short or long rest, when you fail a d20 Test, turn it into a 20.">Stroke of Luck</span>
+      <div class="resource-pips" data-resource="strokeOfLuck"></div>
+    `;
+    const pip = document.createElement('div');
+    pip.className = 'pip' + (used ? ' used' : '');
+    pip.title = 'Stroke of Luck';
+    pip.addEventListener('click', () => toggleIntModResource('strokeOfLuckUsed', 0, 1));
+    row.querySelector('.resource-pips').appendChild(pip);
+    dynRows.appendChild(row);
+  }
 }
 
 function toggleHitDie(index, max) {
@@ -4256,6 +4323,15 @@ function toggleFlashOfGenius(index, max) {
   const used = state.flashOfGeniusUsed || 0;
   const isAvailable = index < (max - used);
   state.flashOfGeniusUsed = isAvailable ? (max - index) : (max - index - 1);
+  saveState();
+  render();
+}
+
+// Generic toggle for any pip-tracked resource that lives directly on state.
+function toggleIntModResource(stateKey, index, max) {
+  const used = state[stateKey] || 0;
+  const isAvailable = index < (max - used);
+  state[stateKey] = isAvailable ? (max - index) : (max - index - 1);
   saveState();
   render();
 }
@@ -6775,19 +6851,20 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.getElementById('short-rest-btn').addEventListener('click', () => {
-  const { a } = classBreakdown(state.level);
+  const { a, r } = classBreakdown(state.level);
   const recoversFog = a >= 14 && (state.flashOfGeniusUsed || 0) > 0;
+  const recoversStroke = r >= 20 && (state.strokeOfLuckUsed || 0) > 0;
   const items = [];
   if (recoversFog) items.push('Refund 1 Flash of Genius use (Refreshed Genius)');
+  if (recoversStroke) items.push('Refund Stroke of Luck');
   items.push('Spend Hit Dice manually after — a short rest doesn\'t auto-heal');
   const body = `
     <p>This will:</p>
     <ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>
   `;
   showConfirm('Take a Short Rest?', body, () => {
-    if (recoversFog) {
-      state.flashOfGeniusUsed = Math.max(0, state.flashOfGeniusUsed - 1);
-    }
+    if (recoversFog) state.flashOfGeniusUsed = Math.max(0, state.flashOfGeniusUsed - 1);
+    if (recoversStroke) state.strokeOfLuckUsed = 0;
     saveState();
     render();
   }, { okLabel: 'Short Rest' });
@@ -6795,15 +6872,22 @@ document.getElementById('short-rest-btn').addEventListener('click', () => {
 
 document.getElementById('long-rest-btn').addEventListener('click', () => {
   const hdRecover = Math.max(1, Math.floor(state.level / 2));
+  const { a, r } = classBreakdown(state.level);
+  const items = [
+    'Restore HP to max and clear Temp HP',
+    'Refill all spell slots',
+    `Refund up to ${hdRecover} Hit Dice (half character level, min 1)`
+  ];
+  if (a >= 1) items.push('Refill Tinker\'s Magic uses');
+  if (a >= 7) items.push('Refill Flash of Genius uses');
+  const armorModel = a >= 3 ? findArmorModel() : null;
+  if (a >= 3 && armorModel === 'Dreadnaught') items.push('Refill Giant Stature uses');
+  if (a >= 15 && armorModel === 'Infiltrator') items.push('Refill Infiltrator Fly uses');
+  if (r >= 20) items.push('Refill Stroke of Luck');
+  items.push('Reset death saves');
   const body = `
     <p>This will:</p>
-    <ul>
-      <li>Restore HP to max and clear Temp HP</li>
-      <li>Refill all spell slots</li>
-      <li>Refund up to ${hdRecover} Hit Dice (half character level, min 1)</li>
-      <li>Refill all Flash of Genius uses</li>
-      <li>Reset death saves</li>
-    </ul>
+    <ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>
     <div class="confirm-note">Conditions, exhaustion, and concentration are <strong>not</strong> auto-cleared.</div>
   `;
   showConfirm('Take a Long Rest?', body, () => {
@@ -6814,6 +6898,10 @@ document.getElementById('long-rest-btn').addEventListener('click', () => {
     state.deathSavesFail = 0;
     state.hitDiceUsed = Math.max(0, (state.hitDiceUsed || 0) - hdRecover);
     state.flashOfGeniusUsed = 0;
+    state.tinkersMagicUsed = 0;
+    state.giantStatureUsed = 0;
+    state.infiltratorFlyUsed = 0;
+    state.strokeOfLuckUsed = 0;
     // Active replicas + attunement persist (RAW). Concentration not auto-reset.
     saveState();
     render();

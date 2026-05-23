@@ -1280,6 +1280,7 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
 .options-menu {
   position: relative;
   margin-left: auto;
+  z-index: 2000;
 }
 .options-btn {
   font-family: 'Cinzel', serif;
@@ -1308,8 +1309,8 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
   padding: 0.7rem;
   background: var(--ink-deep);
   border: 1px solid var(--gold);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.7);
-  z-index: 300;
+  box-shadow: 0 6px 18px rgba(31, 78, 163, 0.25);
+  z-index: 2001;
   min-width: 160px;
 }
 .options-dropdown[hidden] { display: none; }

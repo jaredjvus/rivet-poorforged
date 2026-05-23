@@ -388,15 +388,98 @@ body::before {
   font-size: 0.9rem;
   font-style: italic;
 }
-.modal-help {
+.modal-back {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-back:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+.modal-detail-features {
+  margin-bottom: 1.2rem;
   font-family: 'EB Garamond', serif;
-  font-style: italic;
-  font-size: 0.82rem;
-  color: var(--parchment-dim);
-  text-align: center;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px dotted var(--gold-tarnish);
+  color: var(--parchment);
+}
+.modal-detail-features .feature {
+  padding: 0.6rem 0;
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.25);
+}
+.modal-detail-features .feature:last-child { border-bottom: none; }
+.modal-detail-features .feature h5 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+.modal-detail-features .feature p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--parchment-aged);
+  margin: 0;
+}
+.modal-detail-prompts {
+  margin: 1rem 0;
+}
+.modal-prompt {
+  border: 1px dotted var(--gold);
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+  background: rgba(70, 102, 166, 0.06);
+}
+.modal-prompt-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.modal-prompt select {
+  width: 100%;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  padding: 0.45rem 0.5rem;
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  outline: none;
+}
+.modal-prompt select:focus { border-color: var(--gold); }
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.4rem;
+}
+.modal-confirm {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: #fff;
+  border: 1px solid var(--gold);
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.modal-confirm:hover {
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
 }
 
 .options-menu {
@@ -2212,10 +2295,25 @@ body.dm-mode .dm-hide { display: none; }
 <div class="modal-overlay" id="levelup-overlay" hidden>
   <div class="modal">
     <button class="modal-close" id="modal-close" aria-label="Close">×</button>
-    <div class="modal-title" id="levelup-title">Level Up</div>
-    <div class="modal-subtitle" id="levelup-subtitle">Choose a class to take this level in:</div>
-    <div class="modal-options" id="levelup-options"></div>
-    <div class="modal-help">Class features for this level will be added to her sheet automatically. (Phase 2 ongoing — additional picks for subclass / ASI / feat / spells / infusions come later.)</div>
+
+    <!-- Step 1: pick class -->
+    <div id="levelup-step1">
+      <div class="modal-title" id="levelup-title">Level Up</div>
+      <div class="modal-subtitle" id="levelup-subtitle">Choose a class to take this level in:</div>
+      <div class="modal-options" id="levelup-options"></div>
+    </div>
+
+    <!-- Step 2: confirm details -->
+    <div id="levelup-step2" hidden>
+      <button class="modal-back" id="levelup-back">← Back</button>
+      <div class="modal-title" id="levelup-detail-title">Class Level</div>
+      <div class="modal-subtitle" id="levelup-detail-subtitle">Features gained at this level:</div>
+      <div class="modal-detail-features" id="levelup-detail-features"></div>
+      <div class="modal-detail-prompts" id="levelup-detail-prompts"></div>
+      <div class="modal-actions">
+        <button class="modal-confirm" id="levelup-confirm">Confirm Level Up</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2393,6 +2491,128 @@ function pactSlots(warlockLevel) {
 
 // Class features list populated by the Level-Up modal in Phase 2.
 const CLASS_FEATURES = [];
+
+// ============================================================
+// CLASS DATA (Phase 2)
+// ============================================================
+// Per-class progressions. The Level Up modal reads from these to
+// (a) show what the player gains at each class-level and
+// (b) drive prompts (subclass at 3, ASI at the listed levels, etc.).
+// Subclass-specific features (Armorer, Thief, etc.) are TBD — added
+// once the user pastes those tables.
+
+const ARTIFICER_SKILLS = ['Arcana', 'History', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Sleight of Hand'];
+const ROGUE_SKILLS = ['Acrobatics', 'Athletics', 'Deception', 'Insight', 'Intimidation', 'Investigation', 'Perception', 'Persuasion', 'Sleight of Hand', 'Stealth'];
+
+const CLASS_DATA = {
+  artificer: {
+    name: 'Artificer',
+    fullName: 'Artificer (Armorer)',
+    hitDie: 8,
+    primaryAbility: 'int',
+    saves: ['con', 'int'],            // gained only if Artificer is the FIRST class
+    multiclassSaves: [],              // 2024: multiclass doesn't add new save profs
+    skills: { count: 2, from: ARTIFICER_SKILLS, multiclassCount: 1 },
+    multiclassArmor: 'Light + Medium + Shields',
+    multiclassTools: ['Tinker\'s Tools'],
+    isHalfCaster: true,
+    spellcastingAbility: 'int',
+    subclasses: ['Alchemist', 'Armorer', 'Artillerist', 'Battle Smith', 'Cartographer'],
+    // Per-class-level progression. Each entry:
+    //   features: list of {name, desc} the player gains at this class level
+    //   asi: true if it's an ASI/feat level
+    //   subclassPick: true at level 3
+    //   cantrips/prepared/slots: from the Part B table
+    perLevel: [
+      null,
+      { features: [
+          { name: 'Spellcasting', desc: 'Cast Artificer spells using INT. Focus is Tinker\'s, Thieves\', or Artisan\'s Tools.' },
+          { name: 'Tinker\'s Magic', desc: 'Know Mending cantrip. Action with Tinker\'s Tools to create a small mundane item (lasts until long rest); INT mod uses / long rest.' }
+        ], cantrips: 2, prepared: 2, slots: [2,0,0,0,0] },
+      { features: [
+          { name: 'Replicate Magic Item', desc: 'Pick 4 magic-item plans. After a long rest, create up to 2 magic items from your plans. Acts as Spellcasting Focus if a wand/weapon.' }
+        ], cantrips: 2, prepared: 3, slots: [2,0,0,0,0] },
+      { features: [
+          { name: 'Artificer Subclass', desc: 'Pick a subclass — gain its level 3 features.' }
+        ], cantrips: 2, prepared: 4, slots: [3,0,0,0,0], subclassPick: true },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice. (Apply manually for now.)' }], cantrips: 2, prepared: 5, slots: [3,0,0,0,0], asi: true },
+      { features: [{ name: 'Subclass Feature', desc: 'See your subclass entry for its level 5 feature.' }], cantrips: 2, prepared: 6, slots: [4,2,0,0,0] },
+      { features: [
+          { name: 'Magic Item Tinker', desc: 'Charge Magic Item (bonus action, spend a slot to refill charges), Drain Magic Item (1/LR, convert item back to a slot), Transmute Magic Item (1/LR, swap one of your created items to another known plan).' }
+        ], cantrips: 2, prepared: 6, slots: [4,2,0,0,0] },
+      { features: [
+          { name: 'Flash of Genius', desc: 'Reaction: when you or an ally within 30 ft fails a check or save, add +INT mod to the roll. INT mod uses / long rest.' }
+        ], cantrips: 2, prepared: 7, slots: [4,3,0,0,0] },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], cantrips: 2, prepared: 7, slots: [4,3,0,0,0], asi: true },
+      { features: [{ name: 'Subclass Feature', desc: 'See your subclass entry for its level 9 feature.' }], cantrips: 2, prepared: 9, slots: [4,3,2,0,0] },
+      { features: [{ name: 'Magic Item Adept', desc: 'Attune to up to 4 magic items at once.' }], cantrips: 3, prepared: 9, slots: [4,3,2,0,0] },
+      { features: [
+          { name: 'Spell-Storing Item', desc: 'After a long rest, touch a weapon or focus and store a 1st/2nd/3rd-level Artificer spell in it. The wielder can release the spell as a Magic action. Stored 2× INT mod times.' }
+        ], cantrips: 3, prepared: 10, slots: [4,3,3,0,0] },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], cantrips: 3, prepared: 10, slots: [4,3,3,0,0], asi: true },
+      { features: [], cantrips: 3, prepared: 11, slots: [4,3,3,1,0] },
+      { features: [{ name: 'Advanced Artifice', desc: 'Magic Item Savant (attune 5 items). Refreshed Genius (regain 1 use of Flash of Genius on a short rest).' }], cantrips: 4, prepared: 11, slots: [4,3,3,1,0] },
+      { features: [{ name: 'Subclass Feature', desc: 'See your subclass entry for its level 15 feature.' }], cantrips: 4, prepared: 12, slots: [4,3,3,2,0] },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], cantrips: 4, prepared: 12, slots: [4,3,3,2,0], asi: true },
+      { features: [], cantrips: 4, prepared: 14, slots: [4,3,3,3,1] },
+      { features: [{ name: 'Magic Item Master', desc: 'Attune to up to 6 magic items at once.' }], cantrips: 4, prepared: 14, slots: [4,3,3,3,1] },
+      { features: [{ name: 'Epic Boon', desc: 'Gain an Epic Boon feat (Boon of Energy Resistance recommended).' }], cantrips: 4, prepared: 15, slots: [4,3,3,3,2], asi: true },
+      { features: [
+          { name: 'Soul of Artifice', desc: 'Cheat Death: if dropped to 0 HP, disintegrate any number of your replicated Uncommon/Rare items to set HP to 20× count. Magical Guidance: on a short rest, regain all Flash of Genius uses if attuned to any magic item.' }
+        ], cantrips: 4, prepared: 15, slots: [4,3,3,3,2] }
+    ]
+  },
+  rogue: {
+    name: 'Rogue',
+    fullName: 'Rogue (Thief)',
+    hitDie: 8,
+    primaryAbility: 'dex',
+    saves: ['dex', 'int'],
+    multiclassSaves: [],
+    skills: { count: 4, from: ROGUE_SKILLS, multiclassCount: 1 },
+    multiclassArmor: 'Light',
+    multiclassTools: ['Thieves\' Tools'],
+    isHalfCaster: false,
+    subclasses: ['Arcane Trickster', 'Assassin', 'Scion of the Three', 'Soulknife', 'Thief'],
+    perLevel: [
+      null,
+      { features: [
+          { name: 'Expertise', desc: 'Double your proficiency bonus on checks with 2 chosen skills.' },
+          { name: 'Sneak Attack 1d6', desc: 'Once per turn, +1d6 damage with a Finesse or Ranged weapon vs. one creature you have Advantage against (or an ally is within 5 ft of it).' },
+          { name: 'Thieves\' Cant', desc: 'Secret rogue language + one other language of your choice.' },
+          { name: 'Weapon Mastery', desc: 'Use the mastery property of two chosen weapons. Swap on a long rest.' }
+        ], sneakAttack: 1, expertise: 2, weaponMastery: 2 },
+      { features: [{ name: 'Cunning Action', desc: 'Bonus action: Dash, Disengage, or Hide.' }], sneakAttack: 1 },
+      { features: [
+          { name: 'Rogue Subclass', desc: 'Pick a subclass — gain its level 3 features.' },
+          { name: 'Steady Aim', desc: 'Bonus action: Advantage on your next attack this turn (your Speed becomes 0 for the turn after using it).' }
+        ], sneakAttack: 2, subclassPick: true },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], sneakAttack: 2, asi: true },
+      { features: [
+          { name: 'Cunning Strike', desc: 'Spend Sneak Attack dice to apply effects: Poison (1d6), Trip (1d6), Withdraw (1d6).' },
+          { name: 'Uncanny Dodge', desc: 'Reaction: halve damage from one attack that hits you.' }
+        ], sneakAttack: 3 },
+      { features: [{ name: 'Expertise', desc: 'Gain Expertise in 2 more skill proficiencies.' }], sneakAttack: 3, expertise: 2 },
+      { features: [
+          { name: 'Evasion', desc: 'On DEX saves for half damage: success = no damage, failure = half damage.' },
+          { name: 'Reliable Talent', desc: 'Treat d20 rolls of 9 or lower as a 10 for any skill/tool you\'re proficient in.' }
+        ], sneakAttack: 4 },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], sneakAttack: 4, asi: true },
+      { features: [{ name: 'Subclass Feature', desc: 'See your subclass entry for its level 9 feature.' }], sneakAttack: 5 },
+      { features: [{ name: 'Ability Score Improvement', desc: 'Extra Rogue ASI/Feat. (Rogue gets one more than most classes.)' }], sneakAttack: 5, asi: true },
+      { features: [{ name: 'Improved Cunning Strike', desc: 'Apply up to two Cunning Strike effects per Sneak Attack.' }], sneakAttack: 6 },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], sneakAttack: 6, asi: true },
+      { features: [{ name: 'Subclass Feature', desc: 'See your subclass entry for its level 13 feature.' }], sneakAttack: 7 },
+      { features: [{ name: 'Devious Strikes', desc: 'New Cunning Strike effects: Daze (2d6), Knock Out (6d6), Obscure (3d6).' }], sneakAttack: 7 },
+      { features: [{ name: 'Slippery Mind', desc: 'Gain proficiency in WIS and CHA saving throws.' }], sneakAttack: 8, saveProfsAdd: ['wis', 'cha'] },
+      { features: [{ name: 'Ability Score Improvement', desc: 'ASI or Feat of your choice.' }], sneakAttack: 8, asi: true },
+      { features: [{ name: 'Subclass Feature', desc: 'See your subclass entry for its level 17 feature.' }], sneakAttack: 9 },
+      { features: [{ name: 'Elusive', desc: 'Attack rolls against you can\'t have Advantage unless you\'re Incapacitated.' }], sneakAttack: 9 },
+      { features: [{ name: 'Epic Boon', desc: 'Gain an Epic Boon feat (Boon of the Night Spirit recommended).' }], sneakAttack: 10, asi: true },
+      { features: [{ name: 'Stroke of Luck', desc: 'Once per short or long rest, when you fail a d20 Test, turn it into a 20.' }], sneakAttack: 10 }
+    ]
+  }
+};
 
 // Combat loops empty for Phase 1 — depend on her chosen build.
 const COMBAT_LOOPS = [];
@@ -2768,6 +2988,9 @@ function render() {
 
   // Level table (will populate once LEVEL_DATA fills in via the level-up modal)
   renderLevelTable(level);
+
+  // Class features (populated from state.levelHistory via the Level Up modal)
+  renderClassFeatures(level);
 
   // Point-buy tracker
   renderPointBuy();
@@ -3205,21 +3428,31 @@ document.addEventListener('keydown', (e) => {
 function renderClassFeatures(level) {
   const container = document.getElementById('class-features');
   container.innerHTML = '';
-  let hidden = 0;
-  for (const f of CLASS_FEATURES) {
-    if (f.level > level) { hidden++; continue; }
-    const block = document.createElement('div');
-    block.className = 'feature-block';
-    block.setAttribute('data-level', f.level);
-    block.innerHTML = `<h4>${f.name}</h4><p><em>(${f.source})</em> ${f.desc}</p>`;
-    container.appendChild(block);
+  const history = state.levelHistory || [];
+  if (history.length === 0) {
+    container.innerHTML = '<p style="color: var(--parchment-dim); font-style: italic;">Class features appear here as Rivet levels up. Click ↑ Level Up to add her first level.</p>';
+    return;
   }
-  if (hidden > 0) {
-    const note = document.createElement('p');
-    note.style.cssText = 'font-style:italic;color:var(--parchment-dim);font-size:0.85rem;margin-top:1rem;text-align:center;';
-    note.textContent = `+ ${hidden} more feature${hidden === 1 ? '' : 's'} at higher levels`;
-    container.appendChild(note);
-  }
+  // Walk the history and render every feature she's gained
+  history.forEach((entry, idx) => {
+    const cls = CLASS_DATA[entry.class];
+    if (!cls) return;
+    const levelData = cls.perLevel[entry.classLevel];
+    if (!levelData || !levelData.features) return;
+    const charLevel = idx + 1;
+    for (const f of levelData.features) {
+      const block = document.createElement('div');
+      block.className = 'feature-block';
+      block.innerHTML = `<h4>${f.name} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· ${cls.name} ${entry.classLevel} (char L${charLevel})</span></h4><p>${f.desc}</p>`;
+      container.appendChild(block);
+    }
+    if (entry.subclass) {
+      const block = document.createElement('div');
+      block.className = 'feature-block';
+      block.innerHTML = `<h4>Subclass: ${entry.subclass} <span style="font-weight:400;color:var(--gold-tarnish);font-size:0.85em;">· chosen at ${cls.name} 3 (char L${charLevel})</span></h4><p style="color: var(--parchment-dim); font-style: italic;">Subclass features auto-fill once their per-level data is added.</p>`;
+      container.appendChild(block);
+    }
+  });
 }
 
 function renderAlternates(level) {
@@ -3375,6 +3608,9 @@ document.getElementById('inspiration-toggle').addEventListener('click', () => {
 // (subclass, ASI/feat, spells, infusions) wire in once the Artificer/Rogue
 // progression data lands in Phase 2B.
 
+// Pending pick while the modal is open (set when user clicks a class on step 1).
+let _levelUpPending = null;
+
 function openLevelUpModal() {
   const overlay = document.getElementById('levelup-overlay');
   const current = state.maxLevel || 0;
@@ -3384,56 +3620,188 @@ function openLevelUpModal() {
   }
   const nextLevel = current + 1;
   const { a, r } = classBreakdown(current);
+  _levelUpPending = null;
+
+  // Step 1 visible, step 2 hidden
+  document.getElementById('levelup-step1').hidden = false;
+  document.getElementById('levelup-step2').hidden = true;
 
   document.getElementById('levelup-title').textContent =
-    nextLevel === 1 ? 'Choose Her Starting Class' : `Level Up — Level ${nextLevel}`;
+    nextLevel === 1 ? 'Choose Her Starting Class' : `Level Up — Character Level ${nextLevel}`;
   document.getElementById('levelup-subtitle').textContent =
-    nextLevel === 1
-      ? 'Which class does Rivet take at level 1?'
-      : 'Which class is she leveling in?';
+    nextLevel === 1 ? 'Which class does Rivet take at level 1?' : 'Which class is she leveling in?';
 
   const container = document.getElementById('levelup-options');
   container.innerHTML = '';
   const options = [
-    { class: 'artificer', label: 'Artificer (Armorer)', next: a + 1 },
-    { class: 'rogue', label: 'Rogue (Thief)', next: r + 1 }
+    { class: 'artificer', next: a + 1 },
+    { class: 'rogue', next: r + 1 }
   ];
   for (const opt of options) {
     if (opt.next > 20) continue;
+    const cls = CLASS_DATA[opt.class];
     const card = document.createElement('button');
     card.className = 'modal-option';
     const isFirst = opt.next === 1;
     card.innerHTML = `
-      <div class="modal-option-name">${opt.label}</div>
-      <div class="modal-option-detail">${isFirst ? 'first class' : 'class level ' + opt.next}</div>
+      <div class="modal-option-name">${cls.fullName}</div>
+      <div class="modal-option-detail">${isFirst ? 'first class' : cls.name + ' ' + opt.next}</div>
     `;
-    card.addEventListener('click', () => confirmLevelUp(opt.class));
+    card.addEventListener('click', () => showLevelUpDetail(opt.class, opt.next));
     container.appendChild(card);
   }
   overlay.hidden = false;
 }
 
-function closeLevelUpModal() {
-  document.getElementById('levelup-overlay').hidden = true;
+function showLevelUpDetail(klass, classLevel) {
+  _levelUpPending = { class: klass, classLevel };
+  const cls = CLASS_DATA[klass];
+  const data = cls.perLevel[classLevel];
+  const charLevel = (state.maxLevel || 0) + 1;
+  const isFirstLevel = charLevel === 1;
+  const isFirstOfClass = classLevel === 1;
+
+  document.getElementById('levelup-step1').hidden = true;
+  document.getElementById('levelup-step2').hidden = false;
+
+  document.getElementById('levelup-detail-title').textContent = `${cls.name} ${classLevel} · Character Level ${charLevel}`;
+  document.getElementById('levelup-detail-subtitle').textContent = isFirstLevel
+    ? 'Starting class — features and proficiencies gained:'
+    : 'Features gained at this class level:';
+
+  // Features list
+  const featuresEl = document.getElementById('levelup-detail-features');
+  featuresEl.innerHTML = '';
+
+  // First level of a class adds proficiencies — show them as the first "feature"
+  if (isFirstOfClass) {
+    const profDiv = document.createElement('div');
+    profDiv.className = 'feature';
+    const isMulticlass = !isFirstLevel;
+    const skillsLine = isMulticlass
+      ? `${cls.skills.multiclassCount} skill from the ${cls.name} list`
+      : `${cls.skills.count} skills from: ${cls.skills.from.join(', ')}`;
+    const savesLine = isMulticlass
+      ? '(multiclass: no new save proficiencies)'
+      : `Saving Throws: ${cls.saves.map(s => s.toUpperCase()).join(' + ')}`;
+    profDiv.innerHTML = `
+      <h5>${isMulticlass ? 'Multiclass Entry' : 'Class Start'}</h5>
+      <p>${savesLine}<br>
+         Hit Die: d${cls.hitDie}<br>
+         Skills: ${skillsLine}<br>
+         Armor: ${cls.multiclassArmor}<br>
+         Tools: ${cls.multiclassTools.join(', ')}</p>
+    `;
+    featuresEl.appendChild(profDiv);
+  }
+
+  for (const f of data.features) {
+    const div = document.createElement('div');
+    div.className = 'feature';
+    div.innerHTML = `<h5>${f.name}</h5><p>${f.desc}</p>`;
+    featuresEl.appendChild(div);
+  }
+
+  // Spell slot / cantrip / prepared spell deltas (Artificer only)
+  if (cls.isHalfCaster && classLevel > 1) {
+    const prev = cls.perLevel[classLevel - 1];
+    const deltas = [];
+    if (data.cantrips > prev.cantrips) deltas.push(`+${data.cantrips - prev.cantrips} cantrip`);
+    if (data.prepared > prev.prepared) deltas.push(`+${data.prepared - prev.prepared} prepared spell${data.prepared - prev.prepared > 1 ? 's' : ''}`);
+    for (let i = 0; i < 5; i++) {
+      if ((data.slots[i] || 0) > (prev.slots[i] || 0)) {
+        const diff = data.slots[i] - prev.slots[i];
+        deltas.push(`+${diff} level-${i + 1} slot${diff > 1 ? 's' : ''}`);
+      }
+    }
+    if (deltas.length > 0) {
+      const div = document.createElement('div');
+      div.className = 'feature';
+      div.innerHTML = `<h5>Spellcasting Progression</h5><p>${deltas.join(' · ')}</p>`;
+      featuresEl.appendChild(div);
+    }
+  } else if (cls.isHalfCaster && classLevel === 1) {
+    const div = document.createElement('div');
+    div.className = 'feature';
+    div.innerHTML = `<h5>Spellcasting Progression</h5><p>${data.cantrips} cantrips known · ${data.prepared} prepared spells · ${data.slots[0]} level-1 slot${data.slots[0] > 1 ? 's' : ''}</p>`;
+    featuresEl.appendChild(div);
+  }
+
+  // Prompts (subclass at L3 only for now; spell/feat picks deferred)
+  const promptsEl = document.getElementById('levelup-detail-prompts');
+  promptsEl.innerHTML = '';
+  if (data.subclassPick) {
+    const p = document.createElement('div');
+    p.className = 'modal-prompt';
+    p.innerHTML = `
+      <div class="modal-prompt-label">Choose your ${cls.name} subclass</div>
+      <select id="modal-subclass-select">
+        ${cls.subclasses.map(sc => `<option value="${sc}">${sc}</option>`).join('')}
+      </select>
+    `;
+    promptsEl.appendChild(p);
+  }
+  if (data.asi) {
+    const p = document.createElement('div');
+    p.className = 'modal-prompt';
+    p.innerHTML = `
+      <div class="modal-prompt-label">ASI / Feat slot</div>
+      <p style="font-family:'EB Garamond',serif;font-size:0.9rem;color:var(--parchment-aged);margin:0;">Pick an ASI (+2 to one ability or +1 / +1 to two) or a feat. Apply by editing the point-buy inputs or filling out the alternates section. (Full picker UI coming in a later iteration.)</p>
+    `;
+    promptsEl.appendChild(p);
+  }
 }
 
-function confirmLevelUp(klass) {
+function closeLevelUpModal() {
+  document.getElementById('levelup-overlay').hidden = true;
+  _levelUpPending = null;
+}
+
+function confirmLevelUp() {
+  if (!_levelUpPending) return;
   if (!state.levelHistory) state.levelHistory = [];
-  const current = state.maxLevel || 0;
-  const { a, r } = classBreakdown(current);
-  const classLevel = klass === 'artificer' ? a + 1 : r + 1;
-  state.levelHistory.push({ class: klass, classLevel });
-  state.maxLevel = current + 1;
+
+  const entry = {
+    class: _levelUpPending.class,
+    classLevel: _levelUpPending.classLevel
+  };
+
+  // If this is L3 of a class (subclass pick), record the chosen subclass
+  const cls = CLASS_DATA[entry.class];
+  const data = cls.perLevel[entry.classLevel];
+  if (data.subclassPick) {
+    const sel = document.getElementById('modal-subclass-select');
+    entry.subclass = sel ? sel.value : null;
+  }
+
+  // If first level of class, copy save profs from class (only for the FIRST class taken)
+  if (entry.classLevel === 1 && (state.maxLevel || 0) === 0) {
+    state.classSaveProfs = [...cls.saves];
+  }
+  // For Rogue 15 Slippery Mind, add WIS+CHA save profs
+  if (data.saveProfsAdd) {
+    const set = new Set(state.classSaveProfs || []);
+    data.saveProfsAdd.forEach(s => set.add(s));
+    state.classSaveProfs = [...set];
+  }
+
+  state.levelHistory.push(entry);
+  state.maxLevel = (state.maxLevel || 0) + 1;
   state.level = state.maxLevel;
   closeLevelUpModal();
   saveState();
-  // Sync the slider to the new max level
   document.getElementById('level-slider').value = state.level;
   render();
 }
 
 document.getElementById('level-up-btn').addEventListener('click', openLevelUpModal);
 document.getElementById('modal-close').addEventListener('click', closeLevelUpModal);
+document.getElementById('levelup-back').addEventListener('click', () => {
+  document.getElementById('levelup-step1').hidden = false;
+  document.getElementById('levelup-step2').hidden = true;
+  _levelUpPending = null;
+});
+document.getElementById('levelup-confirm').addEventListener('click', confirmLevelUp);
 document.getElementById('levelup-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'levelup-overlay') closeLevelUpModal();
 });

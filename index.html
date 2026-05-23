@@ -94,15 +94,22 @@ body::before {
   opacity: 0.30;
   pointer-events: none;
   z-index: 0;
-  /* Heavy on the sides, thin through the middle behind the name */
-  -webkit-mask-image: linear-gradient(to right,
-    black 0%, black 28%,
-    rgba(0,0,0,0.12) 50%,
-    black 72%, black 100%);
-  mask-image: linear-gradient(to right,
-    black 0%, black 28%,
-    rgba(0,0,0,0.12) 50%,
-    black 72%, black 100%);
+}
+.header-photo {
+  position: absolute;
+  inset: 0;
+  background-image: url('mask.avif');
+  background-size: cover;
+  background-position: center 25%;  /* favor the floral pattern of the mask; crops "Color: Blue" pill below */
+  background-repeat: no-repeat;
+  /* Desaturate the photo then re-tint cobalt so it matches the Delft palette */
+  filter: grayscale(1) brightness(1.05) contrast(1.4) sepia(1) hue-rotate(185deg) saturate(2.6);
+  opacity: 0.45;
+  z-index: 0;
+  pointer-events: none;
+  /* Soft fade at all edges so it doesn't have a hard rectangle outline */
+  -webkit-mask-image: radial-gradient(ellipse 85% 100% at center, black 30%, rgba(0,0,0,0.55) 65%, transparent 95%);
+  mask-image: radial-gradient(ellipse 85% 100% at center, black 30%, rgba(0,0,0,0.55) 65%, transparent 95%);
 }
 .header > .eyebrow,
 .header > .name,
@@ -1738,7 +1745,8 @@ body.dm-mode .dm-hide { display: none; }
 
   <!-- HEADER -->
   <header class="header">
-    <svg class="header-ornament" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <div class="header-photo" aria-hidden="true"></div>
+    <svg class="header-ornament" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true" hidden>
       <defs>
         <!-- Acanthus scroll-leaf — the signature curling chinoiserie motif -->
         <symbol id="acanthus" overflow="visible">

@@ -7891,9 +7891,18 @@ function closeOptionsOnOutside(e) {
   document.removeEventListener('click', closeOptionsOnOutside);
 }
 
+// Any button click inside the dropdown should close it (file input excluded —
+// it's the hidden picker behind the Import button, fired via .click()).
+document.getElementById('options-dropdown').addEventListener('click', (e) => {
+  if (e.target.closest('button')) {
+    document.getElementById('options-dropdown').hidden = true;
+    document.removeEventListener('click', closeOptionsOnOutside);
+  }
+});
+
 document.getElementById('level-down-btn').addEventListener('click', () => {
-  document.getElementById('options-dropdown').hidden = true;
-  document.removeEventListener('click', closeOptionsOnOutside);
+  // The global handler above already closes the dropdown. Just open the
+  // styled confirm via levelDown(); the warning modal is preserved.
   levelDown();
 });
 

@@ -747,6 +747,17 @@ body::before {
   align-items: center;
   justify-content: space-between;
 }
+.spell-level-header {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-tarnish);
+  padding: 0.6rem 0 0.2rem;
+  border-bottom: 1px dotted var(--gold-tarnish);
+  margin-bottom: 0.1rem;
+}
+.spell-level-header:first-child { padding-top: 0; }
 .spell-section-title .spell-count {
   font-size: 0.7rem;
   color: var(--gold-tarnish);
@@ -2830,6 +2841,17 @@ body.dm-mode .dm-hide { display: none; }
   margin: 0 0 1.3rem;
 }
 .backstory-content p:last-of-type { margin-bottom: 0; }
+/* Drop cap on the first paragraph (after the subtitle) */
+.backstory-subtitle + p::first-letter {
+  font-family: 'Cinzel', 'EB Garamond', serif;
+  font-weight: 700;
+  font-size: 4.2rem;
+  line-height: 0.9;
+  float: left;
+  padding: 0.4rem 0.55rem 0 0;
+  color: var(--gold);
+  margin-top: 0.15rem;
+}
 .backstory-content .scene-break {
   text-align: center;
   color: var(--gold-tarnish);
@@ -5118,12 +5140,21 @@ function renderMagicCard(level) {
   if (all.length === 0) {
     preparedList.innerHTML = '<p style="font-style: italic; color: var(--parchment-aged); font-size: 0.85rem; margin: 0.4rem 0;">No prepared spells yet.</p>';
   } else {
+    // Group by level for scanability
+    let currentLevelLabel = null;
     for (const { spell, always } of all) {
+      if (spell.level !== currentLevelLabel) {
+        currentLevelLabel = spell.level;
+        const header = document.createElement('div');
+        header.className = 'spell-level-header';
+        header.textContent = spell.level === 'Cantrip' ? 'Cantrips' : `Level ${spellLevelToNum(spell.level)}`;
+        preparedList.appendChild(header);
+      }
       const row = document.createElement('div');
       row.className = 'spell-row';
       row.innerHTML = `
         <span class="spell-name">${spell.name}${spell.concentration ? '<span class="conc-tag">C</span>' : ''}${always ? '<span class="always-tag">auto</span>' : ''}</span>
-        <span class="spell-meta">${spell.level} · ${spell.school} · ${spell.range}</span>
+        <span class="spell-meta">${spell.school} · ${spell.range}</span>
         <span class="spell-actions">
           <button class="spell-info" data-spell="${spell.name}" title="Spell details">ⓘ</button>
           <button class="spell-cast" data-spell="${spell.name}">Cast</button>

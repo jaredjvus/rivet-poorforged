@@ -2827,6 +2827,12 @@ body.dm-mode .dm-hide { display: none; }
       <h3>Feats</h3>
       <div id="feats-list"></div>
     </div>
+    <div class="card" id="weapon-masteries-card" style="margin-top: 2rem;" hidden>
+      <h3>Weapon Masteries
+        <button class="edit-prepared-btn" id="swap-mastery-btn">Swap (Long Rest)</button>
+      </h3>
+      <div id="weapon-masteries-list"></div>
+    </div>
   </section>
 
   <!-- INVENTORY -->
@@ -2975,6 +2981,19 @@ body.dm-mode .dm-hide { display: none; }
     <div class="modal-detail-prompts" id="infusions-prompts"></div>
     <div class="modal-actions">
       <button class="modal-confirm" id="infusions-confirm">Save Plans</button>
+    </div>
+  </div>
+</div>
+
+<!-- Swap Weapon Masteries modal (Phase 2I) — re-pick masteries on a long rest -->
+<div class="modal-overlay" id="mastery-overlay" hidden>
+  <div class="modal">
+    <button class="modal-close" id="mastery-close" aria-label="Close">×</button>
+    <div class="modal-title">Swap Weapon Masteries</div>
+    <div class="modal-subtitle" id="mastery-subtitle">Pick the weapons she's currently mastering.</div>
+    <div class="modal-detail-prompts" id="mastery-prompts"></div>
+    <div class="modal-actions">
+      <button class="modal-confirm" id="mastery-confirm">Save Masteries</button>
     </div>
   </div>
 </div>
@@ -3438,6 +3457,64 @@ const CLASS_FEATURES = [];
 const ARTIFICER_SKILLS = ['Arcana', 'History', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Sleight of Hand'];
 const ROGUE_SKILLS = ['Acrobatics', 'Athletics', 'Deception', 'Insight', 'Intimidation', 'Investigation', 'Perception', 'Persuasion', 'Sleight of Hand', 'Stealth'];
 
+// 2024 PHB weapons with their Mastery property. Used by the Rogue L1
+// Weapon Mastery picker (she picks 2; swap on a long rest).
+// Categories: 'simple-melee', 'simple-ranged', 'martial-melee', 'martial-ranged'
+const WEAPONS_DATA = [
+  // Simple Melee
+  { name: 'Club',            category: 'simple-melee', mastery: 'Slow',   damage: '1d4 B', properties: 'Light' },
+  { name: 'Dagger',          category: 'simple-melee', mastery: 'Nick',   damage: '1d4 P', properties: 'Finesse, Light, Thrown (20/60)' },
+  { name: 'Greatclub',       category: 'simple-melee', mastery: 'Push',   damage: '1d8 B', properties: 'Two-Handed' },
+  { name: 'Handaxe',         category: 'simple-melee', mastery: 'Vex',    damage: '1d6 S', properties: 'Light, Thrown (20/60)' },
+  { name: 'Javelin',         category: 'simple-melee', mastery: 'Slow',   damage: '1d6 P', properties: 'Thrown (30/120)' },
+  { name: 'Light Hammer',    category: 'simple-melee', mastery: 'Nick',   damage: '1d4 B', properties: 'Light, Thrown (20/60)' },
+  { name: 'Mace',            category: 'simple-melee', mastery: 'Sap',    damage: '1d6 B', properties: '—' },
+  { name: 'Quarterstaff',    category: 'simple-melee', mastery: 'Topple', damage: '1d6 B', properties: 'Versatile (1d8)' },
+  { name: 'Sickle',          category: 'simple-melee', mastery: 'Nick',   damage: '1d4 S', properties: 'Light' },
+  { name: 'Spear',           category: 'simple-melee', mastery: 'Sap',    damage: '1d6 P', properties: 'Thrown (20/60), Versatile (1d8)' },
+  // Simple Ranged
+  { name: 'Dart',            category: 'simple-ranged', mastery: 'Vex',  damage: '1d4 P', properties: 'Finesse, Thrown (20/60)' },
+  { name: 'Light Crossbow',  category: 'simple-ranged', mastery: 'Slow', damage: '1d8 P', properties: 'Ammunition (80/320), Loading, Two-Handed' },
+  { name: 'Shortbow',        category: 'simple-ranged', mastery: 'Vex',  damage: '1d6 P', properties: 'Ammunition (80/320), Two-Handed' },
+  { name: 'Sling',           category: 'simple-ranged', mastery: 'Slow', damage: '1d4 B', properties: 'Ammunition (30/120)' },
+  // Martial Melee
+  { name: 'Battleaxe',       category: 'martial-melee', mastery: 'Topple', damage: '1d8 S', properties: 'Versatile (1d10)' },
+  { name: 'Flail',           category: 'martial-melee', mastery: 'Sap',    damage: '1d8 B', properties: '—' },
+  { name: 'Glaive',          category: 'martial-melee', mastery: 'Graze',  damage: '1d10 S', properties: 'Heavy, Reach, Two-Handed' },
+  { name: 'Greataxe',        category: 'martial-melee', mastery: 'Cleave', damage: '1d12 S', properties: 'Heavy, Two-Handed' },
+  { name: 'Greatsword',      category: 'martial-melee', mastery: 'Graze',  damage: '2d6 S', properties: 'Heavy, Two-Handed' },
+  { name: 'Halberd',         category: 'martial-melee', mastery: 'Cleave', damage: '1d10 S', properties: 'Heavy, Reach, Two-Handed' },
+  { name: 'Lance',           category: 'martial-melee', mastery: 'Topple', damage: '1d10 P', properties: 'Heavy, Reach, Two-Handed' },
+  { name: 'Longsword',       category: 'martial-melee', mastery: 'Sap',    damage: '1d8 S', properties: 'Versatile (1d10)' },
+  { name: 'Maul',            category: 'martial-melee', mastery: 'Topple', damage: '2d6 B', properties: 'Heavy, Two-Handed' },
+  { name: 'Morningstar',     category: 'martial-melee', mastery: 'Sap',    damage: '1d8 P', properties: '—' },
+  { name: 'Pike',            category: 'martial-melee', mastery: 'Push',   damage: '1d10 P', properties: 'Heavy, Reach, Two-Handed' },
+  { name: 'Rapier',          category: 'martial-melee', mastery: 'Vex',    damage: '1d8 P', properties: 'Finesse' },
+  { name: 'Scimitar',        category: 'martial-melee', mastery: 'Nick',   damage: '1d6 S', properties: 'Finesse, Light' },
+  { name: 'Shortsword',      category: 'martial-melee', mastery: 'Vex',    damage: '1d6 P', properties: 'Finesse, Light' },
+  { name: 'Trident',         category: 'martial-melee', mastery: 'Topple', damage: '1d8 P', properties: 'Thrown (20/60), Versatile (1d10)' },
+  { name: 'War Pick',        category: 'martial-melee', mastery: 'Sap',    damage: '1d8 P', properties: 'Versatile (1d10)' },
+  { name: 'Warhammer',       category: 'martial-melee', mastery: 'Push',   damage: '1d8 B', properties: 'Versatile (1d10)' },
+  { name: 'Whip',            category: 'martial-melee', mastery: 'Slow',   damage: '1d4 S', properties: 'Finesse, Reach' },
+  // Martial Ranged
+  { name: 'Blowgun',         category: 'martial-ranged', mastery: 'Vex',  damage: '1 P',   properties: 'Ammunition (25/100), Loading' },
+  { name: 'Hand Crossbow',   category: 'martial-ranged', mastery: 'Vex',  damage: '1d6 P', properties: 'Ammunition (30/120), Light, Loading' },
+  { name: 'Heavy Crossbow',  category: 'martial-ranged', mastery: 'Push', damage: '1d10 P', properties: 'Ammunition (100/400), Heavy, Loading, Two-Handed' },
+  { name: 'Longbow',         category: 'martial-ranged', mastery: 'Slow', damage: '1d8 P', properties: 'Ammunition (150/600), Heavy, Two-Handed' }
+];
+
+// Mastery property descriptions (2024 PHB).
+const MASTERY_DESCRIPTIONS = {
+  Cleave: 'On a hit, can deal damage (no ability mod) to a second creature within 5 ft of the first. Heavy weapons only.',
+  Graze:  'If your attack misses, you still deal damage equal to your ability mod (matching the weapon\'s damage type).',
+  Nick:   'When you make the extra attack from the Light property, you can make it as part of the Attack action (not as a Bonus Action).',
+  Push:   'On a hit, you can push the target up to 10 ft away from you (Large or smaller).',
+  Sap:    'On a hit, the target has Disadvantage on its next attack roll before the start of your next turn.',
+  Slow:   'On a hit, the target\'s Speed is reduced by 10 ft until the start of your next turn.',
+  Topple: 'On a hit, the target must succeed on a CON save (DC 8 + ability mod + prof bonus) or have the Prone condition.',
+  Vex:    'On a hit, you have Advantage on your next attack roll against the target before the end of your next turn.'
+};
+
 // 2024 PHB common tools list (for Specialized Design + background picks).
 const TOOL_LIST = [
   'Alchemist\'s Supplies', 'Brewer\'s Supplies', 'Calligrapher\'s Supplies',
@@ -3720,7 +3797,9 @@ const DEFAULT_STATE = {
   skillProfs: [],           // skill names she's proficient in (any source)
   skillExpertise: [],       // skill names with Expertise (subset of skillProfs)
   toolProfs: [],            // tool names she's proficient with
-  languages: ['Common']     // languages known
+  languages: ['Common'],    // languages known
+  // Phase 2I: Weapon Masteries (Rogue L1, pick 2; swap on long rest)
+  weaponMasteries: []       // weapon names she's currently mastering (max from class data)
 };
 
 let state = loadState();
@@ -4053,6 +4132,8 @@ function render() {
   renderFeatsCard();
   // Phase 2E: Infusions card
   renderInfusionsCard(level);
+  // Phase 2I: Weapon Masteries card
+  renderWeaponMasteriesCard(level);
 
   // Point-buy tracker
   renderPointBuy();
@@ -4570,6 +4651,38 @@ function renderInfusionsCard(level) {
       render();
     });
   });
+}
+
+function renderWeaponMasteriesCard(level) {
+  const card = document.getElementById('weapon-masteries-card');
+  const { r } = classBreakdown(level);
+  const rogueData = r >= 1 ? CLASS_DATA.rogue.perLevel[r] : null;
+  // Only show if Rogue (the only class wired for mastery here) — defer if no
+  // mastery slots are unlocked at her current level.
+  if (r < 1) {
+    card.hidden = true;
+    return;
+  }
+  const masteries = state.weaponMasteries || [];
+  card.hidden = false;
+  const list = document.getElementById('weapon-masteries-list');
+  list.innerHTML = '';
+  if (masteries.length === 0) {
+    list.innerHTML = '<p style="font-style:italic;color:var(--parchment-aged);font-size:0.85rem;margin:0.4rem 0;">No masteries selected — pick at Rogue 1 or use Swap.</p>';
+    return;
+  }
+  for (const name of masteries) {
+    const w = WEAPONS_DATA.find(x => x.name === name);
+    if (!w) continue;
+    const block = document.createElement('div');
+    block.className = 'feat-block';
+    block.innerHTML = `
+      <h4>${w.name}<span class="feat-lvl">${w.mastery} · ${w.damage}</span></h4>
+      <p style="margin-bottom:0.3rem;"><em>${w.properties}</em></p>
+      <p>${MASTERY_DESCRIPTIONS[w.mastery] || ''}</p>
+    `;
+    list.appendChild(block);
+  }
 }
 
 function renderProficienciesCard() {
@@ -5332,6 +5445,41 @@ function buildSkillsPickerHTML(klass, classLevel) {
   return html;
 }
 
+// Weapon Mastery picker — Rogue L1 picks 2 masteries from any weapon.
+// Currently only Rogue has weaponMastery in CLASS_DATA; Fighter would have more.
+function buildWeaponMasteryPickerHTML(klass, classLevel) {
+  const data = CLASS_DATA[klass].perLevel[classLevel];
+  const max = data && data.weaponMastery;
+  if (!max) return '';
+
+  // Group weapons by category for visual separation
+  const groups = {
+    'simple-melee':   'Simple Melee',
+    'simple-ranged':  'Simple Ranged',
+    'martial-melee':  'Martial Melee',
+    'martial-ranged': 'Martial Ranged'
+  };
+  const rows = [];
+  for (const [cat, label] of Object.entries(groups)) {
+    rows.push(`<div class="infusion-picker-group-label">${label}</div>`);
+    for (const w of WEAPONS_DATA.filter(x => x.category === cat)) {
+      rows.push(`
+        <label class="spell-pick" data-weapon="${w.name}">
+          <input type="checkbox" value="${w.name}">
+          <span class="spell-pick-name">${w.name} <span style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-left:0.3rem;">${w.mastery}</span></span>
+          <span class="spell-pick-meta">${w.damage} · ${w.properties}</span>
+        </label>
+      `);
+    }
+  }
+
+  return `<div class="modal-prompt">
+    <div class="modal-prompt-label">Weapon Mastery · pick ${max} weapon${max > 1 ? 's' : ''}</div>
+    <div class="spell-picker weapon-mastery-picker" data-pick="weaponMastery" data-max="${max}">${rows.join('')}</div>
+    <div class="spell-picker-count" data-count-for="weaponMastery">0 / ${max}</div>
+  </div>`;
+}
+
 // Expertise picker — Rogue L1 (2 picks) and Rogue L7 (2 more picks).
 function buildExpertisePickerHTML(klass, classLevel) {
   if (klass !== 'rogue') return '';
@@ -5678,6 +5826,7 @@ function rebuildDerivedStateFromHistory() {
   state.skillExpertise = [];
   state.toolProfs = [];
   state.languages = ['Common'];
+  state.weaponMasteries = [];
   let firstClassSet = false;
   for (const e of history) {
     const cls = CLASS_DATA[e.class];
@@ -5707,6 +5856,7 @@ function rebuildDerivedStateFromHistory() {
       if (e.background.language) state.languages.push(e.background.language);
     }
     if (e.expertiseAdded) state.skillExpertise.push(...e.expertiseAdded);
+    if (e.weaponMasteriesAdded) state.weaponMasteries.push(...e.weaponMasteriesAdded);
     if (e.class === 'rogue' && e.classLevel === 1) state.languages.push('Thieves\' Cant');
     if (e.originFeat) {
       const feat = FEATS.find(f => f.name === e.originFeat);
@@ -5966,6 +6116,14 @@ function showLevelUpDetail(klass, classLevel) {
     while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
   }
 
+  // Weapon Mastery picker (Rogue L1)
+  const wmHTML = buildWeaponMasteryPickerHTML(klass, classLevel);
+  if (wmHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = wmHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
+  }
+
   // Expertise picker (Rogue L1 / L7)
   const expHTML = buildExpertisePickerHTML(klass, classLevel);
   if (expHTML) {
@@ -6070,6 +6228,12 @@ function confirmLevelUp() {
     const picked = Array.from(expertisePicker.querySelectorAll('input:checked')).map(i => i.value);
     state.skillExpertise = [...new Set([...(state.skillExpertise || []), ...picked])];
     entry.expertiseAdded = picked;
+  }
+  const weaponMasteryPicker = document.querySelector('.weapon-mastery-picker');
+  if (weaponMasteryPicker) {
+    const picked = Array.from(weaponMasteryPicker.querySelectorAll('input:checked')).map(i => i.value);
+    state.weaponMasteries = [...new Set([...(state.weaponMasteries || []), ...picked])];
+    entry.weaponMasteriesAdded = picked;
   }
   // Rogue 1 also gives Thieves' Cant (a language)
   if (entry.class === 'rogue' && entry.classLevel === 1) {
@@ -6418,6 +6582,92 @@ document.getElementById('infusions-close').addEventListener('click', closeEditIn
 document.getElementById('infusions-confirm').addEventListener('click', saveInfusions);
 document.getElementById('infusions-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'infusions-overlay') closeEditInfusions();
+});
+
+// ============================================================
+// Swap Weapon Masteries modal (Phase 2I)
+// ============================================================
+function openSwapMastery() {
+  const { r } = classBreakdown(state.level);
+  if (r < 1) return;
+  // Pull the max from her Rogue L1 entry (where Weapon Mastery was granted)
+  const max = CLASS_DATA.rogue.perLevel[1].weaponMastery || 2;
+  const current = new Set(state.weaponMasteries || []);
+
+  const overlay = document.getElementById('mastery-overlay');
+  const prompts = document.getElementById('mastery-prompts');
+  document.getElementById('mastery-subtitle').textContent =
+    `Pick exactly ${max} weapon${max > 1 ? 's' : ''} to master after this rest.`;
+
+  const groups = {
+    'simple-melee':   'Simple Melee',
+    'simple-ranged':  'Simple Ranged',
+    'martial-melee':  'Martial Melee',
+    'martial-ranged': 'Martial Ranged'
+  };
+  const rows = [];
+  for (const [cat, label] of Object.entries(groups)) {
+    rows.push(`<div class="infusion-picker-group-label">${label}</div>`);
+    for (const w of WEAPONS_DATA.filter(x => x.category === cat)) {
+      rows.push(`
+        <label class="spell-pick">
+          <input type="checkbox" value="${w.name}"${current.has(w.name) ? ' checked' : ''}>
+          <span class="spell-pick-name">${w.name} <span style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-left:0.3rem;">${w.mastery}</span></span>
+          <span class="spell-pick-meta">${w.damage} · ${w.properties}</span>
+        </label>
+      `);
+    }
+  }
+
+  prompts.innerHTML = `
+    <div class="modal-prompt">
+      <div class="modal-prompt-label">Weapon Masteries</div>
+      <div class="spell-picker" data-pick="masterySwap" data-max="${max}">${rows.join('')}</div>
+      <div class="spell-picker-count" data-count-for="masterySwap">${current.size} / ${max}</div>
+    </div>
+  `;
+
+  const picker = prompts.querySelector('.spell-picker');
+  const countEl = prompts.querySelector('[data-count-for="masterySwap"]');
+  const checkboxes = Array.from(picker.querySelectorAll('input[type="checkbox"]'));
+  const saveBtn = document.getElementById('mastery-confirm');
+  const update = () => {
+    const checked = checkboxes.filter(c => c.checked);
+    countEl.textContent = `${checked.length} / ${max}`;
+    countEl.classList.toggle('full', checked.length === max);
+    const reached = checked.length >= max;
+    checkboxes.forEach(c => {
+      const label = c.closest('.spell-pick');
+      if (!c.checked && reached) { c.disabled = true; label.classList.add('disabled'); }
+      else { c.disabled = false; label.classList.remove('disabled'); }
+    });
+    saveBtn.disabled = checked.length !== max;
+  };
+  checkboxes.forEach(c => c.addEventListener('change', update));
+  update();
+  overlay.hidden = false;
+}
+
+function closeSwapMastery() {
+  document.getElementById('mastery-overlay').hidden = true;
+}
+
+function saveSwapMastery() {
+  const overlay = document.getElementById('mastery-overlay');
+  const picker = overlay.querySelector('.spell-picker');
+  if (!picker) return;
+  const picked = Array.from(picker.querySelectorAll('input:checked')).map(i => i.value);
+  state.weaponMasteries = picked;
+  saveState();
+  closeSwapMastery();
+  render();
+}
+
+document.getElementById('swap-mastery-btn').addEventListener('click', openSwapMastery);
+document.getElementById('mastery-close').addEventListener('click', closeSwapMastery);
+document.getElementById('mastery-confirm').addEventListener('click', saveSwapMastery);
+document.getElementById('mastery-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'mastery-overlay') closeSwapMastery();
 });
 document.getElementById('levelup-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'levelup-overlay') closeLevelUpModal();

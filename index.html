@@ -733,6 +733,156 @@ body.dm-mode .magic-card .pip {
   cursor: default;
 }
 
+/* Infusions card (Phase 2E) */
+.infusions-summary {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--parchment-aged);
+  font-style: italic;
+  margin-bottom: 0.6rem;
+}
+.infusion-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem 0.8rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.15);
+}
+.infusion-row:has(.attune-toggle) { grid-template-columns: auto 1fr auto; }
+.infusion-row:last-child { border-bottom: none; }
+.infusion-row input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+.infusion-row .infusion-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--parchment);
+}
+.infusion-row .infusion-name .rarity-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: var(--gold-tarnish);
+  color: #fff;
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+}
+.infusion-row .infusion-name .attune-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-tarnish);
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+}
+.infusion-row .infusion-name .attune-tag.attune-tag-on {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+.infusion-row .attune-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-tarnish);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.infusion-row .attune-toggle input { cursor: pointer; }
+.infusion-row .attune-toggle input:disabled { cursor: not-allowed; }
+.infusion-row .attune-toggle input:disabled + span { opacity: 0.4; }
+.infusion-row .infusion-meta {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.78rem;
+  color: var(--parchment-aged);
+}
+.infusion-row.active .infusion-name { color: var(--gold-bright); }
+.infusion-row.active { background: rgba(31, 78, 163, 0.05); }
+
+.infusion-picker {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 0.4rem 0.2rem;
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+}
+.infusion-picker::-webkit-scrollbar { width: 6px; }
+.infusion-picker::-webkit-scrollbar-thumb { background: var(--gold-tarnish); }
+.infusion-pick {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.88rem;
+  color: var(--parchment);
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.infusion-pick:hover { background: rgba(31, 78, 163, 0.06); border-color: var(--gold-tarnish); }
+.infusion-pick input { margin: 0; cursor: pointer; }
+.infusion-pick.disabled { opacity: 0.4; cursor: not-allowed; }
+.infusion-pick.disabled:hover { background: transparent; border-color: transparent; }
+.infusion-pick .infusion-pick-name { flex: 1; }
+.infusion-pick .infusion-pick-meta { color: var(--parchment-aged); font-size: 0.75rem; }
+.infusion-picker-group-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 0.5rem 0.5rem 0.2rem;
+  border-top: 1px dotted var(--gold-tarnish);
+}
+.infusion-picker-group-label:first-child { border-top: none; }
+.multi-pick-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+.multi-pick-stepper button {
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+.multi-pick-stepper button:hover { background: var(--gold); color: #fff; }
+.multi-pick-stepper .count {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--gold);
+  min-width: 16px;
+  text-align: center;
+}
+
+body.dm-mode .edit-prepared-btn,
+body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
+
 /* Feats card */
 .feat-block {
   padding: 0.5rem 0;
@@ -2441,6 +2591,14 @@ body.dm-mode .dm-hide { display: none; }
       <div id="prepared-list"></div>
     </div>
 
+    <div class="card infusions-card" id="infusions-card" style="margin-top: 2rem;" hidden>
+      <h3>Replicate Magic Item
+        <button class="edit-prepared-btn" id="edit-infusions-btn">Edit Plans</button>
+      </h3>
+      <div class="infusions-summary" id="infusions-summary"></div>
+      <div id="infusions-list"></div>
+    </div>
+
     <div class="concentration-tracker" id="concentration-wrap" style="margin-top: 2rem;">
       <span class="concentration-label">Concentrating on</span>
       <select id="concentration-select">
@@ -2620,6 +2778,19 @@ body.dm-mode .dm-hide { display: none; }
     <div class="modal-detail-prompts" id="prepared-prompts"></div>
     <div class="modal-actions">
       <button class="modal-confirm" id="prepared-confirm">Save Prepared List</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Infusions modal (Phase 2E): pick the 4 Replicate Magic Item plans -->
+<div class="modal-overlay" id="infusions-overlay" hidden>
+  <div class="modal">
+    <button class="modal-close" id="infusions-close" aria-label="Close">×</button>
+    <div class="modal-title">Edit Replicate Plans</div>
+    <div class="modal-subtitle" id="infusions-subtitle">Pick the magic-item plans she knows.</div>
+    <div class="modal-detail-prompts" id="infusions-prompts"></div>
+    <div class="modal-actions">
+      <button class="modal-confirm" id="infusions-confirm">Save Plans</button>
     </div>
   </div>
 </div>
@@ -2955,6 +3126,76 @@ const FEATS = [
   { name: 'Boon of Truesight',       category: 'Epic Boon', minLevel: 19, effect: '+1 to one stat (max 30). Truesight 60 ft.' }
 ];
 
+// 2024 Replicate Magic Item plan list (Eberron: Forge of the Artificer).
+// Each entry: { name, type, rarity, attunement (bool|string), minLevel, multiPick? }
+// The three "open" plans (Common Magic Item, Uncommon Wondrous Item, Rare Wondrous Item)
+// can be picked multiple times — each instance is a separate plan slot.
+const INFUSION_PLANS = [
+  // ---- L2+ ----
+  { name: 'Alchemy Jug',               type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Bag of Holding',            type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Cap of Water Breathing',    type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Common Magic Item',         type: 'Any (your choice; not Potion/Scroll/cursed)', rarity: 'Common',   attunement: 'varies', minLevel: 2, multiPick: true },
+  { name: 'Goggles of Night',          type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Manifold Tool',             type: 'Wondrous Item',                       rarity: 'Common',   attunement: true,  minLevel: 2 },
+  { name: 'Repeating Shot',            type: 'Weapon (Simple/Martial w/ Ammunition)',rarity: 'Uncommon', attunement: true,  minLevel: 2 },
+  { name: 'Returning Weapon',          type: 'Weapon (Simple/Martial w/ Thrown)',   rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Rope of Climbing',          type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Sending Stones',            type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Shield +1',                 type: 'Armor (Shield)',                      rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Wand of Magic Detection',   type: 'Wand',                                rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Wand of Secrets',           type: 'Wand',                                rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Wand of the War Mage +1',   type: 'Wand',                                rarity: 'Uncommon', attunement: 'spellcaster', minLevel: 2 },
+  { name: 'Weapon +1',                 type: 'Weapon (Simple/Martial)',             rarity: 'Uncommon', attunement: false, minLevel: 2 },
+  { name: 'Wraps of Unarmed Power +1', type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 2 },
+
+  // ---- L6+ ----
+  { name: 'Armor +1',                  type: 'Armor (Light/Medium/Heavy)',          rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Boots of Elvenkind',        type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Boots of the Winding Path', type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+  { name: 'Cloak of Elvenkind',        type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+  { name: 'Cloak of the Manta Ray',    type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Dazzling Weapon',           type: 'Weapon (Simple/Martial)',             rarity: 'Rare',     attunement: true,  minLevel: 6 },
+  { name: 'Eyes of Charming',          type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+  { name: 'Eyes of Minute Seeing',     type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Gloves of Thievery',        type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Helm of Awareness',         type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Lantern of Revealing',      type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Mind Sharpener',            type: 'Ring',                                rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+  { name: 'Necklace of Adaptation',    type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+  { name: 'Pipes of Haunting',         type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Repulsion Shield',          type: 'Armor (Shield)',                      rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Ring of Swimming',          type: 'Ring',                                rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Ring of Water Walking',     type: 'Ring',                                rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Sentinel Shield',           type: 'Armor (Shield)',                      rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Spell-Refueling Ring',      type: 'Ring',                                rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+  { name: 'Wand of Magic Missiles',    type: 'Wand',                                rarity: 'Uncommon', attunement: false, minLevel: 6 },
+  { name: 'Wand of Web',               type: 'Wand',                                rarity: 'Uncommon', attunement: 'spellcaster', minLevel: 6 },
+  { name: 'Weapon of Warning',         type: 'Weapon (Simple/Martial)',             rarity: 'Uncommon', attunement: true,  minLevel: 6 },
+
+  // ---- L10+ ----
+  { name: 'Armor of Resistance',       type: 'Armor (Light/Medium/Heavy)',          rarity: 'Rare',     attunement: true,  minLevel: 10 },
+  { name: 'Dagger of Venom',           type: 'Weapon (Dagger)',                     rarity: 'Rare',     attunement: false, minLevel: 10 },
+  { name: 'Elven Chain',               type: 'Armor (Chain Mail or Chain Shirt)',   rarity: 'Rare',     attunement: false, minLevel: 10 },
+  { name: 'Ring of Feather Falling',   type: 'Ring',                                rarity: 'Rare',     attunement: true,  minLevel: 10 },
+  { name: 'Ring of Jumping',           type: 'Ring',                                rarity: 'Uncommon', attunement: true,  minLevel: 10 },
+  { name: 'Ring of Mind Shielding',    type: 'Ring',                                rarity: 'Uncommon', attunement: true,  minLevel: 10 },
+  { name: 'Shield +2',                 type: 'Armor (Shield)',                      rarity: 'Rare',     attunement: false, minLevel: 10 },
+  { name: 'Uncommon Wondrous Item',    type: 'Wondrous Item (your choice; not cursed)', rarity: 'Uncommon', attunement: 'varies', minLevel: 10, multiPick: true },
+  { name: 'Wand of the War Mage +2',   type: 'Wand',                                rarity: 'Uncommon', attunement: 'spellcaster', minLevel: 10 },
+  { name: 'Weapon +2',                 type: 'Weapon (Simple/Martial)',             rarity: 'Uncommon', attunement: false, minLevel: 10 },
+  { name: 'Wraps of Unarmed Power +2', type: 'Wondrous Item',                       rarity: 'Uncommon', attunement: false, minLevel: 10 },
+
+  // ---- L14+ ----
+  { name: 'Armor +2',                  type: 'Armor (Light/Medium/Heavy)',          rarity: 'Rare',     attunement: false, minLevel: 14 },
+  { name: 'Arrow-Catching Shield',     type: 'Armor (Shield)',                      rarity: 'Rare',     attunement: true,  minLevel: 14 },
+  { name: 'Flame Tongue',              type: 'Weapon (Any Melee)',                  rarity: 'Rare',     attunement: true,  minLevel: 14 },
+  { name: 'Rare Wondrous Item',        type: 'Wondrous Item (your choice; not cursed)', rarity: 'Rare', attunement: 'varies', minLevel: 14, multiPick: true },
+  { name: 'Ring of Free Action',       type: 'Ring',                                rarity: 'Rare',     attunement: true,  minLevel: 14 },
+  { name: 'Ring of Protection',        type: 'Ring',                                rarity: 'Rare',     attunement: true,  minLevel: 14 },
+  { name: 'Ring of the Ram',           type: 'Ring',                                rarity: 'Rare',     attunement: true,  minLevel: 14 }
+];
+
 // Sorcerer multiclass spell slot table — based on Sorcerer level only since Warlock uses Pact Magic separately
 const SORC_SLOTS = {
   0: [],
@@ -3247,7 +3488,11 @@ const DEFAULT_STATE = {
   cantripsKnown: [],   // array of spell names currently known as cantrips
   preparedSpells: [],  // array of spell names currently prepared (Artificer-only for now)
   feats: [],           // array of { name, level } recording each feat taken
-  asiHistory: []       // array of { level, gains: {stat: delta} } for each ASI applied
+  asiHistory: [],      // array of { level, gains: {stat: delta} } for each ASI applied
+  // Phase 2E: Replicate Magic Item plans known + which are currently replicated today.
+  infusionPlans: [],   // array of plan names she "knows" (capped at 4 by Replicate Magic Item)
+  activeReplicas: [],  // array of plan indices actively replicated today (capped at itemsMax)
+  attunedReplicas: []  // array of plan indices currently attuned (capped at attunementMax)
 };
 
 let state = loadState();
@@ -3573,6 +3818,8 @@ function render() {
   // Phase 2D: Magic card + Feats card
   renderMagicCard(level);
   renderFeatsCard();
+  // Phase 2E: Infusions card
+  renderInfusionsCard(level);
 
   // Point-buy tracker
   renderPointBuy();
@@ -3920,6 +4167,104 @@ function renderMagicCard(level) {
       const s = SPELLS.find(x => x.name === btn.dataset.spell);
       if (!s) return;
       openCastPopover(s, btn);
+    });
+  });
+}
+
+function renderInfusionsCard(level) {
+  const card = document.getElementById('infusions-card');
+  const { a } = classBreakdown(level);
+  // Replicate Magic Item unlocks at Artificer 2
+  if (a < 2) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+  const { plansKnown, itemsMax } = infusionCaps(a);
+  const attuneMax = attunementMax(a);
+  const plans = state.infusionPlans || [];
+  const active = state.activeReplicas || [];
+  const attuned = state.attunedReplicas || [];
+
+  document.getElementById('infusions-summary').innerHTML =
+    `Knows ${plans.length} / ${plansKnown} plan${plansKnown > 1 ? 's' : ''} · creates up to ${itemsMax} item${itemsMax > 1 ? 's' : ''} per long rest (max ${itemsMax} active). ` +
+    `${active.length} / ${itemsMax} replicated · <strong style="color:var(--gold);">${attuned.length} / ${attuneMax} attuned</strong>.`;
+
+  const list = document.getElementById('infusions-list');
+  list.innerHTML = '';
+  if (plans.length === 0) {
+    list.innerHTML = '<p style="font-style:italic;color:var(--parchment-aged);font-size:0.85rem;margin:0.4rem 0;">No plans yet — click Edit Plans to pick from her replicable list.</p>';
+    return;
+  }
+  plans.forEach((planName, idx) => {
+    const plan = INFUSION_PLANS.find(p => p.name === planName);
+    if (!plan) return;
+    const isActive = active.includes(idx);
+    const isAttuned = attuned.includes(idx);
+    const needsAttune = plan.attunement === true || plan.attunement === 'spellcaster' || plan.attunement === 'varies';
+    const row = document.createElement('div');
+    row.className = 'infusion-row' + (isActive ? ' active' : '');
+    const attuneText = plan.attunement === true ? 'Attune' :
+                       plan.attunement === 'spellcaster' ? 'Attune (spellcaster)' :
+                       plan.attunement === 'varies' ? 'Attune varies' :
+                       'No attune';
+    const attuneToggle = needsAttune
+      ? `<label class="attune-toggle" title="${isAttuned ? 'Currently attuned' : 'Attune to this item'}">
+           <input type="checkbox" data-attune-idx="${idx}" ${isAttuned ? 'checked' : ''} ${isActive ? '' : 'disabled'}>
+           <span>attuned</span>
+         </label>`
+      : '';
+    row.innerHTML = `
+      <input type="checkbox" data-idx="${idx}" ${isActive ? 'checked' : ''} title="Replicated today">
+      <div>
+        <div class="infusion-name">${plan.name}<span class="rarity-tag">${plan.rarity}</span><span class="attune-tag${isAttuned ? ' attune-tag-on' : ''}">${attuneText}</span></div>
+        <div class="infusion-meta">${plan.type}</div>
+      </div>
+      ${attuneToggle}
+    `;
+    list.appendChild(row);
+  });
+  // Wire active-today checkboxes
+  list.querySelectorAll('input[data-idx]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const idx = parseInt(cb.dataset.idx, 10);
+      const set = new Set(state.activeReplicas || []);
+      if (cb.checked) {
+        if (set.size >= itemsMax) {
+          alert(`Cap reached: ${itemsMax} concurrent item${itemsMax > 1 ? 's' : ''}. The oldest would vanish — uncheck one first to free a slot.`);
+          cb.checked = false;
+          return;
+        }
+        set.add(idx);
+      } else {
+        set.delete(idx);
+        // If this item was attuned, drop attunement too
+        const attSet = new Set(state.attunedReplicas || []);
+        if (attSet.has(idx)) { attSet.delete(idx); state.attunedReplicas = [...attSet]; }
+      }
+      state.activeReplicas = [...set];
+      saveState();
+      render();
+    });
+  });
+  // Wire attunement checkboxes
+  list.querySelectorAll('input[data-attune-idx]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const idx = parseInt(cb.dataset.attuneIdx, 10);
+      const set = new Set(state.attunedReplicas || []);
+      if (cb.checked) {
+        if (set.size >= attuneMax) {
+          alert(`Attunement cap reached: ${attuneMax} of ${attuneMax}. Drop one to attune to a new item.`);
+          cb.checked = false;
+          return;
+        }
+        set.add(idx);
+      } else {
+        set.delete(idx);
+      }
+      state.attunedReplicas = [...set];
+      saveState();
+      render();
     });
   });
 }
@@ -4355,6 +4700,9 @@ function renderLevelTable(currentLevel) {
     if (entry.spellsAdded && entry.spellsAdded.length > 0) {
       parts.push(`<strong>+Prepared:</strong> ${entry.spellsAdded.join(', ')}`);
     }
+    if (entry.plansAdded && entry.plansAdded.length > 0) {
+      parts.push(`<strong>+Plans:</strong> ${entry.plansAdded.join(', ')}`);
+    }
     if (entry.originFeat) {
       parts.push(`<strong>Origin Feat:</strong> ${entry.originFeat}`);
     }
@@ -4577,6 +4925,54 @@ function buildSpellPickerHTML(klass, classLevel) {
   return html;
 }
 
+// Build the Replicate Magic Item plan picker portion of the modal. Only fires
+// at Artificer levels where Plans Known increases (2, 6, 10, 14, 18).
+function buildInfusionPickerHTML(klass, classLevel) {
+  if (klass !== 'artificer') return '';
+  const here = infusionCaps(classLevel);
+  const prev = infusionCaps(classLevel - 1);
+  const delta = here.plansKnown - prev.plansKnown;
+  if (delta <= 0) return '';
+
+  const eligible = eligibleInfusionPlans(classLevel);
+  const known = state.infusionPlans || [];
+
+  const groupedHTML = [];
+  let lastGroup = -1;
+  for (const plan of eligible) {
+    if (plan.multiPick) {
+      // Wildcards always pickable
+    } else if (known.includes(plan.name)) {
+      // Already memorized — skip from the "new plan" picker
+      continue;
+    }
+    if (plan.minLevel !== lastGroup) {
+      groupedHTML.push(`<div class="infusion-picker-group-label">Plans · Artificer ${plan.minLevel}+</div>`);
+      lastGroup = plan.minLevel;
+    }
+    const attuneText = plan.attunement === true ? 'Attune' :
+                       plan.attunement === 'spellcaster' ? 'Attune (spellcaster)' :
+                       plan.attunement === 'varies' ? 'Attune varies' :
+                       'No attune';
+    groupedHTML.push(`
+      <label class="infusion-pick" data-plan="${plan.name}"${plan.multiPick ? ' data-multi="1"' : ''}>
+        <input type="checkbox" value="${plan.name}">
+        <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span>
+      </label>
+    `);
+  }
+
+  const label = delta === 4
+    ? `Pick your starting 4 Replicate Magic Item plans`
+    : `Pick ${delta} new plan${delta > 1 ? 's' : ''} (Plans Known: ${prev.plansKnown} → ${here.plansKnown})`;
+
+  return `<div class="modal-prompt">
+    <div class="modal-prompt-label">${label}</div>
+    <div class="infusion-picker" data-pick="infusion" data-max="${delta}">${groupedHTML.join('')}</div>
+    <div class="spell-picker-count" data-count-for="infusion">0 / ${delta}</div>
+  </div>`;
+}
+
 // Build the ASI/Feat picker portion of the modal. Returns HTML string or empty.
 function buildAsiFeatPickerHTML(klass, classLevel) {
   const data = CLASS_DATA[klass].perLevel[classLevel];
@@ -4667,6 +5063,34 @@ function wireSpellPickers(promptsEl) {
   });
 }
 
+// Same enforce-exactly-N logic for the infusion picker in the level-up modal.
+function wireInfusionPicker(promptsEl) {
+  promptsEl.querySelectorAll('.infusion-picker[data-pick="infusion"]').forEach(picker => {
+    const max = parseInt(picker.dataset.max, 10);
+    const countEl = promptsEl.querySelector('[data-count-for="infusion"]');
+    const checkboxes = Array.from(picker.querySelectorAll('input[type="checkbox"]'));
+    const update = () => {
+      const checked = checkboxes.filter(c => c.checked);
+      countEl.textContent = `${checked.length} / ${max}`;
+      countEl.classList.toggle('full', checked.length === max);
+      const reached = checked.length >= max;
+      checkboxes.forEach(c => {
+        const label = c.closest('.infusion-pick');
+        if (!c.checked && reached) {
+          c.disabled = true;
+          label.classList.add('disabled');
+        } else {
+          c.disabled = false;
+          label.classList.remove('disabled');
+        }
+      });
+      updateConfirmEnabled(promptsEl);
+    };
+    checkboxes.forEach(c => c.addEventListener('change', update));
+    update();
+  });
+}
+
 function wireAsiFeatPicker(promptsEl) {
   // Origin feat pick (no radio toggle)
   const originSel = promptsEl.querySelector('#origin-feat-select');
@@ -4707,12 +5131,12 @@ function wireAsiFeatPicker(promptsEl) {
   }
 }
 
-// Gray out the Confirm button until all spell pickers hit their required count.
+// Gray out the Confirm button until every required picker hits its target count.
 function updateConfirmEnabled(promptsEl) {
   const btn = document.getElementById('levelup-confirm');
   if (!btn) return;
   let ok = true;
-  promptsEl.querySelectorAll('.spell-picker').forEach(picker => {
+  promptsEl.querySelectorAll('.spell-picker, .infusion-picker[data-pick]').forEach(picker => {
     const max = parseInt(picker.dataset.max, 10);
     const checked = picker.querySelectorAll('input[type="checkbox"]:checked').length;
     if (checked !== max) ok = false;
@@ -4730,6 +5154,8 @@ function rebuildDerivedStateFromHistory() {
   state.feats = [];
   state.asiHistory = [];
   state.classSaveProfs = [];
+  state.infusionPlans = [];
+  state.activeReplicas = [];
   let firstClassSet = false;
   for (const e of history) {
     const cls = CLASS_DATA[e.class];
@@ -4747,6 +5173,7 @@ function rebuildDerivedStateFromHistory() {
     }
     if (e.cantripsAdded) state.cantripsKnown.push(...e.cantripsAdded);
     if (e.spellsAdded) state.preparedSpells.push(...e.spellsAdded);
+    if (e.plansAdded) state.infusionPlans.push(...e.plansAdded);
     if (e.originFeat) {
       const feat = FEATS.find(f => f.name === e.originFeat);
       if (feat) {
@@ -4997,6 +5424,14 @@ function showLevelUpDetail(klass, classLevel) {
     while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
   }
 
+  // Infusion plan picker (Artificer L2/6/10/14/18)
+  const infusionHTML = buildInfusionPickerHTML(klass, classLevel);
+  if (infusionHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = infusionHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
+  }
+
   // ASI / Feat / Origin Feat picker
   const asiHTML = buildAsiFeatPickerHTML(klass, classLevel);
   if (asiHTML) {
@@ -5007,6 +5442,7 @@ function showLevelUpDetail(klass, classLevel) {
 
   // Wire up listeners for everything we just inserted
   wireSpellPickers(promptsEl);
+  wireInfusionPicker(promptsEl);
   wireAsiFeatPicker(promptsEl);
   updateConfirmEnabled(promptsEl);
 }
@@ -5062,6 +5498,13 @@ function confirmLevelUp() {
       const picked = Array.from(preparedPicker.querySelectorAll('input:checked')).map(i => i.value);
       state.preparedSpells = [...(state.preparedSpells || []), ...picked];
       entry.spellsAdded = picked;
+    }
+    // Phase 2E: infusion plan picks (L2/6/10/14/18)
+    const infusionPicker = document.querySelector('.infusion-picker[data-pick="infusion"]');
+    if (infusionPicker) {
+      const picked = Array.from(infusionPicker.querySelectorAll('input:checked')).map(i => i.value);
+      state.infusionPlans = [...(state.infusionPlans || []), ...picked];
+      entry.plansAdded = picked;
     }
   }
 
@@ -5223,6 +5666,167 @@ document.getElementById('prepared-close').addEventListener('click', closeEditPre
 document.getElementById('prepared-confirm').addEventListener('click', savePrepared);
 document.getElementById('prepared-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'prepared-overlay') closeEditPrepared();
+});
+
+// ============================================================
+// Edit Infusions modal (Phase 2E) — Replicate Magic Item plans
+// ============================================================
+// Returns plans eligible at the given Artificer level, sorted by minLevel then name.
+function eligibleInfusionPlans(artificerLevel) {
+  return INFUSION_PLANS
+    .filter(p => p.minLevel <= artificerLevel)
+    .slice()
+    .sort((a, b) => a.minLevel - b.minLevel || a.name.localeCompare(b.name));
+}
+
+// Replicate Magic Item caps per Artificer level (2024 PHB Eberron Part B table).
+// plansKnown = plans she has memorized; itemsMax = both items created per long
+// rest and max concurrent items existing (oldest vanishes if exceeded).
+function infusionCaps(artificerLevel) {
+  if (artificerLevel < 2) return { plansKnown: 0, itemsMax: 0 };
+  if (artificerLevel < 6) return { plansKnown: 4, itemsMax: 2 };
+  if (artificerLevel < 10) return { plansKnown: 5, itemsMax: 3 };
+  if (artificerLevel < 14) return { plansKnown: 6, itemsMax: 4 };
+  if (artificerLevel < 18) return { plansKnown: 7, itemsMax: 5 };
+  return { plansKnown: 8, itemsMax: 6 };
+}
+
+// Max attunement slots: 3 base, +1 at Artificer 10 (Magic Item Adept), +1 at
+// Artificer 14 (Advanced Artifice — Magic Item Savant), +1 at Artificer 18
+// (Magic Item Master).
+function attunementMax(artificerLevel) {
+  if (artificerLevel >= 18) return 6;
+  if (artificerLevel >= 14) return 5;
+  if (artificerLevel >= 10) return 4;
+  return 3;
+}
+
+function openEditInfusions() {
+  const { a } = classBreakdown(state.level);
+  if (a < 2) return;
+  const { plansKnown } = infusionCaps(a);
+  const overlay = document.getElementById('infusions-overlay');
+  const promptsEl = document.getElementById('infusions-prompts');
+  document.getElementById('infusions-subtitle').textContent =
+    `Pick up to ${plansKnown} magic-item plan${plansKnown > 1 ? 's' : ''}. "Wildcard" plans (Common / Uncommon Wondrous / Rare Wondrous) can be picked multiple times.`;
+
+  const eligible = eligibleInfusionPlans(a);
+  // Group rows by minLevel for visual separation
+  const groupedHTML = [];
+  let lastGroup = -1;
+  for (const plan of eligible) {
+    if (plan.minLevel !== lastGroup) {
+      groupedHTML.push(`<div class="infusion-picker-group-label">Plans · Artificer ${plan.minLevel}+</div>`);
+      lastGroup = plan.minLevel;
+    }
+    const current = (state.infusionPlans || []).filter(n => n === plan.name).length;
+    const attuneText = plan.attunement === true ? 'Attunement' :
+                       plan.attunement === 'spellcaster' ? 'Attune (spellcaster)' :
+                       plan.attunement === 'varies' ? 'Attune varies' :
+                       'No attune';
+    if (plan.multiPick) {
+      groupedHTML.push(`
+        <div class="infusion-pick" data-plan="${plan.name}" data-multi="1">
+          <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span>
+          <div class="multi-pick-stepper">
+            <button type="button" data-step="-1">−</button>
+            <span class="count" data-count>${current}</span>
+            <button type="button" data-step="+1">+</button>
+          </div>
+        </div>
+      `);
+    } else {
+      groupedHTML.push(`
+        <label class="infusion-pick" data-plan="${plan.name}">
+          <input type="checkbox" value="${plan.name}"${current ? ' checked' : ''}>
+          <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span>
+        </label>
+      `);
+    }
+  }
+
+  promptsEl.innerHTML = `
+    <div class="modal-prompt">
+      <div class="modal-prompt-label">Plans Known <span class="spell-picker-count" data-count-for="plans" style="margin-left:0.5rem;">0 / ${plansKnown}</span></div>
+      <div class="infusion-picker">${groupedHTML.join('')}</div>
+    </div>
+  `;
+
+  // Wire steppers + checkboxes, enforce total <= plansKnown
+  const pickerEl = promptsEl.querySelector('.infusion-picker');
+  const countEl = promptsEl.querySelector('[data-count-for="plans"]');
+  const saveBtn = document.getElementById('infusions-confirm');
+  function getTotal() {
+    let n = 0;
+    pickerEl.querySelectorAll('input[type="checkbox"]').forEach(cb => { if (cb.checked) n++; });
+    pickerEl.querySelectorAll('[data-count]').forEach(span => { n += parseInt(span.textContent, 10) || 0; });
+    return n;
+  }
+  function update() {
+    const total = getTotal();
+    countEl.textContent = `${total} / ${plansKnown}`;
+    const full = total >= plansKnown;
+    pickerEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      const label = cb.closest('.infusion-pick');
+      if (!cb.checked && full) { cb.disabled = true; label.classList.add('disabled'); }
+      else { cb.disabled = false; label.classList.remove('disabled'); }
+    });
+    pickerEl.querySelectorAll('[data-step="+1"]').forEach(btn => {
+      btn.disabled = full;
+      btn.closest('.infusion-pick').classList.toggle('disabled', full && parseInt(btn.parentElement.querySelector('[data-count]').textContent, 10) === 0);
+    });
+    saveBtn.disabled = total === 0;
+  }
+  pickerEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', update));
+  pickerEl.querySelectorAll('.multi-pick-stepper').forEach(stepper => {
+    const minus = stepper.querySelector('[data-step="-1"]');
+    const plus = stepper.querySelector('[data-step="+1"]');
+    const countSpan = stepper.querySelector('[data-count]');
+    minus.addEventListener('click', () => {
+      const cur = parseInt(countSpan.textContent, 10);
+      if (cur > 0) { countSpan.textContent = cur - 1; update(); }
+    });
+    plus.addEventListener('click', () => {
+      if (getTotal() >= plansKnown) return;
+      const cur = parseInt(countSpan.textContent, 10);
+      countSpan.textContent = cur + 1;
+      update();
+    });
+  });
+  update();
+  overlay.hidden = false;
+}
+
+function closeEditInfusions() {
+  document.getElementById('infusions-overlay').hidden = true;
+}
+
+function saveInfusions() {
+  const overlay = document.getElementById('infusions-overlay');
+  const pickerEl = overlay.querySelector('.infusion-picker');
+  if (!pickerEl) return;
+  const plans = [];
+  pickerEl.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => plans.push(cb.value));
+  pickerEl.querySelectorAll('.infusion-pick[data-multi="1"]').forEach(row => {
+    const name = row.dataset.plan;
+    const cnt = parseInt(row.querySelector('[data-count]').textContent, 10);
+    for (let i = 0; i < cnt; i++) plans.push(name);
+  });
+  state.infusionPlans = plans;
+  // Replaced/removed plans cause their items to vanish per RAW — clear active
+  // and attuned replicas; user re-picks after the swap.
+  state.activeReplicas = [];
+  state.attunedReplicas = [];
+  saveState();
+  closeEditInfusions();
+  render();
+}
+
+document.getElementById('edit-infusions-btn').addEventListener('click', openEditInfusions);
+document.getElementById('infusions-close').addEventListener('click', closeEditInfusions);
+document.getElementById('infusions-confirm').addEventListener('click', saveInfusions);
+document.getElementById('infusions-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'infusions-overlay') closeEditInfusions();
 });
 document.getElementById('levelup-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'levelup-overlay') closeLevelUpModal();

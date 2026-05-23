@@ -83,33 +83,27 @@ body::before {
   font-size: 1rem;
   z-index: 2;
 }
-.header-ornament {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(100%, 1100px);
-  height: 100%;
-  color: var(--gold);
-  opacity: 0.30;
-  pointer-events: none;
-  z-index: 0;
-}
 .header-photo {
   position: absolute;
   inset: 0;
   background-image: url('mask.avif');
   background-size: cover;
-  background-position: center 25%;  /* favor the floral pattern of the mask; crops "Color: Blue" pill below */
+  background-position: center 25%;  /* favor the floral pattern; crops "Color: Blue" pill below */
   background-repeat: no-repeat;
   /* Desaturate the photo then re-tint cobalt so it matches the Delft palette */
   filter: grayscale(1) brightness(1.05) contrast(1.4) sepia(1) hue-rotate(185deg) saturate(2.6);
-  opacity: 0.45;
+  opacity: 0.22;
   z-index: 0;
   pointer-events: none;
-  /* Soft fade at all edges so it doesn't have a hard rectangle outline */
-  -webkit-mask-image: radial-gradient(ellipse 85% 100% at center, black 30%, rgba(0,0,0,0.55) 65%, transparent 95%);
-  mask-image: radial-gradient(ellipse 85% 100% at center, black 30%, rgba(0,0,0,0.55) 65%, transparent 95%);
+  /* Fade the center where the name sits; keep image visible on the sides; soft outer edges */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%, rgba(0,0,0,0.7) 10%, black 25%,
+    rgba(0,0,0,0.10) 50%,
+    black 75%, rgba(0,0,0,0.7) 90%, transparent 100%);
+  mask-image: linear-gradient(to right,
+    transparent 0%, rgba(0,0,0,0.7) 10%, black 25%,
+    rgba(0,0,0,0.10) 50%,
+    black 75%, rgba(0,0,0,0.7) 90%, transparent 100%);
 }
 .header > .eyebrow,
 .header > .name,
@@ -1746,218 +1740,6 @@ body.dm-mode .dm-hide { display: none; }
   <!-- HEADER -->
   <header class="header">
     <div class="header-photo" aria-hidden="true"></div>
-    <svg class="header-ornament" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true" hidden>
-      <defs>
-        <!-- Acanthus scroll-leaf — the signature curling chinoiserie motif -->
-        <symbol id="acanthus" overflow="visible">
-          <path d="M 0 0
-                   C 4 -22 24 -34 48 -28
-                   C 52 -34 62 -32 64 -24
-                   C 74 -22 74 -8 64 -4
-                   C 76 0 72 14 60 14
-                   C 64 24 50 32 42 24
-                   C 50 22 46 12 38 12
-                   C 44 18 36 26 26 20
-                   C 32 16 26 8 20 12
-                   C 24 6 12 8 0 0 Z" fill="currentColor"/>
-          <path d="M 14 -6 Q 30 -16 50 -12" stroke="rgba(255,255,255,0.45)" stroke-width="0.6" fill="none"/>
-        </symbol>
-        <!-- Smaller acanthus, simpler -->
-        <symbol id="acanthus2" overflow="visible">
-          <path d="M 0 0
-                   C 6 -16 22 -22 38 -16
-                   C 50 -10 50 6 38 12
-                   C 26 16 12 12 0 0 Z" fill="currentColor"/>
-          <path d="M 8 -4 Q 22 -10 36 -4" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" fill="none"/>
-        </symbol>
-        <!-- Fern-style frond: stem with paired narrow leaflets -->
-        <symbol id="frond" overflow="visible">
-          <g fill="currentColor">
-            <path d="M 0 0 Q 20 -4 38 -10 Q 56 -18 70 -32" stroke="currentColor" stroke-width="0.9" fill="none"/>
-            <ellipse cx="8" cy="-2" rx="6" ry="2" transform="rotate(-15 8 -2)"/>
-            <ellipse cx="8" cy="2" rx="6" ry="2" transform="rotate(15 8 2)"/>
-            <ellipse cx="22" cy="-7" rx="6" ry="2" transform="rotate(-25 22 -7)"/>
-            <ellipse cx="22" cy="-3" rx="6" ry="2" transform="rotate(5 22 -3)"/>
-            <ellipse cx="38" cy="-15" rx="6" ry="2" transform="rotate(-35 38 -15)"/>
-            <ellipse cx="38" cy="-9" rx="6" ry="2" transform="rotate(-5 38 -9)"/>
-            <ellipse cx="54" cy="-22" rx="5" ry="2" transform="rotate(-45 54 -22)"/>
-            <ellipse cx="54" cy="-17" rx="5" ry="2" transform="rotate(-15 54 -17)"/>
-          </g>
-        </symbol>
-        <!-- Layered peony — kept from previous pass -->
-        <symbol id="peony" overflow="visible">
-          <g fill="currentColor">
-            <g>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(36)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(72)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(108)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(144)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(180)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(216)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(252)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(288)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(324)"/>
-            </g>
-            <g transform="rotate(18)">
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(45)"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(90)"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(135)"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(180)"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(225)"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(270)"/>
-              <path d="M 0 -16 Q 5 -8 0 -1 Q -5 -8 0 -16 Z" transform="rotate(315)"/>
-            </g>
-            <circle r="3"/>
-          </g>
-        </symbol>
-        <symbol id="peony" overflow="visible">
-          <g fill="currentColor">
-            <!-- outer ring of 10 long petals -->
-            <g>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(36)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(72)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(108)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(144)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(180)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(216)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(252)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(288)"/>
-              <path d="M 0 -28 Q 7 -14 0 -2 Q -7 -14 0 -28 Z" transform="rotate(324)"/>
-            </g>
-            <!-- inner ring of 8 short petals offset by 22.5° -->
-            <g transform="rotate(22.5)">
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(45)"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(90)"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(135)"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(180)"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(225)"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(270)"/>
-              <path d="M 0 -14 Q 4 -7 0 -1 Q -4 -7 0 -14 Z" transform="rotate(315)"/>
-            </g>
-            <circle r="3"/>
-          </g>
-        </symbol>
-        <!-- Small refined 5-petal blossom -->
-        <symbol id="blossom" overflow="visible">
-          <g fill="currentColor">
-            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z"/>
-            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(72)"/>
-            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(144)"/>
-            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(216)"/>
-            <path d="M 0 -10 Q 4 -5 0 -1 Q -4 -5 0 -10 Z" transform="rotate(288)"/>
-            <circle r="1.5"/>
-          </g>
-        </symbol>
-        <!-- Elegant pointed leaf with vein -->
-        <symbol id="leaf" overflow="visible">
-          <path d="M 0 0 C 4 -5 14 -7 22 -2 C 14 5 4 5 0 0 Z" fill="currentColor"/>
-          <path d="M 2 0 Q 12 -2 20 -1" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" fill="none"/>
-        </symbol>
-        <!-- Tendril curl that tapers -->
-        <symbol id="tendril" overflow="visible">
-          <path d="M 0 0 C 14 -4 28 0 32 10 C 34 18 28 22 22 18 C 18 14 22 10 26 12" stroke="currentColor" stroke-width="0.9" fill="none" stroke-linecap="round"/>
-        </symbol>
-        <!-- Bell tulip with paired leaves -->
-        <symbol id="tulip" overflow="visible">
-          <path d="M 0 0 C -10 -12 -8 -32 0 -42 C 8 -32 10 -12 0 0 Z" fill="currentColor"/>
-          <path d="M -4 -34 Q 0 -28 4 -34" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" fill="none"/>
-          <path d="M 0 0 L 0 14" stroke="currentColor" stroke-width="0.9" fill="none"/>
-          <path d="M 0 6 Q 10 4 16 10 Q 8 7 0 9" fill="currentColor"/>
-          <path d="M 0 10 Q -10 8 -16 14 Q -8 11 0 13" fill="currentColor"/>
-        </symbol>
-        <!-- Bud (tiny closed flower on stem) -->
-        <symbol id="bud" overflow="visible">
-          <path d="M 0 0 C -3 -4 -3 -10 0 -12 C 3 -10 3 -4 0 0 Z" fill="currentColor"/>
-        </symbol>
-      </defs>
-
-      <g stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round">
-
-        <!-- LEFT CLUSTER — chinoiserie density via overlapping acanthus + foliage layers -->
-        <g transform="translate(180 140)">
-          <!-- Background acanthus scrolls (rotated, varied scale) -->
-          <use href="#acanthus" transform="translate(-110 -50) rotate(-30) scale(1.1)"/>
-          <use href="#acanthus" transform="translate(80 -90) rotate(70) scale(0.9)"/>
-          <use href="#acanthus" transform="translate(-130 60) rotate(160) scale(1.0)"/>
-          <use href="#acanthus" transform="translate(90 70) rotate(-110) scale(0.85)"/>
-          <use href="#acanthus2" transform="translate(40 -40) rotate(-50)"/>
-          <use href="#acanthus2" transform="translate(-50 80) rotate(220)"/>
-
-          <!-- Mid-layer fronds (paired-leaf stems) -->
-          <use href="#frond" transform="translate(-30 -30) rotate(-110) scale(1.1)"/>
-          <use href="#frond" transform="translate(10 40) rotate(40)"/>
-          <use href="#frond" transform="translate(-90 0) rotate(180) scale(0.9)"/>
-          <use href="#frond" transform="translate(70 -10) rotate(-30) scale(0.85)"/>
-
-          <!-- Anchor: large peony floats over the foliage -->
-          <use href="#peony" transform="translate(-30 -20) scale(1.05)"/>
-
-          <!-- Companion blossoms -->
-          <use href="#blossom" transform="translate(-100 -85) scale(1.4)"/>
-          <use href="#blossom" transform="translate(120 30) scale(1.2)"/>
-          <use href="#blossom" transform="translate(50 -85) scale(0.9)"/>
-          <use href="#blossom" transform="translate(-70 90) scale(0.9)"/>
-          <use href="#blossom" transform="translate(140 -10) scale(0.8)"/>
-
-          <!-- Tulip on the outer flank -->
-          <use href="#tulip" transform="translate(90 95) scale(1.0)"/>
-
-          <!-- Buds on stem tips -->
-          <use href="#bud" transform="translate(-140 -40) rotate(-30)"/>
-          <use href="#bud" transform="translate(70 -65) rotate(50)"/>
-          <use href="#bud" transform="translate(155 60) rotate(70) scale(0.9)"/>
-          <use href="#bud" transform="translate(-90 105) rotate(-20) scale(0.8)"/>
-          <use href="#bud" transform="translate(-60 -90) rotate(-15) scale(0.7)"/>
-
-          <!-- Fine tendrils tapering off -->
-          <use href="#tendril" transform="translate(140 80)"/>
-          <use href="#tendril" transform="translate(-145 -65) rotate(-40) scale(0.85)"/>
-          <use href="#tendril" transform="translate(-155 50) rotate(170) scale(0.8)"/>
-          <use href="#tendril" transform="translate(100 -85) rotate(-60) scale(0.75)"/>
-        </g>
-
-        <!-- RIGHT CLUSTER (mirror) -->
-        <g transform="translate(920 140) scale(-1 1)">
-          <use href="#acanthus" transform="translate(-110 -50) rotate(-30) scale(1.1)"/>
-          <use href="#acanthus" transform="translate(80 -90) rotate(70) scale(0.9)"/>
-          <use href="#acanthus" transform="translate(-130 60) rotate(160) scale(1.0)"/>
-          <use href="#acanthus" transform="translate(90 70) rotate(-110) scale(0.85)"/>
-          <use href="#acanthus2" transform="translate(40 -40) rotate(-50)"/>
-          <use href="#acanthus2" transform="translate(-50 80) rotate(220)"/>
-          <use href="#frond" transform="translate(-30 -30) rotate(-110) scale(1.1)"/>
-          <use href="#frond" transform="translate(10 40) rotate(40)"/>
-          <use href="#frond" transform="translate(-90 0) rotate(180) scale(0.9)"/>
-          <use href="#frond" transform="translate(70 -10) rotate(-30) scale(0.85)"/>
-          <use href="#peony" transform="translate(-30 -20) scale(1.05)"/>
-          <use href="#blossom" transform="translate(-100 -85) scale(1.4)"/>
-          <use href="#blossom" transform="translate(120 30) scale(1.2)"/>
-          <use href="#blossom" transform="translate(50 -85) scale(0.9)"/>
-          <use href="#blossom" transform="translate(-70 90) scale(0.9)"/>
-          <use href="#blossom" transform="translate(140 -10) scale(0.8)"/>
-          <use href="#tulip" transform="translate(90 95) scale(1.0)"/>
-          <use href="#bud" transform="translate(-140 -40) rotate(-30)"/>
-          <use href="#bud" transform="translate(70 -65) rotate(50)"/>
-          <use href="#bud" transform="translate(155 60) rotate(70) scale(0.9)"/>
-          <use href="#bud" transform="translate(-90 105) rotate(-20) scale(0.8)"/>
-          <use href="#bud" transform="translate(-60 -90) rotate(-15) scale(0.7)"/>
-          <use href="#tendril" transform="translate(140 80)"/>
-          <use href="#tendril" transform="translate(-145 -65) rotate(-40) scale(0.85)"/>
-          <use href="#tendril" transform="translate(-155 50) rotate(170) scale(0.8)"/>
-          <use href="#tendril" transform="translate(100 -85) rotate(-60) scale(0.75)"/>
-        </g>
-
-        <!-- MIDDLE: single fine vine high above the name, two delicate leaves -->
-        <g stroke-width="0.7">
-          <path d="M 360 30 Q 550 8 740 30"/>
-          <use href="#leaf" transform="translate(430 26) rotate(195) scale(0.7)"/>
-          <use href="#leaf" transform="translate(670 26) rotate(345) scale(0.7)"/>
-        </g>
-      </g>
-    </svg>
     <div class="eyebrow">A Field Log · Neverwinter · Subject ID R-1V3T</div>
     <h1 class="name">Rivet</h1>
     <div class="epithet">the Poorforged · Toymaker's Mistake</div>

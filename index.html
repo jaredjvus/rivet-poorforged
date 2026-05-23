@@ -977,6 +977,103 @@ body.dm-mode .magic-card .pip {
 body.dm-mode .edit-prepared-btn,
 body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
 
+/* Collapsible card (<details>) — used for reference panels */
+.collapsible-card { padding: 0; }
+.collapsible-card summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.4rem 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+.collapsible-card summary::-webkit-details-marker { display: none; }
+.collapsible-card summary h3 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.collapsible-card summary::after {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  transform: rotate(-45deg);
+  margin-left: 0.8rem;
+  margin-bottom: 3px;
+  transition: transform 0.2s ease;
+}
+.collapsible-card[open] summary::after { transform: rotate(45deg); margin-bottom: 0; margin-top: -3px; }
+.collapsible-card summary:hover h3 { color: var(--gold-bright); }
+.collapsible-card summary:hover::after { border-color: var(--gold-bright); }
+.collapsible-card .collapsible-body {
+  padding: 0 1.6rem 1.4rem;
+  border-top: 1px dotted var(--gold-tarnish);
+  padding-top: 1rem;
+}
+
+/* Collapsible section — same caret pattern for the top-level <details class="section"> */
+.section[open], .section:not([open]) { /* applies whether open or closed */ }
+.section > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+.section > summary::-webkit-details-marker { display: none; }
+.section > summary .section-title {
+  margin: 0;
+  flex: 1;
+}
+.section > summary::after {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  transform: rotate(-45deg);
+  margin-bottom: 3px;
+  transition: transform 0.2s ease;
+}
+.section[open] > summary::after { transform: rotate(45deg); margin-bottom: 0; margin-top: -3px; }
+.section > summary:hover .section-title { color: var(--gold-bright); }
+.section > summary:hover::after { border-color: var(--gold-bright); }
+
+/* Cunning Strikes card */
+.cunning-strikes-blurb {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--parchment-aged);
+  font-style: italic;
+  margin: 0 0 0.6rem;
+  line-height: 1.5;
+}
+.cunning-strikes-blurb strong {
+  font-style: normal;
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+.cunning-save-tag {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gold-tarnish);
+  color: #fff;
+  padding: 0.05rem 0.4rem;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
 /* Feats card */
 .feat-block {
   padding: 0.5rem 0;
@@ -2586,8 +2683,8 @@ body.dm-mode .dm-hide { display: none; }
   </div>
 
   <!-- ABILITY SCORES -->
-  <section class="section">
-    <h2 class="section-title">Ability Scores</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">Ability Scores</h2></summary>
     <div class="stats-grid">
       <div class="stat-block">
         <div class="stat-label">STR</div>
@@ -2682,14 +2779,17 @@ body.dm-mode .dm-hide { display: none; }
         <div class="sub" id="speed-sub">walking</div>
       </div>
     </div>
-  </section>
+  </details>
 
   <!-- THE BEARER -->
-  <section class="section">
-    <h2 class="section-title">The Subject</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">The Subject</h2></summary>
     <div class="two-col">
-      <div class="card">
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Assembly Notes</h3>
+        </summary>
+        <div class="collapsible-body">
         <ul>
           <li><strong>Designation</strong><br>Rivet (adopted she/her — statistical analysis showed organic subjects are 37% more compliant with female designation)</li>
           <li><strong>Chassis</strong><br>Warforged Scout. Dented copper cage, mismatched gears from a broken defense turret, glowing unstable capacitor at the core.</li>
@@ -2699,9 +2799,13 @@ body.dm-mode .dm-hide { display: none; }
           <li><strong>Optics</strong><br>Mismatched bulbs. One amber, one flickering red.</li>
           <li><strong>Antennae</strong><br>Two asymmetrical "rabbit ears" of bent wire, unspooled guitar strings, and rusted brass telescope casing. Twitch when channeling.</li>
         </ul>
-      </div>
-      <div class="card">
+        </div>
+      </details>
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Operating Parameters</h3>
+        </summary>
+        <div class="collapsible-body">
         <ul>
           <li><strong>Background</strong><br>The Toymaker's Mistake. Hammered together by an unstable (intoxicated, inconclusive) artificer on a cluttered workbench, meant to be a mechanical pet. A piece of an ancient soul-infused artifact was jammed into her headpiece instead of a simple logic gear.</li>
           <li><strong>Alignment</strong><br>Chaotic Neutral. "Property" does not compute.</li>
@@ -2709,31 +2813,43 @@ body.dm-mode .dm-hide { display: none; }
           <li><strong>Left Arm</strong><br>Bulky hydraulic piston wrapped in electrical conduit. <em>The punching arm.</em></li>
           <li><strong>Mode</strong><br>Calculated. Easily distracted. Curious. Mumbles analyses to herself. Default response to stress: dive behind a larger humanoid or into a satchel.</li>
         </ul>
-      </div>
+        </div>
+      </details>
     </div>
-  </section>
+  </details>
 
   <!-- SAVES & SKILLS -->
-  <section class="section">
-    <h2 class="section-title">Proficiencies</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">Proficiencies</h2></summary>
     <div class="two-col">
-      <div class="card">
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Saving Throws</h3>
+        </summary>
+        <div class="collapsible-body">
         <div class="skills-grid" style="grid-template-columns: 1fr;" id="saves-grid">
           <!-- filled by JS -->
         </div>
         <p style="margin-top: 1rem; font-style: italic; font-size: 0.9rem;" id="saves-note">Save proficiencies appear once Rivet takes her first class level.</p>
-      </div>
-      <div class="card">
+        </div>
+      </details>
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Skills</h3>
+        </summary>
+        <div class="collapsible-body">
         <div class="skills-grid" id="skills-grid">
           <!-- filled by JS -->
         </div>
         <p style="margin-top: 1rem; font-style: italic; font-size: 0.85rem;">Proficiency Bonus: <span id="prof-bonus">+2</span></p>
-      </div>
+        </div>
+      </details>
     </div>
-    <div class="card" id="profs-card" style="margin-top: 2rem;" hidden>
+    <details class="card collapsible-card" id="profs-card" style="margin-top: 2rem;" hidden open>
+      <summary>
       <h3>Tools &amp; Languages</h3>
+      </summary>
+      <div class="collapsible-body">
       <div class="prof-grid">
         <div class="prof-col">
           <div class="prof-col-label">Tools</div>
@@ -2744,15 +2860,19 @@ body.dm-mode .dm-hide { display: none; }
           <ul class="prof-list" id="languages-list"></ul>
         </div>
       </div>
-    </div>
-  </section>
+      </div>
+    </details>
+  </details>
 
   <!-- RESOURCES -->
-  <section class="section">
-    <h2 class="section-title">Resources</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">Resources</h2></summary>
 
-    <div class="card combat-resources" id="combat-resources-card">
+    <details class="card collapsible-card combat-resources" id="combat-resources-card" open>
+      <summary>
       <h3>Combat Resources</h3>
+      </summary>
+      <div class="collapsible-body">
       <div class="rest-buttons">
         <button class="rest-btn" id="short-rest-btn" title="Restores short-rest resources">Short Rest</button>
         <button class="rest-btn" id="long-rest-btn" title="Restores HP, slots, all once-per-long-rest features, clears Temp HP and death saves">Long Rest</button>
@@ -2762,26 +2882,43 @@ body.dm-mode .dm-hide { display: none; }
         <button class="resource-toggle" id="inspiration-toggle">None</button>
       </div>
       <div id="combat-resources-dynamic"></div>
-    </div>
+      </div>
+    </details>
 
-    <div class="card magic-card" id="magic-card" style="margin-top: 2rem;" hidden>
+    <details class="card collapsible-card" id="cunning-strikes-card" style="margin-top: 2rem;" hidden open>
+      <summary><h3>Cunning Strikes</h3></summary>
+      <div class="collapsible-body">
+        <p class="cunning-strikes-blurb" id="cunning-strikes-blurb"></p>
+        <div id="cunning-strikes-list"></div>
+      </div>
+    </details>
+
+    <details class="card collapsible-card magic-card" id="magic-card" style="margin-top: 2rem;" hidden open>
+      <summary>
       <h3>Spells &amp; Slots
         <button class="edit-prepared-btn" id="edit-prepared-btn">Edit Prepared</button>
       </h3>
+      </summary>
+      <div class="collapsible-body">
       <div id="spell-slots"></div>
       <div class="spell-section-title"><span>Cantrips</span><span class="spell-count" id="cantrip-count"></span></div>
       <div id="cantrip-list"></div>
       <div class="spell-section-title"><span>Prepared</span><span class="spell-count" id="prepared-count"></span></div>
       <div id="prepared-list"></div>
-    </div>
+      </div>
+    </details>
 
-    <div class="card infusions-card" id="infusions-card" style="margin-top: 2rem;" hidden>
+    <details class="card collapsible-card infusions-card" id="infusions-card" style="margin-top: 2rem;" hidden open>
+      <summary>
       <h3>Replicate Magic Item
         <button class="edit-prepared-btn" id="edit-infusions-btn">Edit Plans</button>
       </h3>
+      </summary>
+      <div class="collapsible-body">
       <div class="infusions-summary" id="infusions-summary"></div>
       <div id="infusions-list"></div>
-    </div>
+      </div>
+    </details>
 
     <div class="concentration-tracker" id="concentration-wrap" style="margin-top: 2rem;">
       <span class="concentration-label">Concentrating on</span>
@@ -2789,14 +2926,17 @@ body.dm-mode .dm-hide { display: none; }
         <option value="">— not concentrating —</option>
       </select>
     </div>
-  </section>
+  </details>
 
   <!-- FEATURES -->
-  <section class="section">
-    <h2 class="section-title">Features &amp; Wiring</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">Features &amp; Wiring</h2></summary>
     <div class="two-col">
-      <div class="card">
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Warforged Scout</h3>
+        </summary>
+        <div class="collapsible-body">
         <div id="species-features">
           <div class="feature-block">
             <h4>Constructed Resilience</h4>
@@ -2815,47 +2955,72 @@ body.dm-mode .dm-hide { display: none; }
             <p>One skill proficiency and one tool proficiency of your choice. (Scout flavor: Stealth + Tinker's Tools.)</p>
           </div>
         </div>
-      </div>
-      <div class="card">
+        </div>
+      </details>
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Class Features</h3>
+        </summary>
+        <div class="collapsible-body">
         <div id="class-features">
           <p style="color: var(--parchment-dim); font-style: italic;">Class features appear here as Rivet levels up. Use the level-up modal to add her first level.</p>
         </div>
-      </div>
+        </div>
+      </details>
     </div>
-    <div class="card" id="feats-card" style="margin-top: 2rem;" hidden>
+    <details class="card collapsible-card" id="feats-card" style="margin-top: 2rem;" hidden open>
+      <summary>
       <h3>Feats</h3>
+      </summary>
+      <div class="collapsible-body">
       <div id="feats-list"></div>
-    </div>
-    <div class="card" id="weapon-masteries-card" style="margin-top: 2rem;" hidden>
+      </div>
+    </details>
+    <details class="card collapsible-card" id="weapon-masteries-card" style="margin-top: 2rem;" hidden open>
+      <summary>
       <h3>Weapon Masteries
         <button class="edit-prepared-btn" id="swap-mastery-btn">Swap (Long Rest)</button>
       </h3>
+      </summary>
+      <div class="collapsible-body">
       <div id="weapon-masteries-list"></div>
-    </div>
-  </section>
+      </div>
+    </details>
+  </details>
 
   <!-- INVENTORY -->
-  <section class="section">
-    <h2 class="section-title">Salvaged</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">Salvaged</h2></summary>
     <div class="two-col">
-      <div class="card">
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Armament <button class="header-action" data-add="armament">+ Add Item</button></h3>
+        </summary>
+        <div class="collapsible-body">
         <ul class="inventory-list" id="inv-armament"></ul>
-      </div>
-      <div class="card">
+        </div>
+      </details>
+      <details class="card collapsible-card" open>
+        <summary>
         <h3>Stored on Her Chassis <button class="header-action" data-add="person">+ Add Item</button></h3>
+        </summary>
+        <div class="collapsible-body">
         <ul class="inventory-list" id="inv-person"></ul>
-      </div>
+        </div>
+      </details>
     </div>
-    <div class="card" style="margin-top: 2rem;">
+    <details class="card collapsible-card" style="margin-top: 2rem;" open>
+      <summary>
       <h3>Coin &amp; Field Log</h3>
+      </summary>
+      <div class="collapsible-body">
       <p style="margin-bottom: 1rem; display: flex; align-items: baseline; gap: 0.6rem;"><strong>Coin:</strong>
         <input type="text" id="coin" placeholder="Coin and shiny things…" style="background:transparent;border:none;border-bottom:1px solid var(--gold-tarnish);color:var(--parchment);font-family:inherit;font-size:1rem;padding:0.2rem;outline:none;flex:1;min-width:0;">
       </p>
       <textarea class="notes-area" id="notes" placeholder="Field notes. Things observed. Suspected purpose. Inconclusive."></textarea>
-    </div>
-  </section>
+      </div>
+    </details>
+  </details>
 
   <!-- QUOTE -->
   <div class="quote">
@@ -2864,10 +3029,13 @@ body.dm-mode .dm-hide { display: none; }
   </div>
 
   <!-- LEVELING PATH -->
-  <section class="section">
-    <h2 class="section-title">The Path Ahead</h2>
-    <div class="card">
+  <details class="section" open>
+    <summary><h2 class="section-title">The Path Ahead</h2></summary>
+    <details class="card collapsible-card" open>
+      <summary>
       <h3>Level-by-Level Outline</h3>
+      </summary>
+      <div class="collapsible-body">
       <table class="level-table">
         <thead>
           <tr><th style="width: 50px;">Lvl</th><th>Class</th><th>Gains</th></tr>
@@ -2876,12 +3044,13 @@ body.dm-mode .dm-hide { display: none; }
           <!-- filled by JS -->
         </tbody>
       </table>
-    </div>
-  </section>
+      </div>
+    </details>
+  </details>
 
   <!-- BACKSTORY -->
-  <section class="section">
-    <h2 class="section-title">The Story</h2>
+  <details class="section" open>
+    <summary><h2 class="section-title">The Story</h2></summary>
     <details class="backstory-details">
       <summary>Show / Hide Backstory</summary>
       <div class="backstory-content">
@@ -2919,7 +3088,7 @@ body.dm-mode .dm-hide { display: none; }
         <p>She tends to come off as rude. She doesn't understand social cues because… why would she? She takes note of facial expressions and body language, but more as a field research task than as an attempt to build an empathetic understanding. Give her a break, she's a kid.</p>
       </div>
     </details>
-  </section>
+  </details>
 
   <footer class="footer">
     Field log, Neverwinter. Subject R-1V3T continues to operate within unexpected parameters.
@@ -3456,6 +3625,28 @@ const CLASS_FEATURES = [];
 
 const ARTIFICER_SKILLS = ['Arcana', 'History', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Sleight of Hand'];
 const ROGUE_SKILLS = ['Acrobatics', 'Athletics', 'Deception', 'Insight', 'Intimidation', 'Investigation', 'Perception', 'Persuasion', 'Sleight of Hand', 'Stealth'];
+
+// 2024 PHB Cunning Strike + Devious Strike effects (Rogue 5/13). Each effect
+// costs Sneak Attack dice; the player picks which to apply on a Sneak Attack
+// hit. Spent dice come out of the Sneak Attack damage roll.
+const CUNNING_STRIKE_EFFECTS = [
+  { name: 'Poison',   cost: 1, source: 'Cunning Strike',  minRogue: 5,  save: 'CON',
+    desc: 'On a fail, the target has the Poisoned condition for 1 minute. The target repeats the save at the end of each of its turns, ending the effect on a success.' },
+  { name: 'Trip',     cost: 1, source: 'Cunning Strike',  minRogue: 5,  save: 'DEX',
+    desc: 'Target must be Large or smaller. On a fail, the target has the Prone condition.' },
+  { name: 'Withdraw', cost: 1, source: 'Cunning Strike',  minRogue: 5,  save: null,
+    desc: 'Immediately after the attack, you move up to half your Speed without provoking opportunity attacks.' },
+  // Thief 9 — Supreme Sneak adds Stealth Attack
+  { name: 'Stealth Attack', cost: 1, source: 'Supreme Sneak (Thief)', minRogue: 9, subclass: 'Thief', save: null,
+    desc: 'If you used the Hide action\'s Invisible condition for this attack, the Invisible condition doesn\'t end on you if you end the turn behind Three-Quarters or Total Cover.' },
+  // Rogue 13 — Devious Strikes
+  { name: 'Daze',     cost: 2, source: 'Devious Strikes', minRogue: 13, save: 'CON',
+    desc: 'On a fail, the target has the Dazed condition until the end of your next turn (no Reactions; only Move OR Action on each of its turns).' },
+  { name: 'Obscure',  cost: 3, source: 'Devious Strikes', minRogue: 13, save: 'DEX',
+    desc: 'On a fail, the target has the Blinded condition until the end of your next turn.' },
+  { name: 'Knock Out', cost: 6, source: 'Devious Strikes', minRogue: 13, save: 'CON',
+    desc: 'On a fail, the target has the Unconscious condition for 1 minute (saves at end of each of its turns). Stops if it takes damage. The save DC is your Cunning Strike DC even at distance.' }
+];
 
 // 2024 PHB weapons with their Mastery property. Used by the Rogue L1
 // Weapon Mastery picker (she picks 2; swap on a long rest).
@@ -4139,6 +4330,8 @@ function render() {
   renderInfusionsCard(level);
   // Phase 2I: Weapon Masteries card
   renderWeaponMasteriesCard(level);
+  // Phase 2K: Cunning Strikes card
+  renderCunningStrikesCard(level);
 
   // Point-buy tracker
   renderPointBuy();
@@ -4727,6 +4920,43 @@ function renderInfusionsCard(level) {
       render();
     });
   });
+}
+
+function renderCunningStrikesCard(level) {
+  const card = document.getElementById('cunning-strikes-card');
+  const { r } = classBreakdown(level);
+  if (r < 5) {
+    card.hidden = true;
+    return;
+  }
+  const subclass = findChosenSubclass('rogue');
+  const stats = computeStats(level);
+  const dex = mod(stats.dex);
+  const pb = profBonus(level);
+  const saveDC = 8 + dex + pb;
+  const stackText = r >= 11 ? 'You can apply two effects on one Sneak Attack (Improved Cunning Strike).' : '';
+  document.getElementById('cunning-strikes-blurb').innerHTML =
+    `Spend Sneak Attack dice from the damage roll to apply effects. Save DC (when applicable): <strong>${saveDC}</strong> (8 + DEX + prof). ${stackText}`;
+
+  const eligible = CUNNING_STRIKE_EFFECTS.filter(e => {
+    if (e.minRogue > r) return false;
+    if (e.subclass && subclass !== e.subclass) return false;
+    return true;
+  });
+
+  const list = document.getElementById('cunning-strikes-list');
+  list.innerHTML = '';
+  for (const e of eligible) {
+    const block = document.createElement('div');
+    block.className = 'feat-block';
+    const saveTag = e.save ? `<span class="cunning-save-tag">${e.save} save · DC ${saveDC}</span>` : '';
+    block.innerHTML = `
+      <h4>${e.name}<span class="feat-lvl">${e.source} · cost ${e.cost}d6</span></h4>
+      <p>${saveTag}${e.desc}</p>
+    `;
+    list.appendChild(block);
+  }
+  card.hidden = false;
 }
 
 function renderWeaponMasteriesCard(level) {
@@ -6929,6 +7159,16 @@ document.querySelectorAll('[data-add]').forEach(btn => {
     const lastInput = ul.querySelector('li:last-child textarea');
     if (lastInput) lastInput.focus();
   });
+});
+
+// Header buttons inside <summary> elements shouldn't toggle their parent
+// <details> when clicked. Native click on summary opens/closes the details;
+// preventDefault on a button-click suppresses that without breaking the
+// button's own click handler.
+document.addEventListener('click', (e) => {
+  if (e.target.closest('summary') && e.target.closest('button')) {
+    e.preventDefault();
+  }
 });
 
 // Options dropdown (Export / Import / Reset)

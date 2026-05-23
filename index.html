@@ -481,6 +481,285 @@ body::before {
   background: var(--gold-bright);
   border-color: var(--gold-bright);
 }
+.modal-confirm:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--gold-tarnish);
+  border-color: var(--gold-tarnish);
+}
+
+/* Phase 2D: spell picker + ASI/feat picker (inside the level-up modal) */
+.modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal::-webkit-scrollbar { width: 8px; }
+.modal::-webkit-scrollbar-track { background: rgba(70, 102, 166, 0.08); }
+.modal::-webkit-scrollbar-thumb { background: var(--gold-tarnish); border-radius: 4px; }
+
+.spell-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 0.6rem;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0.4rem 0.2rem;
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+}
+.spell-picker::-webkit-scrollbar { width: 6px; }
+.spell-picker::-webkit-scrollbar-thumb { background: var(--gold-tarnish); }
+.spell-pick {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--parchment);
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.spell-pick:hover { background: rgba(31, 78, 163, 0.06); border-color: var(--gold-tarnish); }
+.spell-pick input { margin: 0; cursor: pointer; }
+.spell-pick.disabled { opacity: 0.4; cursor: not-allowed; }
+.spell-pick.disabled:hover { background: transparent; border-color: transparent; }
+.spell-pick-name { flex: 1; }
+.spell-pick-meta { color: var(--parchment-aged); font-size: 0.75rem; }
+.spell-pick .conc-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: var(--gold-tarnish);
+  color: #fff;
+  padding: 0 0.25rem;
+  margin-left: 0.2rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+.spell-picker-count {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-top: 0.4rem;
+}
+.spell-picker-count.full { color: var(--gold-bright); }
+
+.asi-feat-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--parchment);
+}
+.asi-feat-tabs label { cursor: pointer; }
+.asi-feat-asi label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--parchment);
+  margin-bottom: 0.4rem;
+}
+.asi-feat-asi select {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.4rem;
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  margin-left: 0.2rem;
+}
+.feat-detail {
+  margin-top: 0.5rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--parchment-aged);
+  line-height: 1.45;
+  font-style: italic;
+}
+.feat-detail .feat-prereq {
+  font-style: normal;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+/* Magic card (sheet) */
+.magic-card .slot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.2);
+}
+.magic-card .slot-row:last-child { border-bottom: none; }
+.magic-card .slot-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  min-width: 90px;
+}
+.magic-card .pip {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--gold);
+  background: var(--gold);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-block;
+}
+.magic-card .pip.used { background: transparent; }
+.magic-card .pip:hover { border-color: var(--gold-bright); }
+.spell-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 1.2rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.spell-section-title .spell-count {
+  font-size: 0.7rem;
+  color: var(--gold-tarnish);
+  font-weight: normal;
+}
+.spell-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.4rem 0.8rem;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--parchment);
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.15);
+}
+.spell-row:last-child { border-bottom: none; }
+.spell-row .spell-name { font-weight: 600; }
+.spell-row .spell-name .conc-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: var(--gold-tarnish);
+  color: #fff;
+  padding: 0 0.25rem;
+  margin-left: 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+}
+.spell-row .spell-name .always-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: var(--gold);
+  color: #fff;
+  padding: 0 0.25rem;
+  margin-left: 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+}
+.spell-row .spell-meta {
+  color: var(--parchment-aged);
+  font-size: 0.78rem;
+}
+.spell-row .spell-actions {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.spell-row .spell-cast {
+  font-size: 0.75rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--gold-tarnish);
+  background: transparent;
+  cursor: pointer;
+}
+.spell-row .spell-cast:hover { background: var(--gold); color: #fff; }
+.spell-row .spell-info {
+  font-size: 0.85rem;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  padding: 0;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.spell-row .spell-info:hover { background: var(--gold); color: #fff; }
+body.dm-mode .spell-cast { pointer-events: none; opacity: 0.5; }
+.edit-prepared-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  margin-left: 0.6rem;
+}
+.edit-prepared-btn:hover { background: var(--gold); color: #fff; }
+
+/* DM view: lock pickable elements in the level-up modal too */
+body.dm-mode .level-up-btn,
+body.dm-mode .edit-prepared-btn,
+body.dm-mode #combat-resources-card .rest-btn,
+body.dm-mode .magic-card .pip {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Feats card */
+.feat-block {
+  padding: 0.5rem 0;
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.2);
+}
+.feat-block:last-child { border-bottom: none; }
+.feat-block h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+.feat-block h4 .feat-lvl {
+  font-weight: normal;
+  font-size: 0.7rem;
+  color: var(--gold-tarnish);
+  margin-left: 0.4rem;
+}
+.feat-block p {
+  margin: 0;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--parchment-aged);
+}
 
 .options-menu {
   position: relative;
@@ -1389,9 +1668,9 @@ body::before {
   min-width: 200px;
   max-width: 280px;
   padding: 0.6rem;
-  background: var(--ink-deep);
+  background: #fff;
   border: 1px solid var(--gold);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+  box-shadow: 0 6px 18px rgba(31, 78, 163, 0.25);
   font-family: 'EB Garamond', serif;
   color: var(--parchment);
 }
@@ -2151,6 +2430,17 @@ body.dm-mode .dm-hide { display: none; }
       </div>
     </div>
 
+    <div class="card magic-card" id="magic-card" style="margin-top: 2rem;" hidden>
+      <h3>Spells &amp; Slots
+        <button class="edit-prepared-btn" id="edit-prepared-btn">Edit Prepared</button>
+      </h3>
+      <div id="spell-slots"></div>
+      <div class="spell-section-title"><span>Cantrips</span><span class="spell-count" id="cantrip-count"></span></div>
+      <div id="cantrip-list"></div>
+      <div class="spell-section-title"><span>Prepared</span><span class="spell-count" id="prepared-count"></span></div>
+      <div id="prepared-list"></div>
+    </div>
+
     <div class="concentration-tracker" id="concentration-wrap" style="margin-top: 2rem;">
       <span class="concentration-label">Concentrating on</span>
       <select id="concentration-select">
@@ -2190,6 +2480,10 @@ body.dm-mode .dm-hide { display: none; }
           <p style="color: var(--parchment-dim); font-style: italic;">Class features appear here as Rivet levels up. Use the level-up modal to add her first level.</p>
         </div>
       </div>
+    </div>
+    <div class="card" id="feats-card" style="margin-top: 2rem;" hidden>
+      <h3>Feats</h3>
+      <div id="feats-list"></div>
     </div>
   </section>
 
@@ -2317,6 +2611,19 @@ body.dm-mode .dm-hide { display: none; }
   </div>
 </div>
 
+<!-- Edit Prepared modal (Phase 2D): re-pick the full prepared spell list -->
+<div class="modal-overlay" id="prepared-overlay" hidden>
+  <div class="modal">
+    <button class="modal-close" id="prepared-close" aria-label="Close">×</button>
+    <div class="modal-title">Edit Prepared Spells</div>
+    <div class="modal-subtitle" id="prepared-subtitle">Pick your prepared spells for today.</div>
+    <div class="modal-detail-prompts" id="prepared-prompts"></div>
+    <div class="modal-actions">
+      <button class="modal-confirm" id="prepared-confirm">Save Prepared List</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // BUILD DATA — single source of truth
@@ -2409,9 +2716,113 @@ const _LEVEL_DATA_PLACEHOLDER_HEAD = [
   { warlock: 4, sorcerer: 16, classGain: 'ASI / Feat (final character level)', asi: { con: 2 } }
 ];
 
-// Phase 1: spell list is empty. The level-up modal in Phase 2 will populate Artificer
-// (half-caster) spells and Rogue features as Rivet picks them.
-const SPELLS = [];
+// Full 2024 Artificer prepared spell catalog (Eberron: Forge of the Artificer).
+// `concentration: true` is set wherever the duration is "C, up to ..." so the
+// concentration tracker can filter from this catalog.
+const SPELLS = [
+  // ===== CANTRIPS =====
+  { name: 'Acid Splash',         level: 'Cantrip', school: 'Evocation',    time: 'Action',       range: '60 feet',  components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Dancing Lights',      level: 'Cantrip', school: 'Illusion',     time: 'Action',       range: '120 feet', components: 'V, S, M', duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Elementalism',        level: 'Cantrip', school: 'Transmutation',time: 'Action',       range: '30 feet',  components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Fire Bolt',           level: 'Cantrip', school: 'Evocation',    time: 'Action',       range: '120 feet', components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Guidance',            level: 'Cantrip', school: 'Divination',   time: 'Action',       range: 'Touch',    components: 'V, S',    duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Light',               level: 'Cantrip', school: 'Evocation',    time: 'Action',       range: 'Touch',    components: 'V, M',    duration: '1 hour' },
+  { name: 'Mage Hand',           level: 'Cantrip', school: 'Conjuration',  time: 'Action',       range: '30 feet',  components: 'V, S',    duration: '1 minute' },
+  { name: 'Message',             level: 'Cantrip', school: 'Transmutation',time: 'Action',       range: '120 feet', components: 'S, M',    duration: '1 round' },
+  { name: 'Poison Spray',        level: 'Cantrip', school: 'Necromancy',   time: 'Action',       range: '30 feet',  components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Prestidigitation',    level: 'Cantrip', school: 'Transmutation',time: 'Action',       range: '10 feet',  components: 'V, S',    duration: 'Up to 1 hour' },
+  { name: 'Ray of Frost',        level: 'Cantrip', school: 'Evocation',    time: 'Action',       range: '60 feet',  components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Resistance',          level: 'Cantrip', school: 'Abjuration',   time: 'Action',       range: 'Touch',    components: 'V, S',    duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Shocking Grasp',      level: 'Cantrip', school: 'Evocation',    time: 'Action',       range: 'Touch',    components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Spare the Dying',     level: 'Cantrip', school: 'Necromancy',   time: 'Action',       range: '15 feet',  components: 'V, S',    duration: 'Instantaneous' },
+  { name: 'Thorn Whip',          level: 'Cantrip', school: 'Transmutation',time: 'Action',       range: '30 feet',  components: 'V, S, M', duration: 'Instantaneous' },
+  { name: 'Thunderclap',         level: 'Cantrip', school: 'Evocation',    time: 'Action',       range: 'Self',     components: 'S',       duration: 'Instantaneous' },
+  { name: 'True Strike',         level: 'Cantrip', school: 'Divination',   time: 'Action',       range: 'Self',     components: 'S, M',    duration: 'Instantaneous' },
+
+  // ===== 1st LEVEL =====
+  { name: 'Alarm',                level: '1st', school: 'Abjuration',   time: '1 minute or R', range: '30 feet', components: 'V, S, M',     duration: '8 hours' },
+  { name: 'Cure Wounds',          level: '1st', school: 'Abjuration',   time: 'Action',        range: 'Touch',   components: 'V, S',        duration: 'Instantaneous' },
+  { name: 'Detect Magic',         level: '1st', school: 'Divination',   time: 'Action or R',   range: 'Self',    components: 'V, S',        duration: 'C, up to 10 minutes', concentration: true },
+  { name: 'Disguise Self',        level: '1st', school: 'Illusion',     time: 'Action',        range: 'Self',    components: 'V, S',        duration: '1 hour' },
+  { name: 'Expeditious Retreat',  level: '1st', school: 'Transmutation',time: 'Bonus Action',  range: 'Self',    components: 'V, S',        duration: 'C, up to 10 minutes', concentration: true },
+  { name: 'Faerie Fire',          level: '1st', school: 'Evocation',    time: 'Action',        range: '60 feet', components: 'V',           duration: 'C, up to 1 minute', concentration: true },
+  { name: 'False Life',           level: '1st', school: 'Necromancy',   time: 'Action',        range: 'Self',    components: 'V, S, M',     duration: 'Instantaneous' },
+  { name: 'Feather Fall',         level: '1st', school: 'Transmutation',time: 'Reaction',      range: '60 feet', components: 'V, M',        duration: '1 minute' },
+  { name: 'Grease',               level: '1st', school: 'Conjuration',  time: 'Action',        range: '60 feet', components: 'V, S, M',     duration: '1 minute' },
+  { name: 'Identify',             level: '1st', school: 'Divination',   time: '1 minute or R', range: 'Touch',   components: 'V, S, M(C)',  duration: 'Instantaneous' },
+  { name: 'Jump',                 level: '1st', school: 'Transmutation',time: 'Bonus Action',  range: 'Touch',   components: 'V, S, M',     duration: '1 minute' },
+  { name: 'Longstrider',          level: '1st', school: 'Transmutation',time: 'Action',        range: 'Touch',   components: 'V, S, M',     duration: '1 hour' },
+  { name: 'Purify Food and Drink',level: '1st', school: 'Transmutation',time: 'Action or R',   range: '10 feet', components: 'V, S',        duration: 'Instantaneous' },
+  { name: 'Sanctuary',            level: '1st', school: 'Abjuration',   time: 'Bonus Action',  range: '30 feet', components: 'V, S, M',     duration: '1 minute' },
+
+  // ===== 2nd LEVEL =====
+  { name: 'Aid',                level: '2nd', school: 'Abjuration',   time: 'Action',       range: '30 feet', components: 'V, S, M',    duration: '8 hours' },
+  { name: 'Alter Self',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Self',    components: 'V, S',       duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Arcane Lock',        level: '2nd', school: 'Abjuration',   time: 'Action',       range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled' },
+  { name: 'Arcane Vigor',       level: '2nd', school: 'Abjuration',   time: 'Bonus Action', range: 'Self',    components: 'V, S',       duration: 'Instantaneous' },
+  { name: 'Blur',               level: '2nd', school: 'Illusion',     time: 'Action',       range: 'Self',    components: 'V',          duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Continual Flame',    level: '2nd', school: 'Evocation',    time: 'Action',       range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled' },
+  { name: 'Darkvision',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: '8 hours' },
+  { name: 'Dragon\'s Breath',   level: '2nd', school: 'Transmutation',time: 'Bonus Action', range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Enhance Ability',    level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Enlarge/Reduce',     level: '2nd', school: 'Transmutation',time: 'Action',       range: '30 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Heat Metal',         level: '2nd', school: 'Transmutation',time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Homunculus Servant', level: '2nd', school: 'Conjuration',  time: '1 hour or Ritual', range: '10 feet', components: 'V, S, M(C)', duration: 'Instantaneous' },
+  { name: 'Invisibility',       level: '2nd', school: 'Illusion',     time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Lesser Restoration', level: '2nd', school: 'Abjuration',   time: 'Bonus Action', range: 'Touch',   components: 'V, S',       duration: 'Instantaneous' },
+  { name: 'Levitate',           level: '2nd', school: 'Transmutation',time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 10 minutes', concentration: true },
+  { name: 'Magic Mouth',        level: '2nd', school: 'Illusion',     time: '1 minute or R',range: '30 feet', components: 'V, S, M(C*)',duration: 'Until dispelled' },
+  { name: 'Magic Weapon',       level: '2nd', school: 'Transmutation',time: 'Bonus Action', range: 'Touch',   components: 'V, S',       duration: '1 hour' },
+  { name: 'Protection from Poison', level: '2nd', school: 'Abjuration', time: 'Action',     range: 'Touch',   components: 'V, S',       duration: '1 hour' },
+  { name: 'Rope Trick',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: '1 hour' },
+  { name: 'See Invisibility',   level: '2nd', school: 'Divination',   time: 'Action',       range: 'Self',    components: 'V, S, M',    duration: '1 hour' },
+  { name: 'Spider Climb',       level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Web',                level: '2nd', school: 'Conjuration',  time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
+
+  // ===== 3rd LEVEL =====
+  { name: 'Blink',                level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Self',    components: 'V, S',      duration: '1 minute' },
+  { name: 'Create Food and Water',level: '3rd', school: 'Conjuration',  time: 'Action',     range: '30 feet', components: 'V, S',      duration: 'Instantaneous' },
+  { name: 'Dispel Magic',         level: '3rd', school: 'Abjuration',   time: 'Action',     range: '120 feet',components: 'V, S',      duration: 'Instantaneous' },
+  { name: 'Elemental Weapon',     level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S',      duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Fly',                  level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M',   duration: 'C, up to 10 minutes', concentration: true },
+  { name: 'Glyph of Warding',     level: '3rd', school: 'Abjuration',   time: '1 hour',     range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled or triggered' },
+  { name: 'Haste',                level: '3rd', school: 'Transmutation',time: 'Action',     range: '30 feet', components: 'V, S, M',   duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Protection from Energy',level: '3rd', school: 'Abjuration', time: 'Action',     range: 'Touch',   components: 'V, S',      duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Revivify',             level: '3rd', school: 'Necromancy',  time: 'Action',     range: 'Touch',   components: 'V, S, M(C*)',duration: 'Instantaneous' },
+  { name: 'Water Breathing',      level: '3rd', school: 'Transmutation',time: 'Action or R',range: '30 feet', components: 'V, S, M',   duration: '24 hours' },
+  { name: 'Water Walk',           level: '3rd', school: 'Transmutation',time: 'Action or R',range: '30 feet', components: 'V, S, M',   duration: '1 hour' },
+
+  // ===== 4th LEVEL =====
+  { name: 'Arcane Eye',                       level: '4th', school: 'Divination',   time: 'Action',     range: '30 feet', components: 'V, S, M',     duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Fabricate',                        level: '4th', school: 'Transmutation',time: '10 minutes', range: '120 feet',components: 'V, S',        duration: 'Instantaneous' },
+  { name: 'Freedom of Movement',              level: '4th', school: 'Abjuration',   time: 'Action',     range: 'Touch',   components: 'V, S, M',     duration: '1 hour' },
+  { name: 'Leomund\'s Secret Chest',          level: '4th', school: 'Conjuration',  time: 'Action',     range: 'Touch',   components: 'V, S, M(C)',  duration: 'Until dispelled' },
+  { name: 'Mordenkainen\'s Private Sanctum',  level: '4th', school: 'Abjuration',   time: '10 minutes', range: '120 feet',components: 'V, S, M',     duration: '24 hours' },
+  { name: 'Otiluke\'s Resilient Sphere',      level: '4th', school: 'Abjuration',   time: 'Action',     range: '30 feet', components: 'V, S, M',     duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Stone Shape',                      level: '4th', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M',     duration: 'Instantaneous' },
+  { name: 'Stoneskin',                        level: '4th', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M(C*)', duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Summon Construct',                 level: '4th', school: 'Conjuration',  time: 'Action',     range: '90 feet', components: 'V, S, M(C)',  duration: 'C, up to 1 hour', concentration: true },
+
+  // ===== 5th LEVEL =====
+  { name: 'Animate Objects',     level: '5th', school: 'Transmutation', time: 'Action',   range: '120 feet', components: 'V, S',       duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Bigby\'s Hand',       level: '5th', school: 'Evocation',     time: 'Action',   range: '120 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
+  { name: 'Circle of Power',     level: '5th', school: 'Abjuration',    time: 'Action',   range: 'Self',     components: 'V',          duration: 'C, up to 10 minutes', concentration: true },
+  { name: 'Creation',            level: '5th', school: 'Illusion',      time: '1 minute', range: '30 feet',  components: 'V, S, M',    duration: 'Special' },
+  { name: 'Greater Restoration', level: '5th', school: 'Abjuration',    time: 'Action',   range: 'Touch',    components: 'V, S, M(C*)',duration: 'Instantaneous' },
+  { name: 'Wall of Stone',       level: '5th', school: 'Evocation',     time: 'Action',   range: '120 feet', components: 'V, S, M',    duration: 'C, up to 10 minutes', concentration: true },
+
+  // ===== SUBCLASS-ONLY SPELLS =====
+  // Always-prepared via Armorer; not on the base Artificer prepared list, so
+  // they shouldn't appear in the prepared-spell picker.
+  { name: 'Magic Missile',     level: '1st', school: 'Evocation',    time: 'Action',     range: '120 feet',          components: 'V, S',    duration: 'Instantaneous',                          subclassOnly: true },
+  { name: 'Thunderwave',       level: '1st', school: 'Evocation',    time: 'Action',     range: 'Self (15-ft cube)', components: 'V, S',    duration: 'Instantaneous',                          subclassOnly: true },
+  { name: 'Mirror Image',      level: '2nd', school: 'Illusion',     time: 'Action',     range: 'Self',              components: 'V, S',    duration: '1 minute',                                subclassOnly: true },
+  { name: 'Shatter',           level: '2nd', school: 'Evocation',    time: 'Action',     range: '60 feet',           components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true },
+  { name: 'Hypnotic Pattern',  level: '3rd', school: 'Illusion',     time: 'Action',     range: '120 feet',          components: 'S, M',    duration: 'C, up to 1 minute', concentration: true, subclassOnly: true },
+  { name: 'Lightning Bolt',    level: '3rd', school: 'Evocation',    time: 'Action',     range: 'Self (100-ft line)',components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true },
+  { name: 'Fire Shield',       level: '4th', school: 'Evocation',    time: 'Action',     range: 'Self',              components: 'V, S, M', duration: '10 minutes',                              subclassOnly: true },
+  { name: 'Passwall',          level: '5th', school: 'Transmutation',time: 'Action',     range: '30 feet',           components: 'V, S, M', duration: '1 hour',                                  subclassOnly: true }
+];
 const _SPELLS_PLACEHOLDER_HEAD = [
   // Cantrips
   { name: 'Eldritch Blast', level: 'Cantrip', class: 'Warlock', gained: 1, notes: 'The Engine. Force damage, 120 ft, ranged spell attack.' },
@@ -2457,6 +2868,91 @@ const _SPELLS_PLACEHOLDER_HEAD = [
   { name: 'Sunburst', level: '8th', class: 'Sorcerer', gained: 18, notes: '12d6 radiant in 60 ft radius, blinds on fail.' },
   // 9th
   { name: 'Mind Blank', level: '8th', class: 'Sorcerer', gained: 20, notes: 'Target is immune to charm, fear, possession, divination, and psychic damage for 8 hours.' }
+];
+
+// 2024 PHB feats catalog. Each feat has:
+//   category:   'Origin' | 'General' | 'Epic Boon'
+//   minLevel:   minimum character level to pick this feat
+//   asi:        optional baked-in ability score increase, e.g. { con: 1 }
+//   saveProf:   optional save proficiency granted (Resilient family)
+//   prereq:     short text shown in the picker for any prerequisite
+//   effect:     plain-English summary for display on the sheet
+const FEATS = [
+  // ---- Origin feats (background-tied at L1, also pickable anytime as a feat option) ----
+  { name: 'Alert',           category: 'Origin',  minLevel: 1, effect: 'Add prof bonus to Initiative. Swap initiative results with a willing ally. Adds Init bonus on surprise rounds.' },
+  { name: 'Crafter',         category: 'Origin',  minLevel: 1, effect: 'Proficiency with 3 Artisan\'s Tools. Crafted nonmagical gear costs 20% less. 7-day downtime: scribe a Spell Scroll or craft mundane gear.' },
+  { name: 'Healer',          category: 'Origin',  minLevel: 1, effect: 'Action with a Healer\'s Kit: restore 1d10 + prof bonus HP to a creature. Stabilize a dying creature.' },
+  { name: 'Lucky',           category: 'Origin',  minLevel: 1, effect: '3 Luck Points per long rest. Reroll an attack/save/check, or force an enemy attacker to reroll.' },
+  { name: 'Magic Initiate (Wizard)', category: 'Origin', minLevel: 1, effect: 'Learn 2 Wizard cantrips + 1 first-level Wizard spell (cast once/long rest). Use INT.' },
+  { name: 'Musician',        category: 'Origin',  minLevel: 1, effect: 'Proficiency with 3 musical instruments. After a short/long rest, grant Heroic Inspiration to allies who heard you play (up to prof bonus).' },
+  { name: 'Savage Attacker', category: 'Origin',  minLevel: 1, effect: 'Once per turn, reroll the damage dice of a weapon attack and use either result.' },
+  { name: 'Skilled',         category: 'Origin',  minLevel: 1, effect: 'Gain proficiency in any combination of 3 skills or tools.' },
+  { name: 'Tavern Brawler',  category: 'Origin',  minLevel: 1, effect: 'Unarmed strikes use 1d4 + STR for damage. Bonus action grapple after Unarmed Strike. +1 STR or CON.', asi: { con: 1 } },
+  { name: 'Tough',           category: 'Origin',  minLevel: 1, effect: '+2 HP per character level (current and future).' },
+
+  // ---- General feats (Lvl 4+) ----
+  { name: 'Ability Score Improvement (ASI)', category: 'General', minLevel: 4, effect: '+2 to a single ability score, or +1 to two different scores (max 20).' },
+  { name: 'Actor',           category: 'General', minLevel: 4, effect: '+1 CHA. Advantage on Deception/Performance to pass yourself off. Mimic speech or sounds you\'ve heard.', asi: { cha: 1 } },
+  { name: 'Athlete',         category: 'General', minLevel: 4, effect: '+1 STR or DEX. Stand from prone with 5 ft of movement. Climb at full speed. Running long-jump distance uses STR (no half).', asi: { str: 1 } },
+  { name: 'Charger',         category: 'General', minLevel: 4, effect: '+1 STR or DEX. After Dash, bonus action attack with +1d8 damage, or shove +10 ft.', asi: { str: 1 } },
+  { name: 'Chef',            category: 'General', minLevel: 4, effect: '+1 CON or WIS. Cook\'s Utensils proficiency. Cook meals on a short rest restoring 1d8 + prof bonus extra HP. Bake treats granting Temp HP.', asi: { con: 1 } },
+  { name: 'Crossbow Expert', category: 'General', minLevel: 4, effect: '+1 DEX. Ignore Loading on crossbows you\'re proficient with. No disadvantage at close range. Bonus action: hand crossbow attack after another attack.', asi: { dex: 1 } },
+  { name: 'Defensive Duelist',category: 'General',minLevel: 4, effect: '+1 DEX. Reaction with a Finesse weapon: add prof bonus to AC against one attack that hits you.', asi: { dex: 1 } },
+  { name: 'Dual Wielder',    category: 'General', minLevel: 4, effect: '+1 STR or DEX. Wield two non-heavy melee weapons (one need not be Light). +1 AC while dual-wielding. Bonus action attack with offhand.', asi: { dex: 1 } },
+  { name: 'Durable',         category: 'General', minLevel: 4, effect: '+1 CON. Hit Die healing: minimum roll = 2× CON mod. Heal proficiency bonus extra HP on a short rest.', asi: { con: 1 } },
+  { name: 'Elemental Adept', category: 'General', minLevel: 4, prereq: 'Spellcasting/Pact Magic feature', effect: 'Pick a damage type. Your spells of that type ignore Resistance and treat 1s on damage dice as 2s.' },
+  { name: 'Fey Touched',     category: 'General', minLevel: 4, effect: '+1 INT/WIS/CHA. Learn Misty Step + one 1st-level Divination or Enchantment spell. Cast each once/long rest, or with slots.', asi: { int: 1 } },
+  { name: 'Grappler',        category: 'General', minLevel: 4, effect: '+1 STR or DEX. Grapple as a bonus action after Attack. While grappling, you have Advantage on attacks against the grappled creature.', asi: { str: 1 } },
+  { name: 'Great Weapon Master', category: 'General', minLevel: 4, effect: '+1 STR. Bonus action melee attack after scoring a critical hit or reducing a creature to 0 HP. Heavy melee weapons add prof bonus to damage.', asi: { str: 1 } },
+  { name: 'Heavily Armored', category: 'General', minLevel: 4, prereq: 'Proficient with Medium armor', effect: '+1 STR. Gain proficiency with Heavy armor.', asi: { str: 1 } },
+  { name: 'Heavy Armor Master', category: 'General', minLevel: 4, prereq: 'Proficient with Heavy armor', effect: '+1 STR. While wearing Heavy armor, reduce bludgeoning/piercing/slashing damage from nonmagical attacks by prof bonus.', asi: { str: 1 } },
+  { name: 'Inspiring Leader',category: 'General', minLevel: 4, effect: '+1 CHA. After a 10-minute rest, grant temp HP equal to char level + CHA mod to up to 5 listeners.', asi: { cha: 1 } },
+  { name: 'Keen Mind',       category: 'General', minLevel: 4, effect: '+1 INT. Always know which way is north and hours until sunrise/sunset. Recall anything seen/heard in the past month.', asi: { int: 1 } },
+  { name: 'Lightly Armored', category: 'General', minLevel: 4, effect: '+1 STR or DEX. Gain proficiency with Light armor.', asi: { dex: 1 } },
+  { name: 'Linguist',        category: 'General', minLevel: 4, effect: '+1 INT. Learn 3 languages. Create ciphers that take INT (Investigation) DC 8 + INT + prof bonus to decode.', asi: { int: 1 } },
+  { name: 'Lucky',           category: 'General', minLevel: 4, effect: '3 Luck Points per long rest. Reroll an attack/save/check, or force an enemy attacker to reroll.' },
+  { name: 'Mage Slayer',     category: 'General', minLevel: 4, effect: '+1 STR/CON/WIS. Reaction attack when a creature within 5 ft casts a spell. Spellcasters within 5 ft have Disadvantage on Concentration saves.', asi: { wis: 1 } },
+  { name: 'Magic Initiate (Wizard)', category: 'General', minLevel: 4, effect: 'Learn 2 Wizard cantrips + 1 first-level Wizard spell (cast once/long rest, or with slots).' },
+  { name: 'Martial Adept',   category: 'General', minLevel: 4, effect: 'Learn 2 Battle Master maneuvers. Gain 1 Superiority Die (d6), recovered on short/long rest.' },
+  { name: 'Medium Armor Master', category: 'General', minLevel: 4, prereq: 'Proficient with Medium armor', effect: '+1 STR or DEX. No Stealth disadvantage in Medium armor. Bonus from DEX in Medium armor can apply up to +3.', asi: { str: 1 } },
+  { name: 'Mobile',          category: 'General', minLevel: 4, effect: '+1 STR/DEX. Speed +10. Difficult terrain doesn\'t slow you during a Dash. After a melee attack, the target can\'t make opportunity attacks against you that turn.', asi: { dex: 1 } },
+  { name: 'Moderately Armored', category: 'General', minLevel: 4, prereq: 'Proficient with Light armor', effect: '+1 STR or DEX. Proficiency with Medium armor and Shields.', asi: { dex: 1 } },
+  { name: 'Mounted Combatant',category: 'General', minLevel: 4, effect: '+1 STR/DEX/WIS. Advantage on melee attacks vs smaller dismounted creatures. Redirect attacks against mount to yourself. Mount evasion on DEX saves.', asi: { str: 1 } },
+  { name: 'Observant',       category: 'General', minLevel: 4, effect: '+1 INT or WIS. Read lips. Passive Investigation + Passive Perception +5.', asi: { wis: 1 } },
+  { name: 'Piercer',         category: 'General', minLevel: 4, effect: '+1 STR or DEX. Once per turn, reroll one piercing damage die. Piercing critical hits add an extra damage die.', asi: { dex: 1 } },
+  { name: 'Poisoner',        category: 'General', minLevel: 4, effect: '+1 DEX or INT. Ignore Poison resistance. Coat a weapon as a bonus action (DC 14 CON save or Poisoned + 2d8). Make 4 doses for 50gp.', asi: { dex: 1 } },
+  { name: 'Polearm Master',  category: 'General', minLevel: 4, effect: '+1 STR or DEX. Bonus action butt-end attack (1d4) with quarterstaff/glaive/halberd/spear/pike. Opportunity attacks on entering reach.', asi: { dex: 1 } },
+  { name: 'Resilient (CON)', category: 'General', minLevel: 4, effect: '+1 CON. Gain proficiency in Constitution saving throws — locks in concentration.', asi: { con: 1 }, saveProf: 'con' },
+  { name: 'Resilient (WIS)', category: 'General', minLevel: 4, effect: '+1 WIS. Gain proficiency in Wisdom saving throws.', asi: { wis: 1 }, saveProf: 'wis' },
+  { name: 'Resilient (CHA)', category: 'General', minLevel: 4, effect: '+1 CHA. Gain proficiency in Charisma saving throws.', asi: { cha: 1 }, saveProf: 'cha' },
+  { name: 'Ritual Caster',   category: 'General', minLevel: 4, effect: '+1 INT/WIS/CHA. Learn 2 ritual spells of 1st level, plus a ritual book. Add more rituals over time.', asi: { int: 1 } },
+  { name: 'Sentinel',        category: 'General', minLevel: 4, effect: '+1 STR or DEX. Opportunity attacks reduce target speed to 0. Disengage doesn\'t avoid your OAs. Reaction attack when a creature within 5 ft hits an ally.', asi: { str: 1 } },
+  { name: 'Shadow-Touched',  category: 'General', minLevel: 4, effect: '+1 INT/WIS/CHA. Learn Invisibility + one 1st-level Illusion or Necromancy spell. Cast each once/long rest, or with slots.', asi: { int: 1 } },
+  { name: 'Sharpshooter',    category: 'General', minLevel: 4, effect: '+1 DEX. No disadvantage on ranged attacks at long range. Ranged weapons ignore half/three-quarters cover. Trade −5 attack for +10 damage.', asi: { dex: 1 } },
+  { name: 'Shield Master',   category: 'General', minLevel: 4, effect: '+1 STR. Bonus action shield shove (5 ft). Reaction: shield interposed grants you Evasion on triggering DEX save. Add shield AC bonus to DEX saves vs effects you can see.', asi: { str: 1 } },
+  { name: 'Skill Expert',    category: 'General', minLevel: 4, effect: '+1 to any ability. Proficiency in one new skill. Expertise in one skill you\'re proficient in.', asi: { int: 1 } },
+  { name: 'Skulker',         category: 'General', minLevel: 4, effect: '+1 DEX or WIS. Try to Hide when only lightly obscured. Missing a hidden ranged attack doesn\'t reveal you. No disadvantage on Perception in dim light.', asi: { dex: 1 } },
+  { name: 'Slasher',         category: 'General', minLevel: 4, effect: '+1 STR or DEX. Slashing damage reduces target speed by 10. Slashing critical hits give the target Disadvantage on attacks until your next turn.', asi: { dex: 1 } },
+  { name: 'Speedy',          category: 'General', minLevel: 4, effect: '+1 STR or DEX. Speed +10. Ignore difficult terrain caused by spells. No opportunity attacks when you Dash.', asi: { dex: 1 } },
+  { name: 'Spell Sniper',    category: 'General', minLevel: 4, prereq: 'Spellcasting/Pact Magic feature', effect: '+1 INT/WIS/CHA. Spell attacks double their range and ignore half/three-quarters cover. Learn one cantrip from any list.', asi: { int: 1 } },
+  { name: 'Telekinetic',     category: 'General', minLevel: 4, effect: '+1 INT/WIS/CHA. Learn Mage Hand (invisible, 30 ft range). Bonus action: shove a creature within 30 ft (STR save) 5 ft.', asi: { int: 1 } },
+  { name: 'Telepathic',      category: 'General', minLevel: 4, effect: '+1 INT/WIS/CHA. Speak telepathically to a creature within 60 ft (one-way). Cast Detect Thoughts once/long rest, or with slots.', asi: { int: 1 } },
+  { name: 'Tough',           category: 'General', minLevel: 4, effect: '+2 HP per character level (current and future).' },
+  { name: 'War Caster',      category: 'General', minLevel: 4, prereq: 'Spellcasting/Pact Magic feature', effect: '+1 INT/WIS/CHA. Advantage on Concentration saves. Cast spells as opportunity attacks. Somatic components with hands full.', asi: { int: 1 } },
+  { name: 'Weapon Master',   category: 'General', minLevel: 4, effect: '+1 STR or DEX. Proficiency with 4 weapons. Pick a Weapon Mastery on a long rest.', asi: { dex: 1 } },
+
+  // ---- Epic Boons (Lvl 19+) ----
+  { name: 'Boon of Combat Prowess',  category: 'Epic Boon', minLevel: 19, effect: 'When you miss with an attack, you can choose to hit instead (once per turn).' },
+  { name: 'Boon of Dimensional Travel', category: 'Epic Boon', minLevel: 19, effect: 'Bonus action: teleport up to 30 ft to a space you can see (3× per long rest).' },
+  { name: 'Boon of Energy Resistance', category: 'Epic Boon', minLevel: 19, effect: '+1 to one stat (max 30). Resistance to two damage types of your choice (changeable on a long rest).' },
+  { name: 'Boon of Fate',            category: 'Epic Boon', minLevel: 19, effect: 'When a creature within 60 ft makes a d20 Test, add 2d6 to or subtract 2d6 from the roll (prof bonus uses/LR).' },
+  { name: 'Boon of Fortitude',       category: 'Epic Boon', minLevel: 19, effect: '+1 CON (max 30). +40 HP. Spend Hit Dice to heal as a Bonus Action.' },
+  { name: 'Boon of Irresistible Offense', category: 'Epic Boon', minLevel: 19, effect: '+1 STR or DEX (max 30). Your weapon attacks ignore Resistance. Crits gain damage = double your ability score.' },
+  { name: 'Boon of Recovery',        category: 'Epic Boon', minLevel: 19, effect: 'Bonus action: spend Hit Dice to regain HP. 1× per long rest, when reduced to 0 HP, drop to 1 instead.' },
+  { name: 'Boon of Skill',           category: 'Epic Boon', minLevel: 19, effect: 'Proficiency in all skills. Expertise in 5 skills of your choice.' },
+  { name: 'Boon of Speed',           category: 'Epic Boon', minLevel: 19, effect: '+30 ft Speed. Ignore difficult terrain. Take the Disengage action as a Bonus Action.' },
+  { name: 'Boon of the Night Spirit',category: 'Epic Boon', minLevel: 19, effect: 'In dim light/darkness: Resistance to all damage but radiant + force, Stealth advantage, attackers without darkvision/truesight have Disadvantage.' },
+  { name: 'Boon of Truesight',       category: 'Epic Boon', minLevel: 19, effect: '+1 to one stat (max 30). Truesight 60 ft.' }
 ];
 
 // Sorcerer multiclass spell slot table — based on Sorcerer level only since Warlock uses Pact Magic separately
@@ -2746,7 +3242,12 @@ const DEFAULT_STATE = {
   deathSavesFail: 0,
   conditions: {},
   exhaustion: 0,
-  heroicInspiration: false
+  heroicInspiration: false,
+  // Phase 2D: Spell/feat picks driven by the level-up modal.
+  cantripsKnown: [],   // array of spell names currently known as cantrips
+  preparedSpells: [],  // array of spell names currently prepared (Artificer-only for now)
+  feats: [],           // array of { name, level } recording each feat taken
+  asiHistory: []       // array of { level, gains: {stat: delta} } for each ASI applied
 };
 
 let state = loadState();
@@ -2878,13 +3379,21 @@ function computeStats(level) {
   const stats = { ...(state.baseStats || BASE_STATS_DEFAULT) };
   for (const [k, v] of Object.entries(BG_BONUS)) stats[k] = (stats[k] || 0) + v;
 
-  // Apply level-based ASIs cumulatively. LEVEL_DATA is empty in Phase 1.
+  // Apply level-based ASIs cumulatively. LEVEL_DATA is empty in Phase 1
+  // (kept for back-compat in case any pre-Phase-2 LEVEL_DATA entries linger).
   for (let l = 1; l <= level; l++) {
     const ld = LEVEL_DATA[l];
     if (!ld) continue;
     if (ld.asi) {
       for (const [k, v] of Object.entries(ld.asi)) stats[k] += v;
     }
+  }
+  // Apply ASIs/feat-baked-asis recorded by the Phase 2D level-up modal.
+  const asiHistory = state.asiHistory || [];
+  for (const a of asiHistory) {
+    if (a.level && a.level > level) continue;
+    if (!a.gains) continue;
+    for (const [k, v] of Object.entries(a.gains)) stats[k] = (stats[k] || 0) + v;
   }
   // Cap at 20
   for (const k of Object.keys(stats)) stats[k] = Math.min(20, stats[k]);
@@ -3060,6 +3569,10 @@ function render() {
 
   // Class features (populated from state.levelHistory via the Level Up modal)
   renderClassFeatures(level);
+
+  // Phase 2D: Magic card + Feats card
+  renderMagicCard(level);
+  renderFeatsCard();
 
   // Point-buy tracker
   renderPointBuy();
@@ -3278,14 +3791,158 @@ function renderConditions() {
 function renderConcentrationOptions(level) {
   const sel = document.getElementById('concentration-select');
   sel.innerHTML = '<option value="">— not concentrating —</option>';
-  for (const sp of SPELLS) {
-    if (!sp.concentration) continue;
-    if (sp.gained > level) continue;
+  // Concentration options are the union of prepared spells + Armorer always-prepared,
+  // filtered to spells with concentration: true in the SPELLS catalog.
+  const { a } = classBreakdown(level);
+  const known = new Set([...(state.preparedSpells || []), ...getArmorerAlwaysPrepared(a)]);
+  const options = SPELLS.filter(s => s.concentration && known.has(s.name));
+  options.sort((a, b) => {
+    const da = spellLevelToNum(a.level) - spellLevelToNum(b.level);
+    return da !== 0 ? da : a.name.localeCompare(b.name);
+  });
+  for (const sp of options) {
     const opt = document.createElement('option');
     opt.value = sp.name;
     opt.textContent = `${sp.name} (${sp.level})`;
     if (state.concentratingOn === sp.name) opt.selected = true;
     sel.appendChild(opt);
+  }
+}
+
+function renderMagicCard(level) {
+  const card = document.getElementById('magic-card');
+  const { a } = classBreakdown(level);
+  if (a === 0) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+
+  // Spell slots — Artificer half-caster table
+  const slotsContainer = document.getElementById('spell-slots');
+  slotsContainer.innerHTML = '';
+  const artData = CLASS_DATA.artificer.perLevel[a];
+  if (artData && artData.slots) {
+    artData.slots.forEach((count, idx) => {
+      if (count === 0) return;
+      const lvl = idx + 1;
+      const key = `sorc${lvl}`;
+      const used = state.usedSlots[key] || 0;
+      const row = document.createElement('div');
+      row.className = 'slot-row';
+      row.innerHTML = `<span class="slot-label">${ordinalSpellLevel(lvl)}</span>`;
+      const pipsBox = document.createElement('div');
+      pipsBox.className = 'slot-pips';
+      for (let i = 0; i < count; i++) {
+        const pip = document.createElement('div');
+        pip.className = 'pip' + (i >= count - used ? ' used' : '');
+        pip.addEventListener('click', () => togglePip(key, i, count));
+        pipsBox.appendChild(pip);
+      }
+      row.appendChild(pipsBox);
+      slotsContainer.appendChild(row);
+    });
+  }
+
+  // Cantrips list
+  const cantripList = document.getElementById('cantrip-list');
+  cantripList.innerHTML = '';
+  const cantrips = (state.cantripsKnown || []).map(name => SPELLS.find(s => s.name === name)).filter(Boolean);
+  cantrips.sort((a, b) => a.name.localeCompare(b.name));
+  document.getElementById('cantrip-count').textContent = `${cantrips.length} / ${artData ? artData.cantrips : 0}`;
+  if (cantrips.length === 0) {
+    cantripList.innerHTML = '<p style="font-style: italic; color: var(--parchment-aged); font-size: 0.85rem; margin: 0.4rem 0;">No cantrips yet.</p>';
+  } else {
+    for (const s of cantrips) {
+      const row = document.createElement('div');
+      row.className = 'spell-row';
+      row.innerHTML = `
+        <span class="spell-name">${s.name}${s.concentration ? '<span class="conc-tag">C</span>' : ''}</span>
+        <span class="spell-meta">${s.school} · ${s.range} · ${s.time}</span>
+        <button class="spell-info" data-spell="${s.name}" title="Spell details">ⓘ</button>
+      `;
+      cantripList.appendChild(row);
+    }
+  }
+
+  // Prepared list — show user picks tagged normally, Armorer always-prepared tagged "auto"
+  const preparedList = document.getElementById('prepared-list');
+  preparedList.innerHTML = '';
+  const userPrepared = (state.preparedSpells || []).map(name => ({ spell: SPELLS.find(s => s.name === name), always: false })).filter(x => x.spell);
+  const armorerAlwaysPrep = getArmorerAlwaysPrepared(a);
+  const alwaysPreparedSpells = armorerAlwaysPrep.map(name => ({ spell: SPELLS.find(s => s.name === name) || { name, level: '—', school: 'Armorer', time: '—', range: '—' }, always: true }));
+  const all = [...userPrepared, ...alwaysPreparedSpells];
+  all.sort((a, b) => {
+    const da = spellLevelToNum(a.spell.level) - spellLevelToNum(b.spell.level);
+    return da !== 0 ? da : a.spell.name.localeCompare(b.spell.name);
+  });
+  document.getElementById('prepared-count').textContent = `${userPrepared.length} / ${artData ? artData.prepared : 0}${alwaysPreparedSpells.length ? ` (+${alwaysPreparedSpells.length} auto)` : ''}`;
+  if (all.length === 0) {
+    preparedList.innerHTML = '<p style="font-style: italic; color: var(--parchment-aged); font-size: 0.85rem; margin: 0.4rem 0;">No prepared spells yet.</p>';
+  } else {
+    for (const { spell, always } of all) {
+      const row = document.createElement('div');
+      row.className = 'spell-row';
+      row.innerHTML = `
+        <span class="spell-name">${spell.name}${spell.concentration ? '<span class="conc-tag">C</span>' : ''}${always ? '<span class="always-tag">auto</span>' : ''}</span>
+        <span class="spell-meta">${spell.level} · ${spell.school} · ${spell.range}</span>
+        <span class="spell-actions">
+          <button class="spell-info" data-spell="${spell.name}" title="Spell details">ⓘ</button>
+          <button class="spell-cast" data-spell="${spell.name}">Cast</button>
+        </span>
+      `;
+      preparedList.appendChild(row);
+    }
+  }
+
+  // Wire info buttons (alert with full details)
+  card.querySelectorAll('.spell-info').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s = SPELLS.find(x => x.name === btn.dataset.spell);
+      if (!s) return;
+      const lines = [
+        s.name,
+        `${s.level} · ${s.school}`,
+        `Time: ${s.time}`,
+        `Range: ${s.range}`,
+        `Components: ${s.components}`,
+        `Duration: ${s.duration}`
+      ];
+      if (s.concentration) lines.push('(Requires Concentration)');
+      alert(lines.join('\n'));
+    });
+  });
+
+  // Wire cast buttons (slot-spending popover)
+  card.querySelectorAll('.spell-cast').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const s = SPELLS.find(x => x.name === btn.dataset.spell);
+      if (!s) return;
+      openCastPopover(s, btn);
+    });
+  });
+}
+
+function renderFeatsCard() {
+  const card = document.getElementById('feats-card');
+  const feats = state.feats || [];
+  if (feats.length === 0) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+  const list = document.getElementById('feats-list');
+  list.innerHTML = '';
+  for (const f of feats) {
+    const data = FEATS.find(x => x.name === f.name);
+    const block = document.createElement('div');
+    block.className = 'feat-block';
+    block.innerHTML = `
+      <h4>${f.name}<span class="feat-lvl">${f.category} · Lvl ${f.level}</span></h4>
+      <p>${data ? data.effect : '—'}</p>
+    `;
+    list.appendChild(block);
   }
 }
 
@@ -3400,28 +4057,22 @@ function renderSpells(level) {
 // ============================================================
 
 function getValidSlotTiers(spell, level) {
-  const minLevel = SPELL_LEVEL_ORDER[spell.level];
+  const minLevel = spellLevelToNum(spell.level);
   if (!minLevel) return []; // cantrip
-  const { w, s } = classBreakdown(level);
+  const { a } = classBreakdown(level);
+  const artData = CLASS_DATA.artificer.perLevel[a];
+  if (!artData || !artData.slots) return [];
   const tiers = [];
-  const pact = pactSlots(w);
-  if (pact && pact.level >= minLevel) {
-    tiers.push({
-      key: 'warlock',
-      label: `Pact (${ordinal(pact.level)})`,
-      max: pact.count,
-      used: state.usedSlots.warlock || 0
-    });
-  }
-  const sorcSlots = SORC_SLOTS[s] || [];
-  for (let i = 0; i < sorcSlots.length; i++) {
+  for (let i = 0; i < artData.slots.length; i++) {
     const lvl = i + 1;
+    const count = artData.slots[i];
+    if (count === 0) continue;
     if (lvl < minLevel) continue;
     const key = `sorc${lvl}`;
     tiers.push({
       key,
-      label: `Sorcerer ${ordinal(lvl)}`,
-      max: sorcSlots[i],
+      label: `${ordinalSpellLevel(lvl)} slot`,
+      max: count,
       used: state.usedSlots[key] || 0
     });
   }
@@ -3655,15 +4306,67 @@ function renderCombatLoops(level) {
 function renderLevelTable(currentLevel) {
   const tbody = document.getElementById('level-table-body');
   tbody.innerHTML = '';
+  const history = state.levelHistory || [];
+  const maxLevel = state.maxLevel || 0;
+  const labels = { str: 'STR', dex: 'DEX', con: 'CON', int: 'INT', wis: 'WIS', cha: 'CHA' };
+
   for (let l = 1; l <= 20; l++) {
-    const ld = LEVEL_DATA[l];
     const tr = document.createElement('tr');
     if (l === currentLevel) tr.className = 'current';
-    else if (l > currentLevel) tr.className = 'future';
-    const classStr = ld
-      ? (ld.class === 'artificer' ? `Artificer ${l}` : ld.class === 'rogue' ? `Rogue ${l}` : '—')
-      : '—';
-    const gain = ld && ld.classGain ? ld.classGain : '—';
+    else if (l > maxLevel) tr.className = 'future';
+
+    const entry = history[l - 1];
+    if (!entry) {
+      tr.innerHTML = `<td><strong>${l}</strong></td><td>—</td><td><em style="color:var(--parchment-aged);">unleveled</em></td>`;
+      tbody.appendChild(tr);
+      continue;
+    }
+
+    const cls = CLASS_DATA[entry.class];
+    const data = cls && cls.perLevel[entry.classLevel];
+    const classStr = cls ? `${cls.name} ${entry.classLevel}` : '—';
+
+    // Build the gains cell — class features + subclass feature + Armorer model + picks
+    const parts = [];
+    if (data) {
+      const chosenSub = findChosenSubclass(entry.class, history.slice(0, l));
+      for (const f of data.features) {
+        if (f.name === 'Subclass Feature' && chosenSub && cls.subclassData && cls.subclassData[chosenSub]) {
+          const subF = cls.subclassData[chosenSub].perLevel[entry.classLevel] || [];
+          for (const sf of subF) parts.push(`<em>${sf.name}</em>`);
+        } else if (f.name !== 'Ability Score Improvement') {
+          parts.push(f.name);
+        }
+      }
+      // Armorer always-prepared spells at the subclass level
+      if (entry.class === 'artificer' && chosenSub === 'Armorer' && cls.subclassData.Armorer.alwaysPrepared[entry.classLevel]) {
+        parts.push(`<em>Armorer auto-prep:</em> ${cls.subclassData.Armorer.alwaysPrepared[entry.classLevel].join(', ')}`);
+      }
+    }
+    if (entry.subclass) {
+      parts.push(`<strong>Subclass:</strong> ${entry.subclass}`);
+    }
+    if (entry.armorModel) {
+      parts.push(`<strong>Armor Model:</strong> ${entry.armorModel}`);
+    }
+    if (entry.cantripsAdded && entry.cantripsAdded.length > 0) {
+      parts.push(`<strong>+Cantrips:</strong> ${entry.cantripsAdded.join(', ')}`);
+    }
+    if (entry.spellsAdded && entry.spellsAdded.length > 0) {
+      parts.push(`<strong>+Prepared:</strong> ${entry.spellsAdded.join(', ')}`);
+    }
+    if (entry.originFeat) {
+      parts.push(`<strong>Origin Feat:</strong> ${entry.originFeat}`);
+    }
+    if (entry.feat) {
+      parts.push(`<strong>Feat:</strong> ${entry.feat}`);
+    }
+    if (entry.asi) {
+      const asiStr = Object.entries(entry.asi).map(([k, v]) => `+${v} ${labels[k] || k.toUpperCase()}`).join(', ');
+      parts.push(`<strong>ASI:</strong> ${asiStr}`);
+    }
+
+    const gain = parts.length > 0 ? parts.join(' · ') : '—';
     tr.innerHTML = `<td><strong>${l}</strong></td><td>${classStr}</td><td>${gain}</td>`;
     tbody.appendChild(tr);
   }
@@ -3773,12 +4476,329 @@ function findArmorModel(history) {
   return null;
 }
 
+// ============================================================
+// Spell / Feat / ASI picker helpers (Phase 2D)
+// ============================================================
+const STAT_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+function spellLevelToNum(level) {
+  if (level === 'Cantrip') return 0;
+  return parseInt(level, 10);
+}
+function ordinalSpellLevel(n) {
+  if (n === 0) return 'Cantrip';
+  return ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th'][n - 1] || (n + 'th');
+}
+// Highest spell level accessible at a given Artificer level (the level table)
+function maxAccessibleSpellLevel(artificerLevel) {
+  const data = CLASS_DATA.artificer.perLevel[artificerLevel];
+  if (!data || !data.slots) return 0;
+  for (let i = data.slots.length - 1; i >= 0; i--) {
+    if (data.slots[i] > 0) return i + 1;
+  }
+  return 0;
+}
+// Cantrips currently in state.cantripsKnown
+function getKnownCantrips() {
+  return new Set(state.cantripsKnown || []);
+}
+// Prepared spells (active + always-prepared from Armorer subclass)
+function getPreparedSet() {
+  return new Set(state.preparedSpells || []);
+}
+// Armorer always-prepared spells available at current Artificer level
+function getArmorerAlwaysPrepared(artificerLevel) {
+  const sub = findChosenSubclass('artificer');
+  if (sub !== 'Armorer') return [];
+  const ap = CLASS_DATA.artificer.subclassData.Armorer.alwaysPrepared;
+  const out = [];
+  for (let l = 1; l <= artificerLevel; l++) {
+    if (ap[l]) out.push(...ap[l]);
+  }
+  return out;
+}
+
+// Build the spell-picker portion of the modal. Returns HTML string or empty.
+function buildSpellPickerHTML(klass, classLevel) {
+  if (klass !== 'artificer') return '';
+  const data = CLASS_DATA.artificer.perLevel[classLevel];
+  const prev = classLevel > 1 ? CLASS_DATA.artificer.perLevel[classLevel - 1] : null;
+  const cantripDelta = prev ? data.cantrips - prev.cantrips : data.cantrips;
+  const preparedDelta = prev ? data.prepared - prev.prepared : data.prepared;
+  if (cantripDelta <= 0 && preparedDelta <= 0) return '';
+
+  const knownCantrips = getKnownCantrips();
+  const eligibleCantrips = SPELLS.filter(s => s.level === 'Cantrip' && !knownCantrips.has(s.name));
+
+  const maxLvl = maxAccessibleSpellLevel(classLevel);
+  const known = getPreparedSet();
+  const eligiblePrepared = SPELLS.filter(s => {
+    if (s.level === 'Cantrip') return false;
+    if (s.subclassOnly) return false;
+    if (known.has(s.name)) return false;
+    return spellLevelToNum(s.level) <= maxLvl;
+  });
+  // Sort prepared by level then name
+  eligiblePrepared.sort((a, b) => {
+    const da = spellLevelToNum(a.level) - spellLevelToNum(b.level);
+    return da !== 0 ? da : a.name.localeCompare(b.name);
+  });
+
+  let html = '';
+  if (cantripDelta > 0) {
+    html += `<div class="modal-prompt">
+      <div class="modal-prompt-label">Pick ${cantripDelta} cantrip${cantripDelta > 1 ? 's' : ''}</div>
+      <div class="spell-picker" data-pick="cantrip" data-max="${cantripDelta}">
+        ${eligibleCantrips.map(s => `
+          <label class="spell-pick">
+            <input type="checkbox" value="${s.name}">
+            <span class="spell-pick-name">${s.name}</span>
+            <span class="spell-pick-meta">${s.school}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div class="spell-picker-count" data-count-for="cantrip">0 / ${cantripDelta}</div>
+    </div>`;
+  }
+  if (preparedDelta > 0) {
+    html += `<div class="modal-prompt">
+      <div class="modal-prompt-label">Pick ${preparedDelta} prepared spell${preparedDelta > 1 ? 's' : ''} · up to ${ordinalSpellLevel(maxLvl)}</div>
+      <div class="spell-picker" data-pick="prepared" data-max="${preparedDelta}">
+        ${eligiblePrepared.map(s => `
+          <label class="spell-pick">
+            <input type="checkbox" value="${s.name}">
+            <span class="spell-pick-name">${s.name}${s.concentration ? ' <span class="conc-tag">C</span>' : ''}</span>
+            <span class="spell-pick-meta">${s.level} · ${s.school}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div class="spell-picker-count" data-count-for="prepared">0 / ${preparedDelta}</div>
+    </div>`;
+  }
+  return html;
+}
+
+// Build the ASI/Feat picker portion of the modal. Returns HTML string or empty.
+function buildAsiFeatPickerHTML(klass, classLevel) {
+  const data = CLASS_DATA[klass].perLevel[classLevel];
+  const charLevel = (state.maxLevel || 0) + 1;
+  const isOriginPick = charLevel === 1; // L1 also picks an Origin Feat from background
+  if (!data.asi && !isOriginPick) return '';
+
+  const generalFeats = FEATS
+    .filter(f => f.category === 'General' && f.minLevel <= charLevel)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const epicBoons = FEATS
+    .filter(f => f.category === 'Epic Boon' && f.minLevel <= charLevel)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const originFeats = FEATS
+    .filter(f => f.category === 'Origin')
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  if (isOriginPick) {
+    // At character level 1 we pick the Origin Feat (no ASI option)
+    return `<div class="modal-prompt">
+      <div class="modal-prompt-label">Origin Feat (from "The Toymaker's Mistake" background)</div>
+      <select id="origin-feat-select">
+        ${originFeats.map((f, i) => `<option value="${f.name}"${i === 0 ? ' selected' : ''}>${f.name}${f.asi ? ' (+1 ' + Object.keys(f.asi).join('/').toUpperCase() + ')' : ''}</option>`).join('')}
+      </select>
+      <div id="origin-feat-detail" class="feat-detail"></div>
+    </div>`;
+  }
+
+  // ASI level: ASI vs Feat radio
+  const statOpts = STAT_KEYS.map(s => `<option value="${s}">${s.toUpperCase()}</option>`).join('');
+  return `<div class="modal-prompt">
+    <div class="modal-prompt-label">Ability Score Improvement or Feat</div>
+    <div class="asi-feat-picker">
+      <div class="asi-feat-tabs">
+        <label><input type="radio" name="asi-feat-mode" value="asi" checked> ASI (+2 or +1/+1)</label>
+        <label><input type="radio" name="asi-feat-mode" value="feat"> Feat</label>
+      </div>
+      <div class="asi-feat-asi" id="asi-feat-asi">
+        <label><input type="radio" name="asi-mode" value="single" checked> +2 to
+          <select id="asi-single-stat">${statOpts}</select>
+        </label>
+        <label><input type="radio" name="asi-mode" value="split"> +1 to
+          <select id="asi-split-a">${statOpts}</select>
+          and +1 to <select id="asi-split-b">${statOpts}</select>
+        </label>
+      </div>
+      <div class="asi-feat-feat" id="asi-feat-feat" hidden>
+        <select id="feat-select">
+          <optgroup label="General feats">
+            ${generalFeats.map(f => `<option value="${f.name}">${f.name}${f.asi ? ' (+1 ' + Object.keys(f.asi).join('/').toUpperCase() + ')' : ''}</option>`).join('')}
+          </optgroup>
+          ${epicBoons.length ? `<optgroup label="Epic Boons (Lvl 19+)">
+            ${epicBoons.map(f => `<option value="${f.name}">${f.name}</option>`).join('')}
+          </optgroup>` : ''}
+        </select>
+        <div id="feat-detail" class="feat-detail"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Wire up the picker after it's inserted into the DOM.
+function wireSpellPickers(promptsEl) {
+  promptsEl.querySelectorAll('.spell-picker').forEach(picker => {
+    const max = parseInt(picker.dataset.max, 10);
+    const type = picker.dataset.pick;
+    const countEl = promptsEl.querySelector(`[data-count-for="${type}"]`);
+    const checkboxes = Array.from(picker.querySelectorAll('input[type="checkbox"]'));
+    const update = () => {
+      const checked = checkboxes.filter(c => c.checked);
+      countEl.textContent = `${checked.length} / ${max}`;
+      countEl.classList.toggle('full', checked.length === max);
+      const reached = checked.length >= max;
+      checkboxes.forEach(c => {
+        const label = c.closest('.spell-pick');
+        if (!c.checked && reached) {
+          c.disabled = true;
+          label.classList.add('disabled');
+        } else {
+          c.disabled = false;
+          label.classList.remove('disabled');
+        }
+      });
+      updateConfirmEnabled(promptsEl);
+    };
+    checkboxes.forEach(c => c.addEventListener('change', update));
+    update();
+  });
+}
+
+function wireAsiFeatPicker(promptsEl) {
+  // Origin feat pick (no radio toggle)
+  const originSel = promptsEl.querySelector('#origin-feat-select');
+  if (originSel) {
+    const detail = promptsEl.querySelector('#origin-feat-detail');
+    const update = () => {
+      const f = FEATS.find(x => x.name === originSel.value);
+      detail.innerHTML = f
+        ? `${f.prereq ? `<span class="feat-prereq">Prereq · ${f.prereq}</span>` : ''}${f.effect}`
+        : '';
+    };
+    originSel.addEventListener('change', update);
+    update();
+  }
+
+  // ASI vs Feat radio
+  const radios = promptsEl.querySelectorAll('input[name="asi-feat-mode"]');
+  if (radios.length) {
+    const asiEl = promptsEl.querySelector('#asi-feat-asi');
+    const featEl = promptsEl.querySelector('#asi-feat-feat');
+    radios.forEach(r => r.addEventListener('change', () => {
+      const mode = document.querySelector('input[name="asi-feat-mode"]:checked').value;
+      asiEl.hidden = mode !== 'asi';
+      featEl.hidden = mode !== 'feat';
+    }));
+  }
+  const featSel = promptsEl.querySelector('#feat-select');
+  if (featSel) {
+    const detail = promptsEl.querySelector('#feat-detail');
+    const update = () => {
+      const f = FEATS.find(x => x.name === featSel.value);
+      detail.innerHTML = f
+        ? `${f.prereq ? `<span class="feat-prereq">Prereq · ${f.prereq}</span>` : ''}${f.effect}`
+        : '';
+    };
+    featSel.addEventListener('change', update);
+    update();
+  }
+}
+
+// Gray out the Confirm button until all spell pickers hit their required count.
+function updateConfirmEnabled(promptsEl) {
+  const btn = document.getElementById('levelup-confirm');
+  if (!btn) return;
+  let ok = true;
+  promptsEl.querySelectorAll('.spell-picker').forEach(picker => {
+    const max = parseInt(picker.dataset.max, 10);
+    const checked = picker.querySelectorAll('input[type="checkbox"]:checked').length;
+    if (checked !== max) ok = false;
+  });
+  btn.disabled = !ok;
+}
+
+// Rebuild derived state (cantripsKnown / preparedSpells / feats / asiHistory /
+// classSaveProfs) from the current state.levelHistory. Used when the user
+// truncates history by sliding back and re-leveling.
+function rebuildDerivedStateFromHistory() {
+  const history = state.levelHistory || [];
+  state.cantripsKnown = [];
+  state.preparedSpells = [];
+  state.feats = [];
+  state.asiHistory = [];
+  state.classSaveProfs = [];
+  let firstClassSet = false;
+  for (const e of history) {
+    const cls = CLASS_DATA[e.class];
+    const data = cls && cls.perLevel[e.classLevel];
+    if (!data) continue;
+    // First class taken sets save profs
+    if (e.classLevel === 1 && !firstClassSet) {
+      state.classSaveProfs = [...cls.saves];
+      firstClassSet = true;
+    }
+    if (data.saveProfsAdd) {
+      const set = new Set(state.classSaveProfs);
+      data.saveProfsAdd.forEach(s => set.add(s));
+      state.classSaveProfs = [...set];
+    }
+    if (e.cantripsAdded) state.cantripsKnown.push(...e.cantripsAdded);
+    if (e.spellsAdded) state.preparedSpells.push(...e.spellsAdded);
+    if (e.originFeat) {
+      const feat = FEATS.find(f => f.name === e.originFeat);
+      if (feat) {
+        state.feats.push({ name: feat.name, level: 1, category: feat.category });
+        if (feat.asi) state.asiHistory.push({ level: 1, gains: { ...feat.asi }, fromFeat: feat.name });
+        if (feat.saveProf) {
+          const set = new Set(state.classSaveProfs);
+          set.add(feat.saveProf);
+          state.classSaveProfs = [...set];
+        }
+      }
+    }
+    if (e.feat) {
+      const feat = FEATS.find(f => f.name === e.feat);
+      if (feat) {
+        // Derive char level for the feat entry from its position in history
+        const charLvlForEntry = history.indexOf(e) + 1;
+        state.feats.push({ name: feat.name, level: charLvlForEntry, category: feat.category });
+        if (feat.asi) state.asiHistory.push({ level: charLvlForEntry, gains: { ...feat.asi }, fromFeat: feat.name });
+        if (feat.saveProf) {
+          const set = new Set(state.classSaveProfs);
+          set.add(feat.saveProf);
+          state.classSaveProfs = [...set];
+        }
+      }
+    }
+    if (e.asi) {
+      const charLvlForEntry = history.indexOf(e) + 1;
+      state.asiHistory.push({ level: charLvlForEntry, gains: { ...e.asi } });
+    }
+  }
+}
+
 function openLevelUpModal() {
   const overlay = document.getElementById('levelup-overlay');
-  const current = state.maxLevel || 0;
+  // Use the slider's current level (state.level) instead of maxLevel — this
+  // lets the user slide back and re-pick a prior level. If state.level is
+  // below maxLevel, the modal will truncate history on confirm.
+  const current = Math.min(state.level || 0, state.maxLevel || 0);
   if (current >= 20) {
     alert('Already at level 20 — the campaign cap.');
     return;
+  }
+  if ((state.maxLevel || 0) > current) {
+    const confirmMsg = `You're rewriting level ${current + 1}. This will overwrite levels ${current + 1} through ${state.maxLevel} (and all the picks they made). Continue?`;
+    if (!confirm(confirmMsg)) return;
+    // Truncate history and rebuild derived state
+    state.levelHistory = (state.levelHistory || []).slice(0, current);
+    state.maxLevel = current;
+    rebuildDerivedStateFromHistory();
+    saveState();
+    render();
   }
   const nextLevel = current + 1;
   const { a, r } = classBreakdown(current);
@@ -3969,15 +4989,26 @@ function showLevelUpDetail(klass, classLevel) {
       toggle();
     }
   }
-  if (data.asi) {
-    const p = document.createElement('div');
-    p.className = 'modal-prompt';
-    p.innerHTML = `
-      <div class="modal-prompt-label">ASI / Feat slot</div>
-      <p style="font-family:'EB Garamond',serif;font-size:0.9rem;color:var(--parchment-aged);margin:0;">Pick an ASI (+2 to one ability or +1 / +1 to two) or a feat. Apply by editing the point-buy inputs or filling out the alternates section. (Full picker UI coming in a later iteration.)</p>
-    `;
-    promptsEl.appendChild(p);
+  // Spell picker (Artificer only, when cantrip or prepared count grew)
+  const spellHTML = buildSpellPickerHTML(klass, classLevel);
+  if (spellHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = spellHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
   }
+
+  // ASI / Feat / Origin Feat picker
+  const asiHTML = buildAsiFeatPickerHTML(klass, classLevel);
+  if (asiHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = asiHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
+  }
+
+  // Wire up listeners for everything we just inserted
+  wireSpellPickers(promptsEl);
+  wireAsiFeatPicker(promptsEl);
+  updateConfirmEnabled(promptsEl);
 }
 
 function closeLevelUpModal() {
@@ -4018,6 +5049,76 @@ function confirmLevelUp() {
     state.classSaveProfs = [...set];
   }
 
+  // Phase 2D: spell picks (Artificer only)
+  if (entry.class === 'artificer') {
+    const cantripPicker = document.querySelector('.spell-picker[data-pick="cantrip"]');
+    if (cantripPicker) {
+      const picked = Array.from(cantripPicker.querySelectorAll('input:checked')).map(i => i.value);
+      state.cantripsKnown = [...(state.cantripsKnown || []), ...picked];
+      entry.cantripsAdded = picked;
+    }
+    const preparedPicker = document.querySelector('.spell-picker[data-pick="prepared"]');
+    if (preparedPicker) {
+      const picked = Array.from(preparedPicker.querySelectorAll('input:checked')).map(i => i.value);
+      state.preparedSpells = [...(state.preparedSpells || []), ...picked];
+      entry.spellsAdded = picked;
+    }
+  }
+
+  // Phase 2D: Origin Feat at character level 1, OR ASI/Feat at data.asi levels
+  const charLevel = (state.maxLevel || 0) + 1;
+  const originSel = document.getElementById('origin-feat-select');
+  if (originSel && charLevel === 1) {
+    const featName = originSel.value;
+    const feat = FEATS.find(f => f.name === featName);
+    if (feat) {
+      state.feats = [...(state.feats || []), { name: feat.name, level: 1, category: feat.category }];
+      if (feat.asi) state.asiHistory = [...(state.asiHistory || []), { level: 1, gains: { ...feat.asi }, fromFeat: feat.name }];
+      if (feat.saveProf) {
+        const set = new Set(state.classSaveProfs || []);
+        set.add(feat.saveProf);
+        state.classSaveProfs = [...set];
+      }
+      entry.originFeat = feat.name;
+    }
+  }
+  if (data.asi) {
+    const mode = document.querySelector('input[name="asi-feat-mode"]:checked');
+    if (mode && mode.value === 'feat') {
+      const featSel = document.getElementById('feat-select');
+      if (featSel) {
+        const feat = FEATS.find(f => f.name === featSel.value);
+        if (feat) {
+          state.feats = [...(state.feats || []), { name: feat.name, level: charLevel, category: feat.category }];
+          if (feat.asi) state.asiHistory = [...(state.asiHistory || []), { level: charLevel, gains: { ...feat.asi }, fromFeat: feat.name }];
+          if (feat.saveProf) {
+            const set = new Set(state.classSaveProfs || []);
+            set.add(feat.saveProf);
+            state.classSaveProfs = [...set];
+          }
+          entry.feat = feat.name;
+        }
+      }
+    } else {
+      // ASI mode
+      const asiMode = document.querySelector('input[name="asi-mode"]:checked');
+      const gains = {};
+      if (asiMode && asiMode.value === 'single') {
+        const s = document.getElementById('asi-single-stat').value;
+        gains[s] = 2;
+      } else if (asiMode) {
+        const a = document.getElementById('asi-split-a').value;
+        const b = document.getElementById('asi-split-b').value;
+        gains[a] = (gains[a] || 0) + 1;
+        gains[b] = (gains[b] || 0) + 1;
+      }
+      if (Object.keys(gains).length > 0) {
+        state.asiHistory = [...(state.asiHistory || []), { level: charLevel, gains }];
+        entry.asi = gains;
+      }
+    }
+  }
+
   state.levelHistory.push(entry);
   state.maxLevel = (state.maxLevel || 0) + 1;
   state.level = state.maxLevel;
@@ -4035,6 +5136,94 @@ document.getElementById('levelup-back').addEventListener('click', () => {
   _levelUpPending = null;
 });
 document.getElementById('levelup-confirm').addEventListener('click', confirmLevelUp);
+
+// ============================================================
+// Edit Prepared modal (Phase 2D)
+// ============================================================
+function openEditPrepared() {
+  const { a } = classBreakdown(state.level);
+  if (a === 0) return;
+  const artData = CLASS_DATA.artificer.perLevel[a];
+  const max = artData.prepared;
+  const maxLvl = maxAccessibleSpellLevel(a);
+
+  const overlay = document.getElementById('prepared-overlay');
+  const prompts = document.getElementById('prepared-prompts');
+  document.getElementById('prepared-subtitle').textContent =
+    `Pick exactly ${max} prepared spell${max > 1 ? 's' : ''} (up to ${ordinalSpellLevel(maxLvl)}). Always-prepared subclass spells don't count.`;
+
+  // Build picker pre-checking current preparedSpells
+  const current = new Set(state.preparedSpells || []);
+  const eligible = SPELLS.filter(s => s.level !== 'Cantrip' && !s.subclassOnly && spellLevelToNum(s.level) <= maxLvl);
+  eligible.sort((a, b) => {
+    const da = spellLevelToNum(a.level) - spellLevelToNum(b.level);
+    return da !== 0 ? da : a.name.localeCompare(b.name);
+  });
+
+  prompts.innerHTML = `
+    <div class="modal-prompt">
+      <div class="modal-prompt-label">Prepared spells</div>
+      <div class="spell-picker" data-pick="prepared" data-max="${max}">
+        ${eligible.map(s => `
+          <label class="spell-pick">
+            <input type="checkbox" value="${s.name}"${current.has(s.name) ? ' checked' : ''}>
+            <span class="spell-pick-name">${s.name}${s.concentration ? ' <span class="conc-tag">C</span>' : ''}</span>
+            <span class="spell-pick-meta">${s.level} · ${s.school}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div class="spell-picker-count" data-count-for="prepared">${current.size} / ${max}</div>
+    </div>
+  `;
+
+  // Reuse spell picker wiring; bind confirm enable to local Save button
+  const picker = prompts.querySelector('.spell-picker');
+  const countEl = prompts.querySelector('[data-count-for="prepared"]');
+  const checkboxes = Array.from(picker.querySelectorAll('input[type="checkbox"]'));
+  const saveBtn = document.getElementById('prepared-confirm');
+  const update = () => {
+    const checked = checkboxes.filter(c => c.checked);
+    countEl.textContent = `${checked.length} / ${max}`;
+    countEl.classList.toggle('full', checked.length === max);
+    const reached = checked.length >= max;
+    checkboxes.forEach(c => {
+      const label = c.closest('.spell-pick');
+      if (!c.checked && reached) {
+        c.disabled = true;
+        label.classList.add('disabled');
+      } else {
+        c.disabled = false;
+        label.classList.remove('disabled');
+      }
+    });
+    saveBtn.disabled = checked.length !== max;
+  };
+  checkboxes.forEach(c => c.addEventListener('change', update));
+  update();
+  overlay.hidden = false;
+}
+
+function closeEditPrepared() {
+  document.getElementById('prepared-overlay').hidden = true;
+}
+
+function savePrepared() {
+  const overlay = document.getElementById('prepared-overlay');
+  const picker = overlay.querySelector('.spell-picker');
+  if (!picker) return;
+  const picked = Array.from(picker.querySelectorAll('input:checked')).map(i => i.value);
+  state.preparedSpells = picked;
+  saveState();
+  closeEditPrepared();
+  render();
+}
+
+document.getElementById('edit-prepared-btn').addEventListener('click', openEditPrepared);
+document.getElementById('prepared-close').addEventListener('click', closeEditPrepared);
+document.getElementById('prepared-confirm').addEventListener('click', savePrepared);
+document.getElementById('prepared-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'prepared-overlay') closeEditPrepared();
+});
 document.getElementById('levelup-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'levelup-overlay') closeLevelUpModal();
 });

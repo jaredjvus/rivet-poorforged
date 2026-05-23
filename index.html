@@ -487,6 +487,100 @@ body::before {
   background: var(--gold-tarnish);
   border-color: var(--gold-tarnish);
 }
+.modal-cancel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-tarnish);
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.modal-cancel:hover {
+  background: rgba(31, 78, 163, 0.08);
+  border-color: var(--gold);
+}
+
+/* Generic confirmation modal */
+.confirm-modal {
+  max-width: 520px;
+  padding-top: 2.2rem;
+}
+.confirm-body {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--parchment);
+  margin: 0.5rem 0 1.2rem;
+}
+.confirm-body p { margin: 0 0 0.7rem; }
+.confirm-body ul {
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0;
+}
+.confirm-body li {
+  padding: 0.2rem 0 0.2rem 1.2rem;
+  position: relative;
+  color: var(--parchment-aged);
+}
+.confirm-body li::before {
+  content: '·';
+  position: absolute;
+  left: 0.4rem;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+.confirm-body .confirm-note {
+  font-style: italic;
+  color: var(--parchment-aged);
+  font-size: 0.92rem;
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px dotted var(--gold-tarnish);
+}
+.confirm-actions { justify-content: space-between; }
+.confirm-actions .modal-cancel[hidden] { display: none; }
+/* Center the Close button when in info-only mode */
+.confirm-actions:has(.modal-cancel[hidden]) { justify-content: center; }
+
+/* Spell info modal layout */
+.spell-info-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px dotted var(--gold-tarnish);
+  text-align: center;
+}
+.spell-info-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+  margin: 0;
+  font-family: 'EB Garamond', serif;
+}
+.spell-info-grid dt {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  align-self: center;
+}
+.spell-info-grid dd {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--parchment);
+}
 
 /* Phase 2D: spell picker + ASI/feat picker (inside the level-up modal) */
 .modal {
@@ -1309,7 +1403,35 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
 .resource-pips {
   display: flex;
   gap: 0.4rem;
+  flex-wrap: wrap;
 }
+.resource-pips .pip {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--gold);
+  background: var(--gold);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-block;
+}
+.resource-pips .pip.used { background: transparent; }
+.resource-pips .pip:hover { border-color: var(--gold-bright); }
+.resource-readout {
+  font-family: 'Major Mono Display', 'Courier New', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+.resource-label .resource-meta {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--gold-tarnish);
+  font-size: 0.8em;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-left: 0.3rem;
+}
+body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: default; }
 .resource-toggle {
   font-family: 'Cinzel', serif;
   font-size: 0.7rem;
@@ -1947,9 +2069,57 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
   color: var(--gold);
   margin-right: 0.5rem;
 }
+.skill-row.expert .skill-name::before { content: '◆◆'; letter-spacing: -3px; padding-right: 5px; }
+.skill-row.expert .skill-value { color: var(--gold-bright); }
+.skill-row .expert-tag {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: #fff;
+  padding: 0 0.3rem;
+  margin-left: 0.4rem;
+  border-radius: 2px;
+  vertical-align: middle;
+}
 
 .skill-name { font-family: 'EB Garamond', serif; color: var(--parchment-aged); }
 .skill-value { font-family: 'Cinzel', serif; color: var(--parchment); font-weight: 500; }
+
+/* Tools + Languages card (Phase 2H) */
+.prof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 700px) {
+  .prof-grid { grid-template-columns: 1fr; }
+}
+.prof-col-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px dotted var(--gold-tarnish);
+}
+.prof-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--parchment);
+}
+.prof-list li {
+  padding: 0.25rem 0;
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.12);
+}
+.prof-list li:last-child { border-bottom: none; }
 
 /* FEATURE BLOCK */
 .feature-block {
@@ -2562,6 +2732,19 @@ body.dm-mode .dm-hide { display: none; }
         <p style="margin-top: 1rem; font-style: italic; font-size: 0.85rem;">Proficiency Bonus: <span id="prof-bonus">+2</span></p>
       </div>
     </div>
+    <div class="card" id="profs-card" style="margin-top: 2rem;" hidden>
+      <h3>Tools &amp; Languages</h3>
+      <div class="prof-grid">
+        <div class="prof-col">
+          <div class="prof-col-label">Tools</div>
+          <ul class="prof-list" id="tools-list"></ul>
+        </div>
+        <div class="prof-col">
+          <div class="prof-col-label">Languages</div>
+          <ul class="prof-list" id="languages-list"></ul>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- RESOURCES -->
@@ -2578,6 +2761,7 @@ body.dm-mode .dm-hide { display: none; }
         <span class="resource-label has-tip" title="Spend Heroic Inspiration to gain advantage on one d20 roll (or reroll a d20 once and use either result). You can only have one Inspiration at a time. Awarded by the DM, some species, feats, and class features.">Heroic Inspiration</span>
         <button class="resource-toggle" id="inspiration-toggle">None</button>
       </div>
+      <div id="combat-resources-dynamic"></div>
     </div>
 
     <div class="card magic-card" id="magic-card" style="margin-top: 2rem;" hidden>
@@ -2791,6 +2975,19 @@ body.dm-mode .dm-hide { display: none; }
     <div class="modal-detail-prompts" id="infusions-prompts"></div>
     <div class="modal-actions">
       <button class="modal-confirm" id="infusions-confirm">Save Plans</button>
+    </div>
+  </div>
+</div>
+
+<!-- Generic confirmation modal (Phase 2G) — used for rest buttons and any other destructive action -->
+<div class="modal-overlay" id="confirm-overlay" hidden>
+  <div class="modal confirm-modal">
+    <button class="modal-close" id="confirm-close" aria-label="Close">×</button>
+    <div class="modal-title" id="confirm-title">Confirm</div>
+    <div class="confirm-body" id="confirm-body"></div>
+    <div class="modal-actions confirm-actions">
+      <button class="modal-cancel" id="confirm-cancel">Cancel</button>
+      <button class="modal-confirm" id="confirm-ok">Confirm</button>
     </div>
   </div>
 </div>
@@ -3241,6 +3438,29 @@ const CLASS_FEATURES = [];
 const ARTIFICER_SKILLS = ['Arcana', 'History', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Sleight of Hand'];
 const ROGUE_SKILLS = ['Acrobatics', 'Athletics', 'Deception', 'Insight', 'Intimidation', 'Investigation', 'Perception', 'Persuasion', 'Sleight of Hand', 'Stealth'];
 
+// 2024 PHB common tools list (for Specialized Design + background picks).
+const TOOL_LIST = [
+  'Alchemist\'s Supplies', 'Brewer\'s Supplies', 'Calligrapher\'s Supplies',
+  'Carpenter\'s Tools', 'Cartographer\'s Tools', 'Cobbler\'s Tools',
+  'Cook\'s Utensils', 'Glassblower\'s Tools', 'Jeweler\'s Tools',
+  'Leatherworker\'s Tools', 'Mason\'s Tools', 'Painter\'s Supplies',
+  'Potter\'s Tools', 'Smith\'s Tools', 'Tinker\'s Tools', 'Weaver\'s Tools',
+  'Woodcarver\'s Tools',
+  'Disguise Kit', 'Forgery Kit', 'Herbalism Kit', 'Navigator\'s Tools',
+  'Poisoner\'s Kit', 'Thieves\' Tools',
+  'Bagpipes', 'Drum', 'Dulcimer', 'Flute', 'Horn', 'Lute', 'Lyre',
+  'Pan Flute', 'Shawm', 'Viol',
+  'Dice Set', 'Dragonchess Set', 'Playing Card Set', 'Three-Dragon Ante Set'
+];
+
+// Standard 2024 PHB languages.
+const LANGUAGE_LIST = [
+  'Common', 'Common Sign Language',
+  'Draconic', 'Dwarvish', 'Elvish', 'Giant', 'Gnomish', 'Goblin', 'Halfling', 'Orc',
+  'Abyssal', 'Celestial', 'Deep Speech', 'Druidic', 'Infernal', 'Primordial',
+  'Sylvan', 'Thieves\' Cant', 'Undercommon'
+];
+
 const CLASS_DATA = {
   artificer: {
     name: 'Artificer',
@@ -3492,7 +3712,15 @@ const DEFAULT_STATE = {
   // Phase 2E: Replicate Magic Item plans known + which are currently replicated today.
   infusionPlans: [],   // array of plan names she "knows" (capped at 4 by Replicate Magic Item)
   activeReplicas: [],  // array of plan indices actively replicated today (capped at itemsMax)
-  attunedReplicas: []  // array of plan indices currently attuned (capped at attunementMax)
+  attunedReplicas: [], // array of plan indices currently attuned (capped at attunementMax)
+  // Phase 2F: Combat resources
+  hitDiceUsed: 0,           // count of d8s spent (universal: both classes use d8)
+  flashOfGeniusUsed: 0,     // uses spent (Artificer L7+, max = max(1, INT mod))
+  // Phase 2H: Skill / tool / language proficiencies
+  skillProfs: [],           // skill names she's proficient in (any source)
+  skillExpertise: [],       // skill names with Expertise (subset of skillProfs)
+  toolProfs: [],            // tool names she's proficient with
+  languages: ['Common']     // languages known
 };
 
 let state = loadState();
@@ -3785,18 +4013,23 @@ function render() {
   const savesNote = document.getElementById('saves-note');
   if (savesNote) savesNote.textContent = 'Save proficiencies appear once Rivet takes her first class level.';
 
-  // Skills
+  // Skills (proficiencies + expertise come from state.skillProfs / state.skillExpertise)
   const skillsGrid = document.getElementById('skills-grid');
   skillsGrid.innerHTML = '';
+  const profSet = new Set(state.skillProfs || []);
+  const expSet = new Set(state.skillExpertise || []);
   for (const skill of SKILL_LIST) {
-    const proficient = skill.prof;
-    const value = mod(stats[skill.ability]) + (proficient ? pb : 0) - exhaustPen;
+    const proficient = profSet.has(skill.name);
+    const expert = expSet.has(skill.name);
+    const bonus = expert ? pb * 2 : (proficient ? pb : 0);
+    const value = mod(stats[skill.ability]) + bonus - exhaustPen;
     const row = document.createElement('div');
-    row.className = 'skill-row' + (proficient ? ' proficient' : '');
-    row.innerHTML = `<span class="skill-name">${skill.name} (${skill.ability.toUpperCase()})</span><span class="skill-value">${fmtMod(value)}</span>`;
+    row.className = 'skill-row' + (proficient ? ' proficient' : '') + (expert ? ' expert' : '');
+    row.innerHTML = `<span class="skill-name">${skill.name} (${skill.ability.toUpperCase()})${expert ? '<span class="expert-tag">Exp</span>' : ''}</span><span class="skill-value">${fmtMod(value)}</span>`;
     skillsGrid.appendChild(row);
   }
   document.getElementById('prof-bonus').textContent = fmtMod(pb);
+  renderProficienciesCard();
 
   // Inventory + notes + coin
   renderInventory();
@@ -3859,12 +4092,91 @@ function renderSurge(level) {
 }
 
 function renderCombatResources(level) {
-  // Phase 1: only Heroic Inspiration is class-agnostic. Class-specific rows
-  // (Sorcery Points, Innate Sorcery, Hexblade's Curse, etc.) will appear here
-  // once Phase 2's level-up modal records picks.
   const inspBtn = document.getElementById('inspiration-toggle');
   inspBtn.textContent = state.heroicInspiration ? 'Available' : 'None';
   inspBtn.classList.toggle('used', !state.heroicInspiration);
+
+  const { a, r } = classBreakdown(level);
+  const stats = computeStats(level);
+  const intMod = mod(stats.int);
+  const dynRows = document.getElementById('combat-resources-dynamic');
+  dynRows.innerHTML = '';
+
+  // ---- Hit Dice ---- (both classes are d8; pool = character level)
+  if (level > 0) {
+    const hdMax = level;
+    const hdUsed = Math.min(state.hitDiceUsed || 0, hdMax);
+    const row = document.createElement('div');
+    row.className = 'resource-row';
+    row.innerHTML = `
+      <span class="resource-label has-tip" title="Spend a Hit Die on a short rest to heal HD + CON mod HP. Long rest restores up to half your character level (min 1).">Hit Dice <span class="resource-meta">(d8)</span></span>
+      <div class="resource-pips" data-resource="hd"></div>
+    `;
+    const pipsBox = row.querySelector('.resource-pips');
+    for (let i = 0; i < hdMax; i++) {
+      const pip = document.createElement('div');
+      pip.className = 'pip' + (i >= hdMax - hdUsed ? ' used' : '');
+      pip.title = `Hit Die ${i + 1}`;
+      pip.addEventListener('click', () => toggleHitDie(i, hdMax));
+      pipsBox.appendChild(pip);
+    }
+    dynRows.appendChild(row);
+  }
+
+  // ---- Sneak Attack die ---- (Rogue, read-only)
+  if (r >= 1) {
+    const rogueData = CLASS_DATA.rogue.perLevel[r];
+    const sa = rogueData ? rogueData.sneakAttack : 0;
+    if (sa > 0) {
+      const row = document.createElement('div');
+      row.className = 'resource-row';
+      row.innerHTML = `
+        <span class="resource-label has-tip" title="Once per turn, +${sa}d6 damage with a Finesse or Ranged weapon vs. a creature you have Advantage against (or an ally is within 5 ft of it).">Sneak Attack</span>
+        <span class="resource-readout">${sa}d6</span>
+      `;
+      dynRows.appendChild(row);
+    }
+  }
+
+  // ---- Flash of Genius ---- (Artificer L7+)
+  if (a >= 7) {
+    const fogMax = Math.max(1, intMod);
+    const fogUsed = Math.min(state.flashOfGeniusUsed || 0, fogMax);
+    const row = document.createElement('div');
+    row.className = 'resource-row';
+    const tip = a >= 14
+      ? 'Reaction: when you or an ally within 30 ft fails a check or save, add +INT mod to the roll. INT mod uses / long rest. Refreshed Genius: short rest refunds 1 use.'
+      : 'Reaction: when you or an ally within 30 ft fails a check or save, add +INT mod to the roll. INT mod uses / long rest.';
+    row.innerHTML = `
+      <span class="resource-label has-tip" title="${tip}">Flash of Genius <span class="resource-meta">+${intMod}</span></span>
+      <div class="resource-pips" data-resource="fog"></div>
+    `;
+    const pipsBox = row.querySelector('.resource-pips');
+    for (let i = 0; i < fogMax; i++) {
+      const pip = document.createElement('div');
+      pip.className = 'pip' + (i >= fogMax - fogUsed ? ' used' : '');
+      pip.title = `Flash of Genius use ${i + 1}`;
+      pip.addEventListener('click', () => toggleFlashOfGenius(i, fogMax));
+      pipsBox.appendChild(pip);
+    }
+    dynRows.appendChild(row);
+  }
+}
+
+function toggleHitDie(index, max) {
+  const used = state.hitDiceUsed || 0;
+  const isAvailable = index < (max - used);
+  state.hitDiceUsed = isAvailable ? (max - index) : (max - index - 1);
+  saveState();
+  render();
+}
+
+function toggleFlashOfGenius(index, max) {
+  const used = state.flashOfGeniusUsed || 0;
+  const isAvailable = index < (max - used);
+  state.flashOfGeniusUsed = isAvailable ? (max - index) : (max - index - 1);
+  saveState();
+  render();
 }
 
 const WILD_MAGIC_SURGES = [
@@ -4142,21 +4454,12 @@ function renderMagicCard(level) {
     }
   }
 
-  // Wire info buttons (alert with full details)
+  // Wire info buttons (styled info modal)
   card.querySelectorAll('.spell-info').forEach(btn => {
     btn.addEventListener('click', () => {
       const s = SPELLS.find(x => x.name === btn.dataset.spell);
       if (!s) return;
-      const lines = [
-        s.name,
-        `${s.level} · ${s.school}`,
-        `Time: ${s.time}`,
-        `Range: ${s.range}`,
-        `Components: ${s.components}`,
-        `Duration: ${s.duration}`
-      ];
-      if (s.concentration) lines.push('(Requires Concentration)');
-      alert(lines.join('\n'));
+      showSpellInfo(s);
     });
   });
 
@@ -4267,6 +4570,25 @@ function renderInfusionsCard(level) {
       render();
     });
   });
+}
+
+function renderProficienciesCard() {
+  const card = document.getElementById('profs-card');
+  const tools = state.toolProfs || [];
+  const langs = state.languages || [];
+  if (tools.length === 0 && langs.length === 0) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+  const toolsList = document.getElementById('tools-list');
+  toolsList.innerHTML = tools.length === 0
+    ? '<li style="font-style:italic;color:var(--parchment-aged);">—</li>'
+    : tools.map(t => `<li>${t}</li>`).join('');
+  const langsList = document.getElementById('languages-list');
+  langsList.innerHTML = langs.length === 0
+    ? '<li style="font-style:italic;color:var(--parchment-aged);">—</li>'
+    : langs.map(l => `<li>${l}</li>`).join('');
 }
 
 function renderFeatsCard() {
@@ -4925,6 +5247,122 @@ function buildSpellPickerHTML(klass, classLevel) {
   return html;
 }
 
+// Build the Skills + Tools + Language picker for a level-up entry.
+//   - At a class's L1: pick class skills (count from CLASS_DATA.skills.count or .multiclassCount)
+//   - At character L1 (first ever level): also Warforged Specialized Design (1 skill + 1 tool)
+//     and the Toymaker's Mistake background picks (2 skills + 1 tool + 1 language).
+function buildSkillsPickerHTML(klass, classLevel) {
+  const cls = CLASS_DATA[klass];
+  const charLevel = (state.maxLevel || 0) + 1;
+  const isFirstClass = classLevel === 1;
+  const isCharLevel1 = charLevel === 1;
+  if (!isFirstClass) return '';
+
+  const skillsAlreadyProf = new Set(state.skillProfs || []);
+  const renderSkillRow = (name) => `
+    <label class="spell-pick">
+      <input type="checkbox" value="${name}">
+      <span class="spell-pick-name">${name}</span>
+      <span class="spell-pick-meta">(${SKILL_LIST.find(s => s.name === name).ability.toUpperCase()})</span>
+    </label>
+  `;
+
+  let html = '';
+
+  // ----- Class skills -----
+  const classSkillCount = isCharLevel1 ? cls.skills.count : cls.skills.multiclassCount;
+  const classSkillsAvailable = cls.skills.from.filter(s => !skillsAlreadyProf.has(s));
+  if (classSkillCount > 0 && classSkillsAvailable.length > 0) {
+    html += `<div class="modal-prompt">
+      <div class="modal-prompt-label">${cls.name} Skills · pick ${classSkillCount}</div>
+      <div class="spell-picker" data-pick="classSkills" data-max="${classSkillCount}">
+        ${classSkillsAvailable.map(renderSkillRow).join('')}
+      </div>
+      <div class="spell-picker-count" data-count-for="classSkills">0 / ${classSkillCount}</div>
+    </div>`;
+  }
+
+  // ----- Character L1: species + background -----
+  if (isCharLevel1) {
+    // Warforged Specialized Design — 1 skill + 1 tool (defaults: Stealth + Tinker's Tools)
+    const sdSkills = SKILL_LIST.map(s => `<option value="${s.name}"${s.name === 'Stealth' ? ' selected' : ''}>${s.name} (${s.ability.toUpperCase()})</option>`).join('');
+    const sdTools = TOOL_LIST.map(t => `<option value="${t}"${t === 'Tinker\'s Tools' ? ' selected' : ''}>${t}</option>`).join('');
+    html += `<div class="modal-prompt">
+      <div class="modal-prompt-label">Specialized Design (Warforged)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+        <label style="display:flex;flex-direction:column;gap:0.2rem;font-family:'EB Garamond',serif;color:var(--parchment);font-size:0.85rem;">
+          <span style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-tarnish);">Skill</span>
+          <select id="sd-skill-select">${sdSkills}</select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:0.2rem;font-family:'EB Garamond',serif;color:var(--parchment);font-size:0.85rem;">
+          <span style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-tarnish);">Tool</span>
+          <select id="sd-tool-select">${sdTools}</select>
+        </label>
+      </div>
+    </div>`;
+
+    // Background — Toymaker's Mistake. 2024 backgrounds give 2 skills + 1 tool + 1 language
+    // (plus the +2/+1 ASI which is already in BG_BONUS and the Origin Feat picked separately).
+    const bgSkillsHTML = SKILL_LIST.map(s => `
+      <label class="spell-pick">
+        <input type="checkbox" value="${s.name}">
+        <span class="spell-pick-name">${s.name}</span>
+        <span class="spell-pick-meta">(${s.ability.toUpperCase()})</span>
+      </label>
+    `).join('');
+    const bgToolOpts = TOOL_LIST.map(t => `<option value="${t}">${t}</option>`).join('');
+    const bgLangOpts = LANGUAGE_LIST.filter(l => l !== 'Common').map(l => `<option value="${l}">${l}</option>`).join('');
+    html += `<div class="modal-prompt">
+      <div class="modal-prompt-label">Background — Toymaker's Mistake · pick 2 skills</div>
+      <div class="spell-picker" data-pick="bgSkills" data-max="2">${bgSkillsHTML}</div>
+      <div class="spell-picker-count" data-count-for="bgSkills">0 / 2</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.8rem;">
+        <label style="display:flex;flex-direction:column;gap:0.2rem;font-family:'EB Garamond',serif;color:var(--parchment);font-size:0.85rem;">
+          <span style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-tarnish);">Tool</span>
+          <select id="bg-tool-select">${bgToolOpts}</select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:0.2rem;font-family:'EB Garamond',serif;color:var(--parchment);font-size:0.85rem;">
+          <span style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-tarnish);">Language</span>
+          <select id="bg-lang-select">${bgLangOpts}</select>
+        </label>
+      </div>
+    </div>`;
+  }
+
+  return html;
+}
+
+// Expertise picker — Rogue L1 (2 picks) and Rogue L7 (2 more picks).
+function buildExpertisePickerHTML(klass, classLevel) {
+  if (klass !== 'rogue') return '';
+  const data = CLASS_DATA.rogue.perLevel[classLevel];
+  const expCount = data && data.expertise;
+  if (!expCount) return '';
+
+  // Eligible: skills she's currently proficient in (after applying THIS level's class
+  // skill picks). Need to consider pending picks — wireExpertisePicker reads live.
+  const baseProf = new Set(state.skillProfs || []);
+  const alreadyExp = new Set(state.skillExpertise || []);
+  // Show all current profs minus already-expert; the wiring layer will refresh
+  // the eligible set as the user toggles class-skill checkboxes in the same modal.
+  const eligible = [...baseProf].filter(s => !alreadyExp.has(s));
+
+  return `<div class="modal-prompt">
+    <div class="modal-prompt-label">Rogue Expertise · pick ${expCount} skill${expCount > 1 ? 's' : ''} (doubles proficiency bonus)</div>
+    <div class="spell-picker expertise-picker" data-pick="expertise" data-max="${expCount}">
+      ${eligible.map(s => `
+        <label class="spell-pick">
+          <input type="checkbox" value="${s}">
+          <span class="spell-pick-name">${s}</span>
+          <span class="spell-pick-meta">(${(SKILL_LIST.find(x => x.name === s) || {}).ability?.toUpperCase() || ''})</span>
+        </label>
+      `).join('')}
+      ${eligible.length === 0 ? '<p style="font-family:\'EB Garamond\',serif;color:var(--parchment-aged);font-style:italic;padding:0.5rem;margin:0;font-size:0.9rem;">No eligible skills yet. Make your class skill picks above first; this list will update.</p>' : ''}
+    </div>
+    <div class="spell-picker-count" data-count-for="expertise">0 / ${expCount}</div>
+  </div>`;
+}
+
 // Build the Replicate Magic Item plan picker portion of the modal. Only fires
 // at Artificer levels where Plans Known increases (2, 6, 10, 14, 18).
 function buildInfusionPickerHTML(klass, classLevel) {
@@ -5063,6 +5501,85 @@ function wireSpellPickers(promptsEl) {
   });
 }
 
+// Skills + background + Specialized Design pickers — same enforce-N pattern.
+// Also dynamically refreshes the Expertise picker whenever any class/bg skill
+// or the Specialized Design skill changes, since Expertise is gated on profs.
+function wireSkillsPicker(promptsEl) {
+  const expRefresh = () => refreshExpertisePicker(promptsEl);
+  promptsEl.querySelectorAll('.spell-picker[data-pick="classSkills"], .spell-picker[data-pick="bgSkills"]').forEach(picker => {
+    const max = parseInt(picker.dataset.max, 10);
+    const type = picker.dataset.pick;
+    const countEl = promptsEl.querySelector(`[data-count-for="${type}"]`);
+    const checkboxes = Array.from(picker.querySelectorAll('input[type="checkbox"]'));
+    const update = () => {
+      const checked = checkboxes.filter(c => c.checked);
+      countEl.textContent = `${checked.length} / ${max}`;
+      countEl.classList.toggle('full', checked.length === max);
+      const reached = checked.length >= max;
+      checkboxes.forEach(c => {
+        const label = c.closest('.spell-pick');
+        if (!c.checked && reached) { c.disabled = true; label.classList.add('disabled'); }
+        else { c.disabled = false; label.classList.remove('disabled'); }
+      });
+      updateConfirmEnabled(promptsEl);
+      expRefresh();
+    };
+    checkboxes.forEach(c => c.addEventListener('change', update));
+    update();
+  });
+  // Specialized Design skill select also influences expertise eligibility
+  const sdSel = promptsEl.querySelector('#sd-skill-select');
+  if (sdSel) sdSel.addEventListener('change', expRefresh);
+}
+
+// Rebuild the Expertise picker based on currently-checked skill picks +
+// existing state.skillProfs.
+function refreshExpertisePicker(promptsEl) {
+  const expPicker = promptsEl.querySelector('.expertise-picker');
+  if (!expPicker) return;
+  const max = parseInt(expPicker.dataset.max, 10);
+  const previouslyChecked = new Set();
+  expPicker.querySelectorAll('input:checked').forEach(c => previouslyChecked.add(c.value));
+
+  const pending = new Set();
+  promptsEl.querySelectorAll('.spell-picker[data-pick="classSkills"] input:checked').forEach(c => pending.add(c.value));
+  promptsEl.querySelectorAll('.spell-picker[data-pick="bgSkills"] input:checked').forEach(c => pending.add(c.value));
+  const sdSel = promptsEl.querySelector('#sd-skill-select');
+  if (sdSel) pending.add(sdSel.value);
+
+  const allProfs = new Set([...(state.skillProfs || []), ...pending]);
+  const alreadyExp = new Set(state.skillExpertise || []);
+  const eligible = [...allProfs].filter(s => !alreadyExp.has(s)).sort();
+
+  expPicker.innerHTML = eligible.length === 0
+    ? '<p style="font-family:\'EB Garamond\',serif;color:var(--parchment-aged);font-style:italic;padding:0.5rem;margin:0;font-size:0.9rem;">No eligible skills yet. Make your skill picks above; this list will update.</p>'
+    : eligible.map(s => {
+        const ability = (SKILL_LIST.find(x => x.name === s) || {}).ability;
+        return `<label class="spell-pick">
+          <input type="checkbox" value="${s}"${previouslyChecked.has(s) ? ' checked' : ''}>
+          <span class="spell-pick-name">${s}</span>
+          <span class="spell-pick-meta">(${ability ? ability.toUpperCase() : ''})</span>
+        </label>`;
+      }).join('');
+
+  const countEl = promptsEl.querySelector('[data-count-for="expertise"]');
+  const checkboxes = Array.from(expPicker.querySelectorAll('input[type="checkbox"]'));
+  const update = () => {
+    const checked = checkboxes.filter(c => c.checked);
+    countEl.textContent = `${checked.length} / ${max}`;
+    countEl.classList.toggle('full', checked.length === max);
+    const reached = checked.length >= max;
+    checkboxes.forEach(c => {
+      const label = c.closest('.spell-pick');
+      if (!c.checked && reached) { c.disabled = true; label.classList.add('disabled'); }
+      else { c.disabled = false; label.classList.remove('disabled'); }
+    });
+    updateConfirmEnabled(promptsEl);
+  };
+  checkboxes.forEach(c => c.addEventListener('change', update));
+  update();
+}
+
 // Same enforce-exactly-N logic for the infusion picker in the level-up modal.
 function wireInfusionPicker(promptsEl) {
   promptsEl.querySelectorAll('.infusion-picker[data-pick="infusion"]').forEach(picker => {
@@ -5136,7 +5653,7 @@ function updateConfirmEnabled(promptsEl) {
   const btn = document.getElementById('levelup-confirm');
   if (!btn) return;
   let ok = true;
-  promptsEl.querySelectorAll('.spell-picker, .infusion-picker[data-pick]').forEach(picker => {
+  promptsEl.querySelectorAll('.spell-picker[data-pick], .infusion-picker[data-pick]').forEach(picker => {
     const max = parseInt(picker.dataset.max, 10);
     const checked = picker.querySelectorAll('input[type="checkbox"]:checked').length;
     if (checked !== max) ok = false;
@@ -5156,6 +5673,11 @@ function rebuildDerivedStateFromHistory() {
   state.classSaveProfs = [];
   state.infusionPlans = [];
   state.activeReplicas = [];
+  state.attunedReplicas = [];
+  state.skillProfs = [];
+  state.skillExpertise = [];
+  state.toolProfs = [];
+  state.languages = ['Common'];
   let firstClassSet = false;
   for (const e of history) {
     const cls = CLASS_DATA[e.class];
@@ -5174,6 +5696,18 @@ function rebuildDerivedStateFromHistory() {
     if (e.cantripsAdded) state.cantripsKnown.push(...e.cantripsAdded);
     if (e.spellsAdded) state.preparedSpells.push(...e.spellsAdded);
     if (e.plansAdded) state.infusionPlans.push(...e.plansAdded);
+    if (e.classSkillsAdded) state.skillProfs.push(...e.classSkillsAdded);
+    if (e.specializedDesign) {
+      state.skillProfs.push(e.specializedDesign.skill);
+      state.toolProfs.push(e.specializedDesign.tool);
+    }
+    if (e.background) {
+      state.skillProfs.push(...(e.background.skills || []));
+      if (e.background.tool) state.toolProfs.push(e.background.tool);
+      if (e.background.language) state.languages.push(e.background.language);
+    }
+    if (e.expertiseAdded) state.skillExpertise.push(...e.expertiseAdded);
+    if (e.class === 'rogue' && e.classLevel === 1) state.languages.push('Thieves\' Cant');
     if (e.originFeat) {
       const feat = FEATS.find(f => f.name === e.originFeat);
       if (feat) {
@@ -5424,6 +5958,22 @@ function showLevelUpDetail(klass, classLevel) {
     while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
   }
 
+  // Skills picker (class L1 entries + character L1's species/background)
+  const skillsHTML = buildSkillsPickerHTML(klass, classLevel);
+  if (skillsHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = skillsHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
+  }
+
+  // Expertise picker (Rogue L1 / L7)
+  const expHTML = buildExpertisePickerHTML(klass, classLevel);
+  if (expHTML) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = expHTML;
+    while (wrap.firstChild) promptsEl.appendChild(wrap.firstChild);
+  }
+
   // Infusion plan picker (Artificer L2/6/10/14/18)
   const infusionHTML = buildInfusionPickerHTML(klass, classLevel);
   if (infusionHTML) {
@@ -5442,6 +5992,8 @@ function showLevelUpDetail(klass, classLevel) {
 
   // Wire up listeners for everything we just inserted
   wireSpellPickers(promptsEl);
+  wireSkillsPicker(promptsEl);
+  refreshExpertisePicker(promptsEl);
   wireInfusionPicker(promptsEl);
   wireAsiFeatPicker(promptsEl);
   updateConfirmEnabled(promptsEl);
@@ -5483,6 +6035,45 @@ function confirmLevelUp() {
     const set = new Set(state.classSaveProfs || []);
     data.saveProfsAdd.forEach(s => set.add(s));
     state.classSaveProfs = [...set];
+  }
+
+  // Phase 2H: skill / tool / language picks
+  const classSkillsPicker = document.querySelector('.spell-picker[data-pick="classSkills"]');
+  if (classSkillsPicker) {
+    const picked = Array.from(classSkillsPicker.querySelectorAll('input:checked')).map(i => i.value);
+    state.skillProfs = [...new Set([...(state.skillProfs || []), ...picked])];
+    entry.classSkillsAdded = picked;
+  }
+  const sdSkillSel = document.getElementById('sd-skill-select');
+  const sdToolSel = document.getElementById('sd-tool-select');
+  if (sdSkillSel && sdToolSel) {
+    const skill = sdSkillSel.value;
+    const tool = sdToolSel.value;
+    state.skillProfs = [...new Set([...(state.skillProfs || []), skill])];
+    state.toolProfs = [...new Set([...(state.toolProfs || []), tool])];
+    entry.specializedDesign = { skill, tool };
+  }
+  const bgSkillsPicker = document.querySelector('.spell-picker[data-pick="bgSkills"]');
+  const bgToolSel = document.getElementById('bg-tool-select');
+  const bgLangSel = document.getElementById('bg-lang-select');
+  if (bgSkillsPicker && bgToolSel && bgLangSel) {
+    const bgSkills = Array.from(bgSkillsPicker.querySelectorAll('input:checked')).map(i => i.value);
+    const bgTool = bgToolSel.value;
+    const bgLang = bgLangSel.value;
+    state.skillProfs = [...new Set([...(state.skillProfs || []), ...bgSkills])];
+    state.toolProfs = [...new Set([...(state.toolProfs || []), bgTool])];
+    state.languages = [...new Set([...(state.languages || []), bgLang])];
+    entry.background = { skills: bgSkills, tool: bgTool, language: bgLang };
+  }
+  const expertisePicker = document.querySelector('.expertise-picker');
+  if (expertisePicker) {
+    const picked = Array.from(expertisePicker.querySelectorAll('input:checked')).map(i => i.value);
+    state.skillExpertise = [...new Set([...(state.skillExpertise || []), ...picked])];
+    entry.expertiseAdded = picked;
+  }
+  // Rogue 1 also gives Thieves' Cant (a language)
+  if (entry.class === 'rogue' && entry.classLevel === 1) {
+    state.languages = [...new Set([...(state.languages || []), 'Thieves\' Cant'])];
   }
 
   // Phase 2D: spell picks (Artificer only)
@@ -5887,24 +6478,96 @@ document.getElementById('concentration-select').addEventListener('change', (e) =
 });
 
 // Rest buttons
+// Generic confirm / info modal helper (Phase 2G)
+let _confirmCallback = null;
+function showConfirm(title, bodyHTML, onConfirm, opts = {}) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').innerHTML = bodyHTML;
+  document.getElementById('confirm-ok').textContent = opts.okLabel || 'Confirm';
+  document.getElementById('confirm-cancel').textContent = opts.cancelLabel || 'Cancel';
+  document.getElementById('confirm-cancel').hidden = !!opts.infoOnly;
+  _confirmCallback = onConfirm;
+  document.getElementById('confirm-overlay').hidden = false;
+}
+function showInfo(title, bodyHTML) {
+  showConfirm(title, bodyHTML, null, { okLabel: 'Close', infoOnly: true });
+}
+// Render a spell's stat block in the info modal.
+function showSpellInfo(spell) {
+  const subtitle = `${spell.level} · ${spell.school}${spell.concentration ? ' · Concentration' : ''}`;
+  const body = `
+    <div class="spell-info-subtitle">${subtitle}</div>
+    <dl class="spell-info-grid">
+      <dt>Casting Time</dt><dd>${spell.time}</dd>
+      <dt>Range</dt><dd>${spell.range}</dd>
+      <dt>Components</dt><dd>${spell.components}</dd>
+      <dt>Duration</dt><dd>${spell.duration}</dd>
+    </dl>
+  `;
+  showInfo(spell.name, body);
+}
+function closeConfirmModal() {
+  document.getElementById('confirm-overlay').hidden = true;
+  _confirmCallback = null;
+}
+document.getElementById('confirm-ok').addEventListener('click', () => {
+  const cb = _confirmCallback;
+  closeConfirmModal();
+  if (cb) cb();
+});
+document.getElementById('confirm-close').addEventListener('click', closeConfirmModal);
+document.getElementById('confirm-cancel').addEventListener('click', closeConfirmModal);
+document.getElementById('confirm-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'confirm-overlay') closeConfirmModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('confirm-overlay').hidden) closeConfirmModal();
+});
+
 document.getElementById('short-rest-btn').addEventListener('click', () => {
-  // Phase 1: short rest does nothing class-specific yet. Class-specific resets
-  // (e.g. Artificer Flash of Genius, Rogue Cunning Action recharges) will hook
-  // in here as Phase 2 wires in class features.
-  saveState();
-  render();
+  const { a } = classBreakdown(state.level);
+  const recoversFog = a >= 14 && (state.flashOfGeniusUsed || 0) > 0;
+  const items = [];
+  if (recoversFog) items.push('Refund 1 Flash of Genius use (Refreshed Genius)');
+  items.push('Spend Hit Dice manually after — a short rest doesn\'t auto-heal');
+  const body = `
+    <p>This will:</p>
+    <ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>
+  `;
+  showConfirm('Take a Short Rest?', body, () => {
+    if (recoversFog) {
+      state.flashOfGeniusUsed = Math.max(0, state.flashOfGeniusUsed - 1);
+    }
+    saveState();
+    render();
+  }, { okLabel: 'Short Rest' });
 });
 
 document.getElementById('long-rest-btn').addEventListener('click', () => {
-  state.hpCurrent = null;        // back to max
-  state.tempHp = 0;
-  state.usedSlots = { sorc1: 0, sorc2: 0, sorc3: 0, sorc4: 0, sorc5: 0 };
-  state.deathSavesSuccess = 0;
-  state.deathSavesFail = 0;
-  // concentratingOn left as-is (not reset by rest in RAW).
-  // Conditions and exhaustion are NOT auto-reset — player clears manually.
-  saveState();
-  render();
+  const hdRecover = Math.max(1, Math.floor(state.level / 2));
+  const body = `
+    <p>This will:</p>
+    <ul>
+      <li>Restore HP to max and clear Temp HP</li>
+      <li>Refill all spell slots</li>
+      <li>Refund up to ${hdRecover} Hit Dice (half character level, min 1)</li>
+      <li>Refill all Flash of Genius uses</li>
+      <li>Reset death saves</li>
+    </ul>
+    <div class="confirm-note">Conditions, exhaustion, and concentration are <strong>not</strong> auto-cleared.</div>
+  `;
+  showConfirm('Take a Long Rest?', body, () => {
+    state.hpCurrent = null;
+    state.tempHp = 0;
+    state.usedSlots = { sorc1: 0, sorc2: 0, sorc3: 0, sorc4: 0, sorc5: 0 };
+    state.deathSavesSuccess = 0;
+    state.deathSavesFail = 0;
+    state.hitDiceUsed = Math.max(0, (state.hitDiceUsed || 0) - hdRecover);
+    state.flashOfGeniusUsed = 0;
+    // Active replicas + attunement persist (RAW). Concentration not auto-reset.
+    saveState();
+    render();
+  }, { okLabel: 'Long Rest' });
 });
 
 document.getElementById('coin').addEventListener('input', (e) => {

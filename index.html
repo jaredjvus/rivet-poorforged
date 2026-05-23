@@ -1074,6 +1074,148 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
   vertical-align: middle;
 }
 
+/* Magic Items card (Phase 2L) — found / awarded items */
+.magic-items-summary {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--parchment-aged);
+  font-style: italic;
+  margin: 0 0 0.6rem;
+}
+.magic-item-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3rem 0.8rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dotted rgba(70, 102, 166, 0.18);
+  align-items: start;
+}
+.magic-item-row:last-child { border-bottom: none; }
+.magic-item-row .mi-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--parchment);
+}
+.magic-item-row .mi-name .rarity-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: var(--gold-tarnish);
+  color: #fff;
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+  vertical-align: middle;
+}
+.magic-item-row .mi-name .attune-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-tarnish);
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+  vertical-align: middle;
+}
+.magic-item-row .mi-name .attune-tag.attune-tag-on { background: var(--gold); color: #fff; border-color: var(--gold); }
+.magic-item-row .mi-row-meta {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.8rem;
+  color: var(--parchment-aged);
+}
+.magic-item-row .mi-row-notes {
+  grid-column: 1 / -1;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--parchment-aged);
+  white-space: pre-wrap;
+}
+.magic-item-row .mi-row-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+.magic-item-row .mi-charge-pips {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.2rem 0;
+}
+.magic-item-row .mi-charge-pips .pip {
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--gold);
+  background: var(--gold);
+  cursor: pointer;
+}
+.magic-item-row .mi-charge-pips .pip.used { background: transparent; }
+.magic-item-row .mi-charge-pips .pip:hover { border-color: var(--gold-bright); }
+.magic-item-row .mi-edit-btn,
+.magic-item-row .mi-attune-toggle {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  padding: 0.15rem 0.55rem;
+  cursor: pointer;
+}
+.magic-item-row .mi-edit-btn:hover,
+.magic-item-row .mi-attune-toggle:hover { background: var(--gold); color: #fff; }
+.magic-item-row .mi-attune-toggle.on { background: var(--gold); color: #fff; }
+
+/* Add/Edit Magic Item form layout */
+.magic-item-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+.mi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--parchment);
+}
+.mi-field-full { grid-column: 1 / -1; }
+.mi-field-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mi-field .mi-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-tarnish);
+}
+.mi-field input[type="text"],
+.mi-field input[type="number"],
+.mi-field select,
+.mi-field textarea {
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.5rem;
+  outline: none;
+}
+.mi-field input:focus,
+.mi-field select:focus,
+.mi-field textarea:focus { border-color: var(--gold); }
+.mi-field textarea { resize: vertical; min-height: 60px; }
+.modal-cancel[hidden] { display: none; }
+
 /* Feats card */
 .feat-block {
   padding: 0.5rem 0;
@@ -3009,6 +3151,17 @@ body.dm-mode .dm-hide { display: none; }
         </div>
       </details>
     </div>
+    <details class="card collapsible-card" id="magic-items-card" style="margin-top: 2rem;" open>
+      <summary>
+      <h3>Magic Items
+        <button class="edit-prepared-btn" id="add-magic-item-btn">+ Add Item</button>
+      </h3>
+      </summary>
+      <div class="collapsible-body">
+        <p class="magic-items-summary" id="magic-items-summary"></p>
+        <div id="magic-items-list"></div>
+      </div>
+    </details>
     <details class="card collapsible-card" style="margin-top: 2rem;" open>
       <summary>
       <h3>Coin &amp; Field Log</h3>
@@ -3163,6 +3316,56 @@ body.dm-mode .dm-hide { display: none; }
     <div class="modal-detail-prompts" id="mastery-prompts"></div>
     <div class="modal-actions">
       <button class="modal-confirm" id="mastery-confirm">Save Masteries</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Magic Item modal (Phase 2L) — for found / awarded magic items -->
+<div class="modal-overlay" id="magic-item-overlay" hidden>
+  <div class="modal">
+    <button class="modal-close" id="magic-item-close" aria-label="Close">×</button>
+    <div class="modal-title" id="magic-item-title">Add Magic Item</div>
+    <div class="modal-subtitle">Track found / awarded magic items, attunement, and charges.</div>
+    <div class="modal-detail-prompts">
+      <div class="modal-prompt">
+        <div class="magic-item-form">
+          <label class="mi-field mi-field-full">
+            <span class="mi-label">Name</span>
+            <input type="text" id="mi-name" placeholder="e.g., Cloak of Protection">
+          </label>
+          <label class="mi-field">
+            <span class="mi-label">Type</span>
+            <input type="text" id="mi-type" placeholder="Wondrous Item, Weapon, etc.">
+          </label>
+          <label class="mi-field">
+            <span class="mi-label">Rarity</span>
+            <select id="mi-rarity">
+              <option value="Common">Common</option>
+              <option value="Uncommon" selected>Uncommon</option>
+              <option value="Rare">Rare</option>
+              <option value="Very Rare">Very Rare</option>
+              <option value="Legendary">Legendary</option>
+              <option value="Artifact">Artifact</option>
+            </select>
+          </label>
+          <label class="mi-field mi-field-inline">
+            <input type="checkbox" id="mi-attunement">
+            <span class="mi-label">Requires Attunement</span>
+          </label>
+          <label class="mi-field">
+            <span class="mi-label">Charges (max)</span>
+            <input type="number" id="mi-charges-max" min="0" max="50" value="0">
+          </label>
+          <label class="mi-field mi-field-full">
+            <span class="mi-label">Notes</span>
+            <textarea id="mi-notes" rows="3" placeholder="Effect, recharge condition, anything you want to remember."></textarea>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="magic-item-delete" hidden>Delete</button>
+      <button class="modal-confirm" id="magic-item-save">Save</button>
     </div>
   </div>
 </div>
@@ -3995,7 +4198,11 @@ const DEFAULT_STATE = {
   tinkersMagicUsed: 0,       // Artificer L1: Tinker's Magic create-mundane-item uses
   giantStatureUsed: 0,       // Armorer Dreadnaught L3: bonus-action growth uses
   infiltratorFlyUsed: 0,     // Armorer Infiltrator L15: bonus-action fly uses
-  strokeOfLuckUsed: 0        // Rogue L20: 1 use / short or long rest
+  strokeOfLuckUsed: 0,       // Rogue L20: 1 use / short or long rest
+  // Phase 2L: Found magic items (looted/awarded, separate from Replicate plans)
+  // Each entry: { id, name, type, rarity, attunement: bool, attuned: bool,
+  //   chargesMax, chargesUsed, notes }
+  magicItems: []
 };
 
 let state = loadState();
@@ -4332,6 +4539,8 @@ function render() {
   renderWeaponMasteriesCard(level);
   // Phase 2K: Cunning Strikes card
   renderCunningStrikesCard(level);
+  // Phase 2L: Magic Items card (found loot)
+  renderMagicItemsCard(level);
 
   // Point-buy tracker
   renderPointBuy();
@@ -4839,9 +5048,10 @@ function renderInfusionsCard(level) {
   const active = state.activeReplicas || [];
   const attuned = state.attunedReplicas || [];
 
+  const totalAttuned = totalAttunedCount();
   document.getElementById('infusions-summary').innerHTML =
     `Knows ${plans.length} / ${plansKnown} plan${plansKnown > 1 ? 's' : ''} · creates up to ${itemsMax} item${itemsMax > 1 ? 's' : ''} per long rest (max ${itemsMax} active). ` +
-    `${active.length} / ${itemsMax} replicated · <strong style="color:var(--gold);">${attuned.length} / ${attuneMax} attuned</strong>.`;
+    `${active.length} / ${itemsMax} replicated · <strong style="color:var(--gold);">${totalAttuned} / ${attuneMax} attuned (all sources)</strong>.`;
 
   const list = document.getElementById('infusions-list');
   list.innerHTML = '';
@@ -4906,8 +5116,8 @@ function renderInfusionsCard(level) {
       const idx = parseInt(cb.dataset.attuneIdx, 10);
       const set = new Set(state.attunedReplicas || []);
       if (cb.checked) {
-        if (set.size >= attuneMax) {
-          alert(`Attunement cap reached: ${attuneMax} of ${attuneMax}. Drop one to attune to a new item.`);
+        if (totalAttunedCount() >= attuneMax) {
+          alert(`Attunement cap reached: ${attuneMax} (across Replicate + found items). Drop one to attune to a new item.`);
           cb.checked = false;
           return;
         }
@@ -4919,6 +5129,94 @@ function renderInfusionsCard(level) {
       saveState();
       render();
     });
+  });
+}
+
+function totalAttunedCount() {
+  return (state.attunedReplicas || []).length + (state.magicItems || []).filter(mi => mi.attuned).length;
+}
+
+function renderMagicItemsCard(level) {
+  const attuneMax = attunementMax((classBreakdown(level)).a);
+  const items = state.magicItems || [];
+  const attunedHere = items.filter(mi => mi.attuned).length;
+  const totalAttuned = totalAttunedCount();
+  document.getElementById('magic-items-summary').innerHTML =
+    items.length === 0
+      ? `No found items yet. Use <strong>+ Add Item</strong> for loot, awards, or curios.`
+      : `${items.length} item${items.length > 1 ? 's' : ''} · ${attunedHere} attuned here. <strong style="color:var(--gold);">Total attuned (all sources): ${totalAttuned} / ${attuneMax}</strong>`;
+
+  const list = document.getElementById('magic-items-list');
+  list.innerHTML = '';
+  for (const item of items) {
+    const row = document.createElement('div');
+    row.className = 'magic-item-row';
+    const attuneTag = item.attunement
+      ? `<span class="attune-tag${item.attuned ? ' attune-tag-on' : ''}">${item.attuned ? 'Attuned' : 'Attune'}</span>`
+      : '';
+    const attuneBtn = item.attunement
+      ? `<button class="mi-attune-toggle${item.attuned ? ' on' : ''}" data-toggle-attune="${item.id}" title="${item.attuned ? 'Drop attunement' : 'Attune to this item'}">${item.attuned ? 'Attuned' : 'Attune'}</button>`
+      : '';
+    let chargesHTML = '';
+    if (item.chargesMax && item.chargesMax > 0) {
+      const used = Math.min(item.chargesUsed || 0, item.chargesMax);
+      let pips = '';
+      for (let i = 0; i < item.chargesMax; i++) {
+        pips += `<div class="pip${i >= item.chargesMax - used ? ' used' : ''}" data-charge-idx="${i}" data-item-id="${item.id}" title="Charge ${i + 1}"></div>`;
+      }
+      chargesHTML = `<div class="mi-charge-pips" data-item-id="${item.id}">${pips}</div>`;
+    }
+    row.innerHTML = `
+      <div>
+        <div class="mi-name">${item.name}<span class="rarity-tag">${item.rarity}</span>${attuneTag}</div>
+        <div class="mi-row-meta">${item.type || ''}</div>
+      </div>
+      <div class="mi-row-controls">
+        ${attuneBtn}
+        ${chargesHTML}
+        <button class="mi-edit-btn" data-edit-item="${item.id}">Edit</button>
+      </div>
+      ${item.notes ? `<div class="mi-row-notes">${item.notes.replace(/[<>]/g, c => ({'<':'&lt;','>':'&gt;'}[c]))}</div>` : ''}
+    `;
+    list.appendChild(row);
+  }
+  // Wire attunement toggles
+  list.querySelectorAll('[data-toggle-attune]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.toggleAttune;
+      const item = (state.magicItems || []).find(x => x.id === id);
+      if (!item) return;
+      if (!item.attuned) {
+        if (totalAttunedCount() >= attuneMax) {
+          alert(`Attunement cap reached: ${attuneMax}. Drop one to attune to a new item.`);
+          return;
+        }
+        item.attuned = true;
+      } else {
+        item.attuned = false;
+      }
+      saveState();
+      render();
+    });
+  });
+  // Wire charge pip clicks
+  list.querySelectorAll('.mi-charge-pips .pip').forEach(pip => {
+    pip.addEventListener('click', () => {
+      const id = pip.dataset.itemId;
+      const idx = parseInt(pip.dataset.chargeIdx, 10);
+      const item = (state.magicItems || []).find(x => x.id === id);
+      if (!item) return;
+      const max = item.chargesMax;
+      const used = item.chargesUsed || 0;
+      const isAvailable = idx < (max - used);
+      item.chargesUsed = isAvailable ? (max - idx) : (max - idx - 1);
+      saveState();
+      render();
+    });
+  });
+  // Wire edit buttons
+  list.querySelectorAll('[data-edit-item]').forEach(btn => {
+    btn.addEventListener('click', () => openMagicItemModal(btn.dataset.editItem));
   });
 }
 
@@ -6974,6 +7272,79 @@ document.getElementById('mastery-close').addEventListener('click', closeSwapMast
 document.getElementById('mastery-confirm').addEventListener('click', saveSwapMastery);
 document.getElementById('mastery-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'mastery-overlay') closeSwapMastery();
+});
+
+// ============================================================
+// Add/Edit Magic Item modal (Phase 2L)
+// ============================================================
+let _editingMagicItemId = null;
+function openMagicItemModal(id) {
+  _editingMagicItemId = id || null;
+  const existing = id ? (state.magicItems || []).find(x => x.id === id) : null;
+  document.getElementById('magic-item-title').textContent = existing ? 'Edit Magic Item' : 'Add Magic Item';
+  document.getElementById('mi-name').value = existing ? existing.name : '';
+  document.getElementById('mi-type').value = existing ? (existing.type || '') : '';
+  document.getElementById('mi-rarity').value = existing ? existing.rarity : 'Uncommon';
+  document.getElementById('mi-attunement').checked = existing ? !!existing.attunement : false;
+  document.getElementById('mi-charges-max').value = existing ? (existing.chargesMax || 0) : 0;
+  document.getElementById('mi-notes').value = existing ? (existing.notes || '') : '';
+  document.getElementById('magic-item-delete').hidden = !existing;
+  document.getElementById('magic-item-overlay').hidden = false;
+  setTimeout(() => document.getElementById('mi-name').focus(), 50);
+}
+function closeMagicItemModal() {
+  document.getElementById('magic-item-overlay').hidden = true;
+  _editingMagicItemId = null;
+}
+function saveMagicItem() {
+  const name = document.getElementById('mi-name').value.trim();
+  if (!name) { alert('Name is required.'); return; }
+  const item = {
+    id: _editingMagicItemId || ('mi-' + Date.now() + '-' + Math.floor(Math.random() * 1e4)),
+    name,
+    type: document.getElementById('mi-type').value.trim(),
+    rarity: document.getElementById('mi-rarity').value,
+    attunement: document.getElementById('mi-attunement').checked,
+    chargesMax: parseInt(document.getElementById('mi-charges-max').value, 10) || 0,
+    notes: document.getElementById('mi-notes').value.trim()
+  };
+  if (_editingMagicItemId) {
+    const list = state.magicItems || [];
+    const idx = list.findIndex(x => x.id === _editingMagicItemId);
+    if (idx >= 0) {
+      // Preserve attuned + chargesUsed
+      item.attuned = list[idx].attuned && item.attunement; // drop attunement if it no longer requires it
+      item.chargesUsed = Math.min(list[idx].chargesUsed || 0, item.chargesMax);
+      list[idx] = item;
+    }
+  } else {
+    item.attuned = false;
+    item.chargesUsed = 0;
+    state.magicItems = [...(state.magicItems || []), item];
+  }
+  saveState();
+  closeMagicItemModal();
+  render();
+}
+function deleteMagicItem() {
+  if (!_editingMagicItemId) return;
+  showConfirm('Delete this magic item?', '<p>This removes it permanently from the sheet.</p>', () => {
+    state.magicItems = (state.magicItems || []).filter(x => x.id !== _editingMagicItemId);
+    saveState();
+    closeMagicItemModal();
+    render();
+  }, { okLabel: 'Delete' });
+}
+
+document.getElementById('add-magic-item-btn').addEventListener('click', (e) => {
+  e.preventDefault(); // also handled by summary-button guard, but be explicit
+  openMagicItemModal(null);
+});
+document.getElementById('magic-item-close').addEventListener('click', closeMagicItemModal);
+document.getElementById('magic-item-save').addEventListener('click', saveMagicItem);
+document.getElementById('magic-item-delete').addEventListener('click', deleteMagicItem);
+document.getElementById('magic-item-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'magic-item-overlay') closeMagicItemModal();
 });
 document.getElementById('levelup-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'levelup-overlay') closeLevelUpModal();

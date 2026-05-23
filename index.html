@@ -69,6 +69,7 @@ body::before {
   border-bottom: 1px solid var(--gold-tarnish);
   margin-bottom: 3rem;
   position: relative;
+  overflow: hidden;
 }
 .header::before {
   content: '✦';
@@ -80,7 +81,27 @@ body::before {
   background: var(--ink);
   padding: 0 1rem;
   font-size: 1rem;
+  z-index: 2;
 }
+.header-ornament {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(100%, 1100px);
+  height: 100%;
+  color: var(--gold);
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 0;
+  /* Soft edge fade so the ornament feels embedded, not pasted in */
+  -webkit-mask-image: radial-gradient(ellipse 80% 90% at center, black 35%, transparent 95%);
+  mask-image: radial-gradient(ellipse 80% 90% at center, black 35%, transparent 95%);
+}
+.header > .eyebrow,
+.header > .name,
+.header > .epithet,
+.header > .titlebar { position: relative; z-index: 1; }
 
 .eyebrow {
   font-family: 'Cinzel', serif;
@@ -1711,6 +1732,69 @@ body.dm-mode .dm-hide { display: none; }
 
   <!-- HEADER -->
   <header class="header">
+    <svg class="header-ornament" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Central rosette: 8-petal Delft star -->
+        <g transform="translate(550 140)">
+          <circle r="56" />
+          <circle r="42" stroke-width="0.8" />
+          <g fill="currentColor" stroke="none">
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(45)" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(90)" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(135)" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(180)" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(225)" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(270)" />
+            <path d="M 0 -78 Q 16 -58 0 -42 Q -16 -58 0 -78 Z" transform="rotate(315)" />
+            <circle r="7" />
+          </g>
+        </g>
+        <!-- Left scrollwork + tulip -->
+        <g transform="translate(450 140)">
+          <path d="M -10 -8 C -60 -52, -160 -60, -220 -16 C -250 6, -240 38, -200 36 C -160 34, -150 14, -130 0" />
+          <path d="M -130 0 Q -100 -22, -70 -10" stroke-width="1.2" />
+          <g transform="translate(-228 -22)">
+            <path d="M 0 0 C -10 -16, -8 -36, 0 -46 C 8 -36, 10 -16, 0 0 Z" fill="currentColor" stroke="none" />
+            <path d="M 0 0 L 0 18" />
+            <ellipse cx="-14" cy="12" rx="10" ry="4" transform="rotate(-25 -14 12)" fill="currentColor" stroke="none" opacity="0.85" />
+            <ellipse cx="14" cy="14" rx="10" ry="4" transform="rotate(25 14 14)" fill="currentColor" stroke="none" opacity="0.85" />
+          </g>
+          <ellipse cx="-100" cy="-32" rx="14" ry="6" transform="rotate(-28 -100 -32)" fill="currentColor" stroke="none" opacity="0.75" />
+          <ellipse cx="-160" cy="20" rx="16" ry="6" transform="rotate(20 -160 20)" fill="currentColor" stroke="none" opacity="0.75" />
+        </g>
+        <!-- Right scrollwork + tulip (mirror) -->
+        <g transform="translate(650 140) scale(-1 1)">
+          <path d="M -10 -8 C -60 -52, -160 -60, -220 -16 C -250 6, -240 38, -200 36 C -160 34, -150 14, -130 0" />
+          <path d="M -130 0 Q -100 -22, -70 -10" stroke-width="1.2" />
+          <g transform="translate(-228 -22)">
+            <path d="M 0 0 C -10 -16, -8 -36, 0 -46 C 8 -36, 10 -16, 0 0 Z" fill="currentColor" stroke="none" />
+            <path d="M 0 0 L 0 18" />
+            <ellipse cx="-14" cy="12" rx="10" ry="4" transform="rotate(-25 -14 12)" fill="currentColor" stroke="none" opacity="0.85" />
+            <ellipse cx="14" cy="14" rx="10" ry="4" transform="rotate(25 14 14)" fill="currentColor" stroke="none" opacity="0.85" />
+          </g>
+          <ellipse cx="-100" cy="-32" rx="14" ry="6" transform="rotate(-28 -100 -32)" fill="currentColor" stroke="none" opacity="0.75" />
+          <ellipse cx="-160" cy="20" rx="16" ry="6" transform="rotate(20 -160 20)" fill="currentColor" stroke="none" opacity="0.75" />
+        </g>
+        <!-- Scattered Delft dots -->
+        <g fill="currentColor" stroke="none">
+          <circle cx="150" cy="60" r="3" />
+          <circle cx="120" cy="200" r="2.5" />
+          <circle cx="80" cy="130" r="2" />
+          <circle cx="950" cy="60" r="3" />
+          <circle cx="980" cy="200" r="2.5" />
+          <circle cx="1020" cy="130" r="2" />
+          <circle cx="430" cy="40" r="2" />
+          <circle cx="670" cy="40" r="2" />
+          <circle cx="430" cy="240" r="2" />
+          <circle cx="670" cy="240" r="2" />
+          <circle cx="320" cy="80" r="1.6" />
+          <circle cx="780" cy="80" r="1.6" />
+          <circle cx="320" cy="220" r="1.6" />
+          <circle cx="780" cy="220" r="1.6" />
+        </g>
+      </g>
+    </svg>
     <div class="eyebrow">A Field Log · Neverwinter · Subject ID R-1V3T</div>
     <h1 class="name">Rivet</h1>
     <div class="epithet">the Poorforged · Toymaker's Mistake</div>

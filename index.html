@@ -171,11 +171,31 @@ body::before {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  min-height: 60px;
+}
+.level-cluster {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 1.5rem;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  width: 100%;
+  max-width: 640px;
+}
+.level-cluster .level-label { justify-self: end; }
+.level-cluster .level-up-btn { justify-self: start; }
+@media (max-width: 600px) {
+  .level-cluster { grid-template-columns: 1fr; justify-items: center; }
+  .level-cluster .level-label, .level-cluster .level-up-btn { justify-self: center; }
+}
+.level-inner .options-menu {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .level-label {
@@ -186,53 +206,35 @@ body::before {
   text-transform: uppercase;
 }
 
-.level-slider-wrap {
-  flex: 1;
-  min-width: 220px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.level-slider {
-  flex: 1;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 4px;
-  background: linear-gradient(90deg, var(--gold-tarnish), var(--gold));
-  outline: none;
-  border-radius: 2px;
-}
-.level-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  background: var(--blood-bright);
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(179, 89, 48, 0.6);
-}
-.level-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  background: var(--blood-bright);
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
 .level-display {
   font-family: 'Cinzel', serif;
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   font-weight: 700;
-  color: var(--parchment);
-  min-width: 60px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  min-width: 62px;
   text-align: center;
-  padding: 0.2rem 0.8rem;
-  border: 1px solid var(--gold);
-  background: rgba(255, 255, 255, 0.90);
+  padding: 0.25rem 1rem;
+  border: 2px solid var(--gold);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 2px 8px rgba(31, 78, 163, 0.12);
+  line-height: 1;
+}
+.level-display::before {
+  content: 'LV';
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--gold-tarnish);
+  margin-bottom: 0.15rem;
+  font-weight: 400;
+}
+.options-divider {
+  height: 1px;
+  background: var(--gold-tarnish);
+  margin: 0.3rem 0;
+  opacity: 0.4;
 }
 
 .level-classes {
@@ -281,22 +283,23 @@ body::before {
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  background: var(--gold);
-  color: #fff;
+  background: transparent;
+  color: var(--gold);
   border: 1px solid var(--gold);
   padding: 0.5rem 1.1rem;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
   white-space: nowrap;
 }
 .level-up-btn:hover {
-  background: var(--gold-bright);
-  border-color: var(--gold-bright);
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
 }
 .level-up-btn:active { transform: translateY(1px); }
 .level-up-btn:disabled {
-  background: var(--gold-tarnish);
   border-color: var(--gold-tarnish);
+  color: var(--gold-tarnish);
   cursor: not-allowed;
   opacity: 0.55;
 }
@@ -2408,10 +2411,13 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
   color: var(--parchment);
 }
 .prof-list li {
-  padding: 0.25rem 0;
+  padding: 0.25rem 0 0.25rem 1.2rem;
   border-bottom: 1px dotted rgba(70, 102, 166, 0.12);
 }
 .prof-list li:last-child { border-bottom: none; }
+.prof-list li::before {
+  top: 0.4rem;
+}
 
 /* FEATURE BLOCK */
 .feature-block {
@@ -2726,6 +2732,7 @@ body.dm-mode .dm-banner { display: block; }
 body.dm-mode .level-slider,
 body.dm-mode input:not([type=file]),
 body.dm-mode textarea,
+body.dm-mode select,
 body.dm-mode .pip,
 body.dm-mode .alt-control label,
 body.dm-mode .alt-control input,
@@ -2739,7 +2746,9 @@ body.dm-mode .fom-btn,
 body.dm-mode .ds-pip,
 body.dm-mode .condition-pill,
 body.dm-mode .exhaustion-control input,
-body.dm-mode .surge-roll-btn {
+body.dm-mode .surge-roll-btn,
+body.dm-mode .mi-attune-toggle,
+body.dm-mode .mi-charge-pips .pip {
   pointer-events: none;
 }
 body.dm-mode .reset-btn,
@@ -2748,6 +2757,8 @@ body.dm-mode .options-menu,
 body.dm-mode .level-up-btn,
 body.dm-mode .header-action[data-add],
 body.dm-mode .inv-remove,
+body.dm-mode .mi-edit-btn,
+body.dm-mode .conditions-clear-btn,
 body.dm-mode #save-local {
   display: none !important;
 }
@@ -2858,15 +2869,16 @@ body.dm-mode .dm-hide { display: none; }
   <!-- LEVEL CONTROL -->
   <div class="level-control">
     <div class="level-inner">
-      <span class="level-label">Character Level</span>
-      <div class="level-slider-wrap">
-        <input type="range" min="1" max="20" value="1" class="level-slider" id="level-slider">
+      <div class="level-cluster">
+        <span class="level-label">Character Level</span>
         <div class="level-display" id="level-display">1</div>
+        <button class="level-up-btn" id="level-up-btn" title="Open the Level Up modal to assign the next level">↑ Level Up</button>
       </div>
-      <button class="level-up-btn" id="level-up-btn" title="Open the Level Up modal to assign the next level">↑ Level Up</button>
       <div class="options-menu">
         <button class="options-btn" id="options-toggle" title="Options" aria-label="Open options menu">⋯</button>
         <div class="options-dropdown" id="options-dropdown" hidden>
+          <button class="io-btn" id="level-down-btn" title="Undo the most recent level (truncates history)">↓ Level Down</button>
+          <div class="options-divider"></div>
           <button class="io-btn" id="export-btn" title="Download a JSON backup of this sheet">Export</button>
           <button class="io-btn" id="import-btn" title="Restore a sheet from a JSON backup">Import</button>
           <input type="file" id="import-file" accept="application/json,.json" style="display:none">
@@ -6010,12 +6022,25 @@ function autoSizeTextarea(el) {
 // EVENT WIRING
 // ============================================================
 
-document.getElementById('level-slider').addEventListener('input', (e) => {
-  state.level = parseInt(e.target.value, 10);
-  state.hpCurrent = null; // Reset to max on level change
-  saveState();
-  render();
-});
+// The level slider was removed in favor of a read-only level badge.
+// Level Up button increments state.maxLevel; the new Level Down menu option
+// (below) decrements it.
+function levelDown() {
+  if ((state.maxLevel || 0) < 1) return;
+  const removed = state.maxLevel;
+  showConfirm('Level Down?',
+    `<p>This will undo everything you picked at level <strong>${removed}</strong> — class, subclass, features gained, spells/cantrips added, feat or ASI, infusion plan, weapon mastery, HP gain.</p>
+     <div class="confirm-note">She'll drop back to level <strong>${removed - 1}</strong>. You can re-do it via Level Up at any time.</div>`,
+    () => {
+      state.levelHistory = (state.levelHistory || []).slice(0, removed - 1);
+      state.maxLevel = removed - 1;
+      state.level = state.maxLevel;
+      rebuildDerivedStateFromHistory();
+      saveState();
+      render();
+    },
+    { okLabel: 'Level Down' });
+}
 
 document.getElementById('hp-current').addEventListener('input', (e) => {
   const v = parseInt(e.target.value, 10);
@@ -7177,7 +7202,7 @@ function confirmLevelUp() {
   state.level = state.maxLevel;
   closeLevelUpModal();
   saveState();
-  document.getElementById('level-slider').value = state.level;
+  (() => { const _s = document.getElementById('level-slider'); if (_s) _s.value = state.level; })();
   render();
 }
 
@@ -7834,6 +7859,12 @@ function closeOptionsOnOutside(e) {
   document.removeEventListener('click', closeOptionsOnOutside);
 }
 
+document.getElementById('level-down-btn').addEventListener('click', () => {
+  document.getElementById('options-dropdown').hidden = true;
+  document.removeEventListener('click', closeOptionsOnOutside);
+  levelDown();
+});
+
 document.getElementById('export-btn').addEventListener('click', () => {
   const payload = { ...state, _exportedAt: new Date().toISOString(), _app: STORAGE_KEY };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -7874,7 +7905,7 @@ document.getElementById('import-file').addEventListener('change', (e) => {
     state = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...incoming };
     state.updatedAt = new Date().toISOString();
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (err) { console.error('Save failed', err); }
-    document.getElementById('level-slider').value = state.level;
+    (() => { const _s = document.getElementById('level-slider'); if (_s) _s.value = state.level; })();
     render();
     showSaveIndicator();
     syncToCloud();
@@ -7888,14 +7919,14 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     state = JSON.parse(JSON.stringify(DEFAULT_STATE));
     state.updatedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    document.getElementById('level-slider').value = state.level;
+    (() => { const _s = document.getElementById('level-slider'); if (_s) _s.value = state.level; })();
     render();
     syncToCloud(); // propagate reset to cloud, otherwise next page load would re-pull the old cloud state
   }
 });
 
 // Sync slider to loaded level
-document.getElementById('level-slider').value = state.level;
+(() => { const _s = document.getElementById('level-slider'); if (_s) _s.value = state.level; })();
 
 // Initial render
 render();
@@ -7917,7 +7948,7 @@ render();
       if (remoteTime > localTime) {
         state = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...remote.data };
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-        document.getElementById('level-slider').value = state.level;
+        (() => { const _s = document.getElementById('level-slider'); if (_s) _s.value = state.level; })();
         render();
         setLoadedFrom('cloud');
       } else {
@@ -7953,7 +7984,7 @@ if (IS_DM) {
       const localTime = state.updatedAt ? new Date(state.updatedAt).getTime() : 0;
       if (remoteTime > localTime) {
         state = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...remote.data };
-        document.getElementById('level-slider').value = state.level;
+        (() => { const _s = document.getElementById('level-slider'); if (_s) _s.value = state.level; })();
         render();
         setCloudStatus('synced', 'Cloud: live');
       }

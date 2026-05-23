@@ -276,6 +276,129 @@ body::before {
   color: var(--ink);
 }
 
+.level-up-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: #fff;
+  border: 1px solid var(--gold);
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.level-up-btn:hover {
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
+}
+.level-up-btn:active { transform: translateY(1px); }
+.level-up-btn:disabled {
+  background: var(--gold-tarnish);
+  border-color: var(--gold-tarnish);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 53, 115, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.modal-overlay[hidden] { display: none; }
+.modal {
+  background: var(--ink);
+  border: 1px solid var(--gold);
+  padding: 2.5rem 2rem 2rem;
+  max-width: 560px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 16px 50px rgba(20, 53, 115, 0.35);
+}
+.modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.8rem;
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 1.8rem;
+  font-family: 'Cinzel', serif;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.2rem 0.6rem;
+}
+.modal-close:hover { color: var(--gold-bright); }
+.modal-title {
+  font-family: 'Major Mono Display', 'Courier New', monospace;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.modal-subtitle {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--parchment-aged);
+  text-align: center;
+  margin-bottom: 1.8rem;
+}
+.modal-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.modal-option {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--gold-tarnish);
+  padding: 1.3rem 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  font-family: 'EB Garamond', serif;
+  color: var(--parchment);
+}
+.modal-option:hover {
+  border-color: var(--gold);
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(31, 78, 163, 0.18);
+}
+.modal-option-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+.modal-option-detail {
+  color: var(--parchment-aged);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+.modal-help {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--parchment-dim);
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dotted var(--gold-tarnish);
+}
+
 .options-menu {
   position: relative;
   margin-left: auto;
@@ -1648,6 +1771,7 @@ body.dm-mode .surge-roll-btn {
 body.dm-mode .reset-btn,
 body.dm-mode .io-btn,
 body.dm-mode .options-menu,
+body.dm-mode .level-up-btn,
 body.dm-mode .header-action[data-add],
 body.dm-mode .inv-remove,
 body.dm-mode #save-local {
@@ -1765,6 +1889,7 @@ body.dm-mode .dm-hide { display: none; }
         <input type="range" min="1" max="20" value="1" class="level-slider" id="level-slider">
         <div class="level-display" id="level-display">1</div>
       </div>
+      <button class="level-up-btn" id="level-up-btn" title="Open the Level Up modal to assign the next level">↑ Level Up</button>
       <div class="options-menu">
         <button class="options-btn" id="options-toggle" title="Options" aria-label="Open options menu">⋯</button>
         <div class="options-dropdown" id="options-dropdown" hidden>
@@ -2084,6 +2209,16 @@ body.dm-mode .dm-hide { display: none; }
 
 <div class="cast-popover" id="cast-popover" hidden></div>
 
+<div class="modal-overlay" id="levelup-overlay" hidden>
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+    <div class="modal-title" id="levelup-title">Level Up</div>
+    <div class="modal-subtitle" id="levelup-subtitle">Choose a class to take this level in:</div>
+    <div class="modal-options" id="levelup-options"></div>
+    <div class="modal-help">Class features for this level will be added to her sheet automatically. (Phase 2 ongoing — additional picks for subclass / ASI / feat / spells / infusions come later.)</div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // BUILD DATA — single source of truth
@@ -2306,6 +2441,8 @@ const DEFAULT_STATE = {
   schemaVersion: 1,
   updatedAt: null,
   level: 1,
+  maxLevel: 0,                           // highest level reached (incremented by the Level Up modal)
+  levelHistory: [],                      // one entry per level reached: { class, classLevel, ...picks }
   baseStats: { ...BASE_STATS_DEFAULT },  // user-editable point-buy row
   classSaveProfs: [],                    // set by level-up modal (e.g., ['con','int'] for Artificer start)
   hpCurrent: null,                       // null = match max
@@ -2474,14 +2611,15 @@ function profBonus(level) {
 }
 
 function classBreakdown(level) {
-  // Phase 1 placeholder: LEVEL_DATA is empty so this returns 0/0 until the
-  // level-up modal records picks. Phase 2 will read class assignments per level.
+  // Read from state.levelHistory — populated by the Level Up modal.
+  // Counts the class entries up to (but not past) the given level.
   let a = 0, r = 0;
-  for (let l = 1; l <= level; l++) {
-    const ld = LEVEL_DATA[l];
-    if (!ld) continue;
-    if (ld.class === 'artificer') a++;
-    else if (ld.class === 'rogue') r++;
+  const history = state.levelHistory || [];
+  const limit = Math.min(history.length, level);
+  for (let i = 0; i < limit; i++) {
+    const entry = history[i];
+    if (entry.class === 'artificer') a++;
+    else if (entry.class === 'rogue') r++;
   }
   return { a, r };
 }
@@ -3228,6 +3366,79 @@ document.getElementById('inspiration-toggle').addEventListener('click', () => {
   state.heroicInspiration = !state.heroicInspiration;
   saveState();
   renderCombatResources(state.level);
+});
+
+// ============================================================
+// LEVEL UP MODAL (Phase 2 foundation)
+// ============================================================
+// Records class picks in state.levelHistory. Class-specific feature picks
+// (subclass, ASI/feat, spells, infusions) wire in once the Artificer/Rogue
+// progression data lands in Phase 2B.
+
+function openLevelUpModal() {
+  const overlay = document.getElementById('levelup-overlay');
+  const current = state.maxLevel || 0;
+  if (current >= 20) {
+    alert('Already at level 20 — the campaign cap.');
+    return;
+  }
+  const nextLevel = current + 1;
+  const { a, r } = classBreakdown(current);
+
+  document.getElementById('levelup-title').textContent =
+    nextLevel === 1 ? 'Choose Her Starting Class' : `Level Up — Level ${nextLevel}`;
+  document.getElementById('levelup-subtitle').textContent =
+    nextLevel === 1
+      ? 'Which class does Rivet take at level 1?'
+      : 'Which class is she leveling in?';
+
+  const container = document.getElementById('levelup-options');
+  container.innerHTML = '';
+  const options = [
+    { class: 'artificer', label: 'Artificer (Armorer)', next: a + 1 },
+    { class: 'rogue', label: 'Rogue (Thief)', next: r + 1 }
+  ];
+  for (const opt of options) {
+    if (opt.next > 20) continue;
+    const card = document.createElement('button');
+    card.className = 'modal-option';
+    const isFirst = opt.next === 1;
+    card.innerHTML = `
+      <div class="modal-option-name">${opt.label}</div>
+      <div class="modal-option-detail">${isFirst ? 'first class' : 'class level ' + opt.next}</div>
+    `;
+    card.addEventListener('click', () => confirmLevelUp(opt.class));
+    container.appendChild(card);
+  }
+  overlay.hidden = false;
+}
+
+function closeLevelUpModal() {
+  document.getElementById('levelup-overlay').hidden = true;
+}
+
+function confirmLevelUp(klass) {
+  if (!state.levelHistory) state.levelHistory = [];
+  const current = state.maxLevel || 0;
+  const { a, r } = classBreakdown(current);
+  const classLevel = klass === 'artificer' ? a + 1 : r + 1;
+  state.levelHistory.push({ class: klass, classLevel });
+  state.maxLevel = current + 1;
+  state.level = state.maxLevel;
+  closeLevelUpModal();
+  saveState();
+  // Sync the slider to the new max level
+  document.getElementById('level-slider').value = state.level;
+  render();
+}
+
+document.getElementById('level-up-btn').addEventListener('click', openLevelUpModal);
+document.getElementById('modal-close').addEventListener('click', closeLevelUpModal);
+document.getElementById('levelup-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'levelup-overlay') closeLevelUpModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('levelup-overlay').hidden) closeLevelUpModal();
 });
 
 // Point Buy editor

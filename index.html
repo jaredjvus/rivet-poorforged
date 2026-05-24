@@ -819,6 +819,13 @@ body::before {
   cursor: pointer;
 }
 .spell-row .spell-cast:hover { background: var(--gold); color: #fff; }
+.spell-row .cantrip-cast { font-size: 0.7rem; }
+.spell-row .cantrip-cast.concentrating {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold-bright);
+}
+.spell-row .cantrip-cast.concentrating:hover { background: var(--gold-bright); }
 .spell-row .spell-info {
   font-size: 0.85rem;
   color: var(--gold);
@@ -5117,10 +5124,17 @@ function renderMagicCard(level) {
     for (const s of cantrips) {
       const row = document.createElement('div');
       row.className = 'spell-row';
+      // Concentration cantrips get a Cast button (no slot cost, claims Concentration with takeover warn).
+      const castBtn = s.concentration
+        ? `<button class="spell-cast cantrip-cast${state.concentratingOn === s.name ? ' concentrating' : ''}" data-spell="${s.name}">${state.concentratingOn === s.name ? 'Concentrating' : 'Cast (Conc.)'}</button>`
+        : '';
       row.innerHTML = `
         <span class="spell-name">${s.name}${s.concentration ? '<span class="conc-tag">C</span>' : ''}</span>
         <span class="spell-meta">${s.school} · ${s.range} · ${s.time}</span>
-        <button class="spell-info" data-spell="${s.name}" title="Spell details">ⓘ</button>
+        <span class="spell-actions">
+          <button class="spell-info" data-spell="${s.name}" title="Spell details">ⓘ</button>
+          ${castBtn}
+        </span>
       `;
       cantripList.appendChild(row);
     }
@@ -5174,10 +5188,34 @@ function renderMagicCard(level) {
     });
   });
 
-  // Wire cast buttons (slot-spending popover)
+  // Wire cast buttons (slot-spending popover; concentration cantrips skip the popover)
   card.querySelectorAll('.spell-cast').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      // Concentration cantrip: no slot cost, just claim/release Concentration
+      if (btn.classList.contains('cantrip-cast')) {
+        const spellName = btn.dataset.spell;
+        if (state.concentratingOn === spellName) {
+          state.concentratingOn = null;
+          saveState();
+          render();
+          return;
+        }
+        const finalize = () => {
+          state.concentratingOn = spellName;
+          saveState();
+          render();
+        };
+        if (state.concentratingOn && state.concentratingOn !== spellName) {
+          showConfirm('Break Concentration?',
+            `<p>Casting <strong>${spellName}</strong> will break your current Concentration on <strong>${state.concentratingOn}</strong>.</p><p>Continue?</p>`,
+            finalize,
+            { okLabel: `Cast ${spellName}` });
+          return;
+        }
+        finalize();
+        return;
+      }
       const s = SPELLS.find(x => x.name === btn.dataset.spell);
       if (!s) return;
       openCastPopover(s, btn);
@@ -5742,10 +5780,23 @@ function openCastPopover(spell, anchor) {
       opt.innerHTML = `<span>${t.label}</span><span class="tier-count">×${remaining}</span>`;
       opt.addEventListener('click', (e) => {
         e.stopPropagation();
-        state.usedSlots[t.key] = (state.usedSlots[t.key] || 0) + 1;
-        saveState();
-        closeCastPopover();
-        render();
+        const finalize = () => {
+          state.usedSlots[t.key] = (state.usedSlots[t.key] || 0) + 1;
+          if (spell.concentration) state.concentratingOn = spell.name;
+          saveState();
+          closeCastPopover();
+          render();
+        };
+        // Concentration handoff: warn if taking over from a different spell
+        if (spell.concentration && state.concentratingOn && state.concentratingOn !== spell.name) {
+          closeCastPopover();
+          showConfirm('Break Concentration?',
+            `<p>Casting <strong>${spell.name}</strong> will break your current Concentration on <strong>${state.concentratingOn}</strong>.</p><p>Continue?</p>`,
+            finalize,
+            { okLabel: `Cast ${spell.name}` });
+          return;
+        }
+        finalize();
       });
       pop.appendChild(opt);
     }

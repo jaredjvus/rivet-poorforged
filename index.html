@@ -2490,6 +2490,34 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 .loop .arrow { color: var(--gold); padding: 0 0.4rem; }
 
 /* GEAR */
+.gear-search-wrap { position: relative; margin-bottom: 0.6rem; }
+.gear-search {
+  width: 100%;
+  background: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--gold-tarnish);
+  border-radius: 4px;
+  padding: 0.45rem 2rem 0.45rem 0.7rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  outline: none;
+}
+.gear-search:focus { border-color: var(--gold); }
+.gear-search::placeholder { color: var(--parchment-dim); font-style: italic; }
+.gear-search-clear {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.3rem;
+  line-height: 1;
+}
+.gear-search-clear:hover { color: var(--gold-bright); }
 .gear-list { display: flex; flex-direction: column; gap: 0.4rem; }
 .gear-row {
   display: grid;
@@ -3401,6 +3429,10 @@ body.dm-mode .dm-hide { display: none; }
         </h3>
       </summary>
       <div class="collapsible-body">
+        <div class="gear-search-wrap">
+          <input id="gear-search" type="text" class="gear-search" placeholder="Search gear by name, type, or notes…" autocomplete="off">
+          <button class="gear-search-clear" id="gear-search-clear" title="Clear search" hidden>×</button>
+        </div>
         <div id="gear-list" class="gear-list"></div>
       </div>
     </details>
@@ -6580,9 +6612,21 @@ function totalAttunedCount() {
 function renderGear() {
   const list = document.getElementById('gear-list');
   if (!list) return;
-  const gear = state.gear || [];
+  const allGear = state.gear || [];
+  const searchEl = document.getElementById('gear-search');
+  const filter = (searchEl?.value || '').toLowerCase().trim();
+  const clearBtn = document.getElementById('gear-search-clear');
+  if (clearBtn) clearBtn.hidden = !filter;
+  const gear = filter
+    ? allGear.filter(g => (g.name || '').toLowerCase().includes(filter)
+                       || (g.type || '').toLowerCase().includes(filter)
+                       || (g.notes || '').toLowerCase().includes(filter)
+                       || (g.rarity || '').toLowerCase().includes(filter)
+                       || (g.mastery || '').toLowerCase().includes(filter))
+    : allGear;
   list.innerHTML = '';
   if (gear.length === 0) {
+    if (filter) { list.innerHTML = `<div class="gear-empty">No gear matches "${filter}". <button class="link-btn" id="gear-search-reset">clear search</button></div>`; const r = document.getElementById('gear-search-reset'); if (r) r.addEventListener('click', () => { searchEl.value = ''; renderGear(); }); return; }
     list.innerHTML = '<div class="gear-empty">No gear yet. Click <strong>+ Add Gear</strong> to add armor, weapons, or magic items.</div>';
   }
   // Sort: equipped first (armor → shield → weapon), then by type, then by name
@@ -8096,6 +8140,13 @@ document.getElementById('gear-tab-custom').addEventListener('click', () => {
   document.getElementById('gear-tab-library-panel').hidden = true;
 });
 document.getElementById('gear-library-search').addEventListener('input', (e) => populateGearLibraryGrid(e.target.value));
+// Gear search input — filters the visible gear rows by name / type / notes.
+{
+  const _gs = document.getElementById('gear-search');
+  if (_gs) _gs.addEventListener('input', () => renderGear());
+  const _gsc = document.getElementById('gear-search-clear');
+  if (_gsc) _gsc.addEventListener('click', () => { _gs.value = ''; renderGear(); _gs.focus(); });
+}
 document.getElementById('modal-close').addEventListener('click', closeLevelUpModal);
 document.getElementById('levelup-back').addEventListener('click', () => {
   document.getElementById('levelup-step1').hidden = false;

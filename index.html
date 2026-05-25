@@ -2489,7 +2489,165 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 .loop p { font-size: 1rem; }
 .loop .arrow { color: var(--gold); padding: 0 0.4rem; }
 
-/* INVENTORY */
+/* GEAR */
+.gear-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.gear-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.5rem 0.6rem;
+  background: rgba(74, 138, 115, 0.04);
+  border: 1px solid var(--gold-tarnish);
+  border-radius: 4px;
+  font-family: 'EB Garamond', serif;
+  color: var(--parchment);
+}
+.gear-row.equipped { background: rgba(74, 138, 115, 0.10); border-color: var(--gold); }
+.gear-toggles { display: flex; flex-direction: column; gap: 0.2rem; align-items: stretch; }
+.gear-toggle {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.2rem 0.4rem;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment-aged);
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.2;
+}
+.gear-toggle:hover { color: var(--gold); border-color: var(--gold); }
+.gear-toggle.on {
+  background: var(--gold-tarnish);
+  color: var(--silver-crack);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+.gear-toggle.on:hover { background: var(--gold); color: var(--ink); }
+.gear-toggle.spacer { visibility: hidden; }
+.gear-toggle.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+.gear-row .gear-main { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.gear-row .gear-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+}
+.gear-row .gear-meta {
+  font-size: 0.75rem;
+  color: var(--parchment-aged);
+  letter-spacing: 0.04em;
+}
+.gear-row .gear-type {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--silver-crack);
+  background: rgba(193, 154, 74, 0.15);
+  border: 1px solid var(--silver-crack);
+  border-radius: 3px;
+  padding: 0.1rem 0.5rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+.gear-row .gear-actions { display: flex; gap: 0.3rem; }
+.gear-row .gear-actions button {
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+.gear-row .gear-actions button:hover { background: rgba(74, 138, 115, 0.15); border-color: var(--gold); }
+.gear-row .gear-charges { display: flex; gap: 0.2rem; margin-top: 0.2rem; }
+.gear-row .gear-charges .pip { width: 0.7rem; height: 0.7rem; }
+.gear-empty {
+  font-style: italic;
+  color: var(--parchment-aged);
+  padding: 0.6rem;
+  text-align: center;
+}
+
+/* Gear modal — tabbed form */
+.gear-modal-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--gold-tarnish);
+  margin-bottom: 1rem;
+}
+.gear-modal-tabs button {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--parchment-aged);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.gear-modal-tabs button.active { color: var(--gold); border-bottom-color: var(--gold); }
+.gear-form { display: grid; gap: 0.6rem; }
+.gear-form label { font-size: 0.8rem; color: var(--parchment-aged); display: block; margin-bottom: 0.15rem; }
+.gear-form input, .gear-form select, .gear-form textarea {
+  width: 100%;
+  background: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--gold-tarnish);
+  padding: 0.4rem 0.5rem;
+  font-family: 'EB Garamond', serif;
+}
+.gear-form .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.gear-form .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+.gear-form .section-h {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.5rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px dotted var(--gold-tarnish);
+}
+.gear-form .hint {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--parchment-dim);
+  margin-top: -0.3rem;
+}
+.gear-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.4rem;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 0.3rem;
+}
+.gear-library-pick {
+  background: rgba(74, 138, 115, 0.05);
+  border: 1px solid var(--gold-tarnish);
+  border-radius: 3px;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'EB Garamond', serif;
+  color: var(--parchment);
+}
+.gear-library-pick:hover { background: rgba(74, 138, 115, 0.15); border-color: var(--gold); }
+.gear-library-pick .lib-name { font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.85rem; }
+.gear-library-pick .lib-meta { font-size: 0.7rem; color: var(--parchment-aged); }
+/* INVENTORY (legacy — kept for back-compat) */
 .inventory-list {
   list-style: none;
   padding: 0;
@@ -3232,38 +3390,21 @@ body.dm-mode .dm-hide { display: none; }
     </details>
   </details>
 
-  <!-- INVENTORY -->
+  <!-- GEAR (was: Armament + Person inventory cards) -->
   <details class="section" open>
-    <summary><h2 class="section-title">Salvaged</h2></summary>
-    <div class="two-col">
-      <details class="card collapsible-card" open>
-        <summary>
-        <h3>Armament <button class="header-action" data-add="armament">+ Add Item</button></h3>
-        </summary>
-        <div class="collapsible-body">
-        <ul class="inventory-list" id="inv-armament"></ul>
-        </div>
-      </details>
-      <details class="card collapsible-card" open>
-        <summary>
-        <h3>Stored on Her Chassis <button class="header-action" data-add="person">+ Add Item</button></h3>
-        </summary>
-        <div class="collapsible-body">
-        <ul class="inventory-list" id="inv-person"></ul>
-        </div>
-      </details>
-    </div>
-    <details class="card collapsible-card" id="magic-items-card" style="margin-top: 2rem;" open>
+    <summary><h2 class="section-title">Carry &amp; Kit</h2></summary>
+    <details class="card collapsible-card" id="gear-card" open>
       <summary>
-      <h3>Magic Items
-        <button class="edit-prepared-btn" id="add-magic-item-btn">+ Add Item</button>
-      </h3>
+        <h3>Gear
+          <span id="gear-attunement-counter" style="margin-left:0.8rem;margin-right:2rem;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:400;letter-spacing:0.18em;text-transform:uppercase;color:var(--silver-crack);vertical-align:middle;"></span>
+          <button class="header-action" id="gear-add-btn">+ Add Gear</button>
+        </h3>
       </summary>
       <div class="collapsible-body">
-        <p class="magic-items-summary" id="magic-items-summary"></p>
-        <div id="magic-items-list"></div>
+        <div id="gear-list" class="gear-list"></div>
       </div>
     </details>
+    <!-- Legacy Magic Items card removed — Gear card now handles everything. -->
     <details class="card collapsible-card" style="margin-top: 2rem;" open>
       <summary>
       <h3>Coin &amp; Field Log</h3>
@@ -3422,52 +3563,164 @@ body.dm-mode .dm-hide { display: none; }
   </div>
 </div>
 
-<!-- Add/Edit Magic Item modal (Phase 2L) — for found / awarded magic items -->
-<div class="modal-overlay" id="magic-item-overlay" hidden>
-  <div class="modal">
-    <button class="modal-close" id="magic-item-close" aria-label="Close">×</button>
-    <div class="modal-title" id="magic-item-title">Add Magic Item</div>
-    <div class="modal-subtitle">Track found / awarded magic items, attunement, and charges.</div>
-    <div class="modal-detail-prompts">
-      <div class="modal-prompt">
-        <div class="magic-item-form">
-          <label class="mi-field mi-field-full">
-            <span class="mi-label">Name</span>
-            <input type="text" id="mi-name" placeholder="e.g., Cloak of Protection">
-          </label>
-          <label class="mi-field">
-            <span class="mi-label">Type</span>
-            <input type="text" id="mi-type" placeholder="Wondrous Item, Weapon, etc.">
-          </label>
-          <label class="mi-field">
-            <span class="mi-label">Rarity</span>
-            <select id="mi-rarity">
+<!-- Legacy magic-item-overlay removed; Gear modal handles all items now. -->
+
+<!-- Gear add/edit modal -->
+<div class="modal-overlay" id="gear-overlay" hidden>
+  <div class="modal" style="max-width:720px;">
+    <button class="modal-close" id="gear-close" aria-label="Close">×</button>
+    <div class="modal-title" id="gear-modal-title">Add Gear</div>
+    <div class="gear-modal-tabs" id="gear-modal-tabs">
+      <button id="gear-tab-library" class="active">From Library</button>
+      <button id="gear-tab-custom">Custom Entry</button>
+    </div>
+    <div id="gear-tab-library-panel">
+      <input id="gear-library-search" type="text" placeholder="Filter by name..." style="width:100%;padding:0.5rem;background:var(--ink);color:var(--parchment);border:1px solid var(--gold-tarnish);margin-bottom:0.5rem;">
+      <div class="gear-library-grid" id="gear-library-grid"></div>
+      <p class="hint" style="margin-top:0.5rem;font-size:0.78rem;font-style:italic;color:var(--parchment-dim);">Pick a library item to pre-fill the Custom tab, then tweak (e.g., add +1/+2 magic, change quantity, etc.).</p>
+    </div>
+    <div id="gear-tab-custom-panel" hidden>
+      <div class="gear-form">
+        <div class="row-2">
+          <div><label>Name</label><input id="gear-form-name" type="text"></div>
+          <div><label>Type</label>
+            <select id="gear-form-type">
+              <option value="armor">Armor</option>
+              <option value="shield">Shield</option>
+              <option value="weapon">Weapon</option>
+              <option value="cloak">Cloak</option>
+              <option value="ring">Ring</option>
+              <option value="amulet">Amulet</option>
+              <option value="boots">Boots</option>
+              <option value="wand">Wand</option>
+              <option value="rod">Rod</option>
+              <option value="wondrous">Wondrous</option>
+              <option value="misc">Misc / Flavor</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-3">
+          <div><label>Quantity</label><input id="gear-form-qty" type="number" value="1" min="1"></div>
+          <div><label>Weight (lb)</label><input id="gear-form-weight" type="number" value="0" min="0" step="0.5"></div>
+          <div><label>Rarity</label>
+            <select id="gear-form-rarity">
+              <option value="Mundane">Mundane</option>
               <option value="Common">Common</option>
-              <option value="Uncommon" selected>Uncommon</option>
+              <option value="Uncommon">Uncommon</option>
               <option value="Rare">Rare</option>
               <option value="Very Rare">Very Rare</option>
               <option value="Legendary">Legendary</option>
               <option value="Artifact">Artifact</option>
             </select>
-          </label>
-          <label class="mi-field mi-field-inline">
-            <input type="checkbox" id="mi-attunement">
-            <span class="mi-label">Requires Attunement</span>
-          </label>
-          <label class="mi-field">
-            <span class="mi-label">Charges (max)</span>
-            <input type="number" id="mi-charges-max" min="0" max="50" value="0">
-          </label>
-          <label class="mi-field mi-field-full">
-            <span class="mi-label">Notes</span>
-            <textarea id="mi-notes" rows="3" placeholder="Effect, recharge condition, anything you want to remember."></textarea>
-          </label>
+          </div>
         </div>
+        <div class="row-2">
+          <label style="display:flex;align-items:center;gap:0.4rem;"><input id="gear-form-attune" type="checkbox"> Requires attunement</label>
+          <label style="display:flex;align-items:center;gap:0.4rem;"><input id="gear-form-equipped" type="checkbox"> Start equipped</label>
+        </div>
+
+        <div id="gear-form-armor-fields" hidden>
+          <div class="section-h">Armor</div>
+          <div class="row-3">
+            <div><label>Base AC</label><input id="gear-form-armor-base" type="number" min="0"></div>
+            <div><label>Armor Type</label>
+              <select id="gear-form-armor-type">
+                <option value="light">Light (no DEX cap)</option>
+                <option value="medium">Medium (DEX cap +2)</option>
+                <option value="heavy">Heavy (no DEX)</option>
+              </select>
+            </div>
+            <div><label>STR Req</label><input id="gear-form-armor-strreq" type="number" min="0" value="0"></div>
+          </div>
+          <label style="display:flex;align-items:center;gap:0.4rem;"><input id="gear-form-armor-stealth" type="checkbox"> Stealth Disadvantage</label>
+        </div>
+
+        <div id="gear-form-weapon-fields" hidden>
+          <div class="section-h">Weapon</div>
+          <div class="row-3">
+            <div><label>Damage Dice</label><input id="gear-form-weapon-damage" type="text" placeholder="1d10"></div>
+            <div><label>Damage Type</label>
+              <select id="gear-form-weapon-damage-type">
+                <option value="slashing">slashing</option>
+                <option value="piercing">piercing</option>
+                <option value="bludgeoning">bludgeoning</option>
+                <option value="acid">acid</option>
+                <option value="cold">cold</option>
+                <option value="fire">fire</option>
+                <option value="force">force</option>
+                <option value="lightning">lightning</option>
+                <option value="necrotic">necrotic</option>
+                <option value="poison">poison</option>
+                <option value="psychic">psychic</option>
+                <option value="radiant">radiant</option>
+                <option value="thunder">thunder</option>
+              </select>
+            </div>
+            <div><label>Ability</label>
+              <select id="gear-form-weapon-ability">
+                <option value="str">STR</option>
+                <option value="dex">DEX</option>
+                <option value="finesse">Finesse (best of STR/DEX)</option>
+                <option value="cha">CHA (pact / smite)</option>
+              </select>
+            </div>
+          </div>
+          <div class="row-2">
+            <div><label>Properties</label><input id="gear-form-weapon-properties" type="text" placeholder="Heavy, Reach, Two-Handed"></div>
+            <div><label>Mastery</label>
+              <select id="gear-form-weapon-mastery">
+                <option value="">— none —</option>
+                <option value="Cleave">Cleave</option>
+                <option value="Graze">Graze</option>
+                <option value="Nick">Nick</option>
+                <option value="Push">Push</option>
+                <option value="Sap">Sap</option>
+                <option value="Slow">Slow</option>
+                <option value="Topple">Topple</option>
+                <option value="Vex">Vex</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-h">Magic Effects (apply when equipped / attuned)</div>
+        <div class="row-3">
+          <div><label>AC Bonus</label><input id="gear-form-acbonus" type="number" value="0"></div>
+          <div><label>Save Bonus (all)</label><input id="gear-form-savebonus" type="number" value="0"></div>
+          <div><label>HP Bonus</label><input id="gear-form-hpbonus" type="number" value="0"></div>
+        </div>
+        <div class="row-3">
+          <div><label>Attack Bonus</label><input id="gear-form-attackbonus" type="number" value="0"></div>
+          <div><label>Damage Bonus</label><input id="gear-form-dmgbonus" type="number" value="0"></div>
+          <div><label>Speed Bonus (ft)</label><input id="gear-form-speedbonus" type="number" value="0"></div>
+        </div>
+        <div class="row-3">
+          <div><label>STR override</label><input id="gear-form-str-override" type="number" value="0" placeholder="0 = no override"></div>
+          <div><label>CON override</label><input id="gear-form-con-override" type="number" value="0" placeholder="0 = no override"></div>
+          <div><label>INT override</label><input id="gear-form-int-override" type="number" value="0" placeholder="0 = no override"></div>
+        </div>
+        <p class="hint">Stat overrides set the score to this value (only if higher than current). Use for Gauntlets of Ogre Power (STR 19), Belt of Hill Giant (STR 21), Headband of Intellect (INT 19), Amulet of Health (CON 19).</p>
+
+        <div class="section-h">Charges (optional)</div>
+        <div class="row-3">
+          <div><label>Max Charges</label><input id="gear-form-charges-max" type="number" value="0" min="0"></div>
+          <div><label>Charges Used</label><input id="gear-form-charges-used" type="number" value="0" min="0"></div>
+          <div><label>Recovery</label>
+            <select id="gear-form-charges-recover">
+              <option value="">— none —</option>
+              <option value="dawn">Dawn (or 1d6+1)</option>
+              <option value="long-rest">Long Rest (all)</option>
+              <option value="short-rest">Short Rest (all)</option>
+            </select>
+          </div>
+        </div>
+
+        <div><label>Notes / Description</label><textarea id="gear-form-notes" rows="3"></textarea></div>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="modal-cancel" id="magic-item-delete" hidden>Delete</button>
-      <button class="modal-confirm" id="magic-item-save">Save</button>
+    <div class="modal-actions" style="margin-top:1rem;display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button class="modal-cancel" id="gear-form-cancel">Cancel</button>
+      <button class="modal-confirm" id="gear-form-save">Save</button>
     </div>
   </div>
 </div>
@@ -4011,6 +4264,109 @@ const MASTERY_DESCRIPTIONS = {
   Vex:    'On a hit, you have Advantage on your next attack roll against the target before the end of your next turn.'
 };
 
+// ============================================================
+// GEAR LIBRARY — common armor, shields, weapons, magic items.
+// Picked via the Add Gear modal's "From Library" tab; each entry's
+// fields are auto-merged into the new gear item created.
+//
+// Item shape conventions:
+//   type:               'armor'|'shield'|'weapon'|'wondrous'|'ring'|'cloak'|'boots'|'wand'|'rod'|'amulet'|'misc'
+//   weight:             pounds
+//   requiresAttunement: bool
+//   rarity:             string (display only)
+//   armorBase:          AC base (armor only) — final AC = base + capped DEX + shield + magic
+//   armorType:          'light'|'medium'|'heavy' (controls DEX cap: light=∞, medium=+2, heavy=0)
+//   stealthDisadv:      bool
+//   strReq:             STR score required (heavy armor)
+//   damage:             dice (weapon only) — e.g., '1d10'
+//   damageType:         'slashing'|'piercing'|'bludgeoning' (or magic types for special weapons)
+//   weaponCategory:     'simple-melee'|'simple-ranged'|'martial-melee'|'martial-ranged'
+//   properties:         comma-sep string ('Heavy, Reach, Two-Handed')
+//   mastery:            mastery name ('Graze' etc.)
+//   ability:            'str'|'dex'|'finesse'|'cha' (override for spellcasters)
+//   acBonus:            magical bonus to AC (Cloak/Ring of Protection, Bracers)
+//   saveBonus:          magical bonus to ALL saves (Cloak/Ring of Protection)
+//   attackBonus:        magical bonus on weapon attacks (+1/+2/+3 weapons)
+//   damageBonus:        magical bonus to weapon damage
+//   speedBonus:         magical Speed bonus
+//   hpBonus:            magical max HP bonus
+//   statOverride:       { str: 19, ... }  (sets ability to this value if > current; Gauntlets / Belt / Headband)
+//   chargesMax:         max charges (wands)
+//   chargesRecover:     'dawn'|'long-rest'|'short-rest' (for charged items)
+//   notes:              free-form description shown in detail modal
+const GEAR_LIBRARY = [
+  // ----- MUNDANE ARMOR (Light) -----
+  { name: 'Padded',            type: 'armor',  weight: 8,  armorBase: 11, armorType: 'light',  stealthDisadv: true,  rarity: 'Mundane' },
+  { name: 'Leather',           type: 'armor',  weight: 10, armorBase: 11, armorType: 'light',  rarity: 'Mundane' },
+  { name: 'Studded Leather',   type: 'armor',  weight: 13, armorBase: 12, armorType: 'light',  rarity: 'Mundane' },
+  // ----- MUNDANE ARMOR (Medium) -----
+  { name: 'Hide',              type: 'armor',  weight: 12, armorBase: 12, armorType: 'medium', rarity: 'Mundane' },
+  { name: 'Chain Shirt',       type: 'armor',  weight: 20, armorBase: 13, armorType: 'medium', rarity: 'Mundane' },
+  { name: 'Scale Mail',        type: 'armor',  weight: 45, armorBase: 14, armorType: 'medium', stealthDisadv: true, rarity: 'Mundane' },
+  { name: 'Breastplate',       type: 'armor',  weight: 20, armorBase: 14, armorType: 'medium', rarity: 'Mundane' },
+  { name: 'Half Plate',        type: 'armor',  weight: 40, armorBase: 15, armorType: 'medium', stealthDisadv: true, rarity: 'Mundane' },
+  // ----- MUNDANE ARMOR (Heavy) -----
+  { name: 'Ring Mail',         type: 'armor',  weight: 40, armorBase: 14, armorType: 'heavy',  stealthDisadv: true, rarity: 'Mundane' },
+  { name: 'Chain Mail',        type: 'armor',  weight: 55, armorBase: 16, armorType: 'heavy',  stealthDisadv: true, strReq: 13, rarity: 'Mundane' },
+  { name: 'Splint',            type: 'armor',  weight: 60, armorBase: 17, armorType: 'heavy',  stealthDisadv: true, strReq: 15, rarity: 'Mundane' },
+  { name: 'Plate',             type: 'armor',  weight: 65, armorBase: 18, armorType: 'heavy',  stealthDisadv: true, strReq: 15, rarity: 'Mundane' },
+  // ----- SHIELD -----
+  { name: 'Shield',            type: 'shield', weight: 6,  acBonus: 2, rarity: 'Mundane' },
+  // ----- MAGIC ARMOR (+1/+2/+3 generic) -----
+  { name: '+1 Armor',          type: 'armor',  acBonus: 1, requiresAttunement: false, rarity: 'Rare',      notes: 'Apply on top of any base armor (set the base armor in this same entry).' },
+  { name: '+2 Armor',          type: 'armor',  acBonus: 2, rarity: 'Very Rare', notes: 'Apply on top of any base armor.' },
+  { name: '+3 Armor',          type: 'armor',  acBonus: 3, rarity: 'Legendary', notes: 'Apply on top of any base armor.' },
+  { name: 'Mithral Chain Mail',type: 'armor',  weight: 30, armorBase: 16, armorType: 'heavy',  rarity: 'Uncommon', notes: 'No STR requirement; no Stealth Disadvantage.' },
+  { name: 'Mithral Plate',     type: 'armor',  weight: 40, armorBase: 18, armorType: 'heavy',  rarity: 'Uncommon', notes: 'No STR requirement; no Stealth Disadvantage.' },
+  { name: 'Elven Chain',       type: 'armor',  weight: 14, armorBase: 13, armorType: 'medium', rarity: 'Rare',     notes: 'Proficiency granted while worn; counts as medium for DEX cap.' },
+  // ----- MAGIC PROTECTION -----
+  { name: 'Cloak of Protection', type: 'cloak', weight: 1, requiresAttunement: true, acBonus: 1, saveBonus: 1, rarity: 'Uncommon', notes: '+1 to AC and saving throws while worn (attuned).' },
+  { name: 'Ring of Protection',  type: 'ring',  weight: 0, requiresAttunement: true, acBonus: 1, saveBonus: 1, rarity: 'Rare',     notes: '+1 to AC and saving throws while worn (attuned).' },
+  { name: 'Bracers of Defense',  type: 'wondrous', weight: 1, requiresAttunement: true, acBonus: 2, rarity: 'Rare', notes: '+2 AC while worn (attuned) and you are wearing NO armor and NOT using a shield.' },
+  // ----- MAGIC WEAPONS (+1/+2/+3 generic) -----
+  { name: '+1 Weapon',         type: 'weapon', attackBonus: 1, damageBonus: 1, rarity: 'Uncommon',  notes: 'Set the base weapon type in this same entry.' },
+  { name: '+2 Weapon',         type: 'weapon', attackBonus: 2, damageBonus: 2, rarity: 'Rare',      notes: 'Set the base weapon type in this same entry.' },
+  { name: '+3 Weapon',         type: 'weapon', attackBonus: 3, damageBonus: 3, rarity: 'Very Rare', notes: 'Set the base weapon type in this same entry.' },
+  { name: 'Flame Tongue',      type: 'weapon', weight: 3, requiresAttunement: true, damage: '1d8', damageType: 'slashing', weaponCategory: 'martial-melee', ability: 'str', rarity: 'Rare', notes: 'Bonus action: flame ignites/extinguishes. While flaming, deals +2d6 fire damage on hit. Bright light 40 ft.' },
+  { name: 'Holy Avenger',      type: 'weapon', weight: 3, requiresAttunement: true, damage: '1d8', damageType: 'slashing', weaponCategory: 'martial-melee', ability: 'str', attackBonus: 3, damageBonus: 3, rarity: 'Legendary', notes: 'Paladin-only. +3 weapon. Deals +2d10 radiant on Fiend or Undead. 10-ft (30 ft at L18) aura: you + allies have Adv vs. spells, and Resistance to spell damage.' },
+  // ----- MUNDANE WEAPONS (so the picker has the basics) -----
+  { name: 'Dagger',            type: 'weapon', weight: 1,  damage: '1d4',  damageType: 'piercing',  weaponCategory: 'simple-melee', properties: 'Finesse, Light, Thrown 20/60', mastery: 'Nick',  ability: 'finesse', rarity: 'Mundane' },
+  { name: 'Quarterstaff',      type: 'weapon', weight: 4,  damage: '1d6',  damageType: 'bludgeoning', weaponCategory: 'simple-melee', properties: 'Versatile (1d8)', mastery: 'Topple', ability: 'str', rarity: 'Mundane' },
+  { name: 'Spear',             type: 'weapon', weight: 3,  damage: '1d6',  damageType: 'piercing',  weaponCategory: 'simple-melee', properties: 'Thrown 20/60, Versatile (1d8)', mastery: 'Sap', ability: 'str', rarity: 'Mundane' },
+  { name: 'Javelin',           type: 'weapon', weight: 2,  damage: '1d6',  damageType: 'piercing',  weaponCategory: 'simple-melee', properties: 'Thrown 30/120', mastery: 'Slow', ability: 'str', rarity: 'Mundane' },
+  { name: 'Shortsword',        type: 'weapon', weight: 2,  damage: '1d6',  damageType: 'piercing',  weaponCategory: 'martial-melee', properties: 'Finesse, Light', mastery: 'Vex', ability: 'finesse', rarity: 'Mundane' },
+  { name: 'Rapier',            type: 'weapon', weight: 2,  damage: '1d8',  damageType: 'piercing',  weaponCategory: 'martial-melee', properties: 'Finesse', mastery: 'Vex', ability: 'finesse', rarity: 'Mundane' },
+  { name: 'Longsword',         type: 'weapon', weight: 3,  damage: '1d8',  damageType: 'slashing',  weaponCategory: 'martial-melee', properties: 'Versatile (1d10)', mastery: 'Sap', ability: 'str', rarity: 'Mundane' },
+  { name: 'Warhammer',         type: 'weapon', weight: 2,  damage: '1d8',  damageType: 'bludgeoning', weaponCategory: 'martial-melee', properties: 'Versatile (1d10)', mastery: 'Push', ability: 'str', rarity: 'Mundane' },
+  { name: 'Greatsword',        type: 'weapon', weight: 6,  damage: '2d6',  damageType: 'slashing',  weaponCategory: 'martial-melee', properties: 'Heavy, Two-Handed', mastery: 'Graze', ability: 'str', rarity: 'Mundane' },
+  { name: 'Greataxe',          type: 'weapon', weight: 7,  damage: '1d12', damageType: 'slashing',  weaponCategory: 'martial-melee', properties: 'Heavy, Two-Handed', mastery: 'Cleave', ability: 'str', rarity: 'Mundane' },
+  { name: 'Maul',              type: 'weapon', weight: 10, damage: '2d6',  damageType: 'bludgeoning', weaponCategory: 'martial-melee', properties: 'Heavy, Two-Handed', mastery: 'Topple', ability: 'str', rarity: 'Mundane' },
+  { name: 'Halberd',           type: 'weapon', weight: 6,  damage: '1d10', damageType: 'slashing',  weaponCategory: 'martial-melee', properties: 'Heavy, Reach, Two-Handed', mastery: 'Cleave', ability: 'str', rarity: 'Mundane' },
+  { name: 'Glaive',            type: 'weapon', weight: 6,  damage: '1d10', damageType: 'slashing',  weaponCategory: 'martial-melee', properties: 'Heavy, Reach, Two-Handed', mastery: 'Graze', ability: 'str', rarity: 'Mundane' },
+  { name: 'Pike',              type: 'weapon', weight: 18, damage: '1d10', damageType: 'piercing',  weaponCategory: 'martial-melee', properties: 'Heavy, Reach, Two-Handed', mastery: 'Push', ability: 'str', rarity: 'Mundane' },
+  { name: 'Light Crossbow',    type: 'weapon', weight: 5,  damage: '1d8',  damageType: 'piercing',  weaponCategory: 'simple-ranged', properties: 'Ammunition (80/320), Loading, Two-Handed', mastery: 'Slow', ability: 'dex', rarity: 'Mundane' },
+  { name: 'Heavy Crossbow',    type: 'weapon', weight: 18, damage: '1d10', damageType: 'piercing',  weaponCategory: 'martial-ranged', properties: 'Ammunition (100/400), Heavy, Loading, Two-Handed', mastery: 'Push', ability: 'dex', rarity: 'Mundane' },
+  { name: 'Shortbow',          type: 'weapon', weight: 2,  damage: '1d6',  damageType: 'piercing',  weaponCategory: 'simple-ranged', properties: 'Ammunition (80/320), Two-Handed', mastery: 'Vex', ability: 'dex', rarity: 'Mundane' },
+  { name: 'Longbow',           type: 'weapon', weight: 2,  damage: '1d8',  damageType: 'piercing',  weaponCategory: 'martial-ranged', properties: 'Ammunition (150/600), Heavy, Two-Handed', mastery: 'Slow', ability: 'dex', rarity: 'Mundane' },
+  // ----- WONDROUS - STAT OVERRIDES -----
+  { name: 'Amulet of Health',          type: 'amulet',   weight: 1, requiresAttunement: true, statOverride: { con: 19 }, rarity: 'Rare',    notes: 'Sets CON to 19 while worn (attuned). No effect if CON ≥ 19.' },
+  { name: 'Gauntlets of Ogre Power',   type: 'wondrous', weight: 2, requiresAttunement: true, statOverride: { str: 19 }, rarity: 'Uncommon', notes: 'Sets STR to 19 while worn (attuned).' },
+  { name: 'Belt of Hill Giant Strength', type: 'wondrous', weight: 1, requiresAttunement: true, statOverride: { str: 21 }, rarity: 'Rare',  notes: 'Sets STR to 21 while worn (attuned).' },
+  { name: 'Headband of Intellect',     type: 'wondrous', weight: 1, requiresAttunement: true, statOverride: { int: 19 }, rarity: 'Uncommon', notes: 'Sets INT to 19 while worn (attuned).' },
+  // ----- WONDROUS - MOBILITY -----
+  { name: 'Boots of Speed',            type: 'boots',    weight: 1, requiresAttunement: true, rarity: 'Rare',     notes: 'Bonus Action: heels glow. Speed doubles for up to 10 minutes. Opportunity Attacks have Disadvantage against you. Once spent, can\'t use again until you finish a Long Rest.' },
+  { name: 'Boots of Striding and Springing', type: 'boots', weight: 1, requiresAttunement: true, rarity: 'Uncommon', notes: 'Your walking Speed becomes 30 (if lower). Jump distance is tripled.' },
+  { name: 'Boots of Elvenkind',        type: 'boots',    weight: 1, requiresAttunement: false, rarity: 'Uncommon', notes: 'Advantage on Stealth checks while moving. Footsteps are silent.' },
+  { name: 'Winged Boots',              type: 'boots',    weight: 1, requiresAttunement: true, rarity: 'Uncommon', notes: 'Fly Speed = walking Speed. Up to 4 hours total before recharge (1-hour increments). Recovers all flight time on a Long Rest.' },
+  // ----- WONDROUS - DEFENSE / UTILITY -----
+  { name: 'Cloak of Displacement',     type: 'cloak',    weight: 1, requiresAttunement: true, rarity: 'Rare',     notes: 'Attacks against you have Disadvantage. Lapses for 1 round if you take damage.' },
+  { name: 'Cloak of Elvenkind',        type: 'cloak',    weight: 1, requiresAttunement: true, rarity: 'Uncommon', notes: 'Wisdom (Perception) checks to see you have Disadvantage. Stealth checks have Advantage.' },
+  { name: 'Goggles of Night',          type: 'wondrous', weight: 0, rarity: 'Uncommon', notes: 'Darkvision 60 ft.' },
+  // ----- WANDS -----
+  { name: 'Wand of Magic Missiles',    type: 'wand',     weight: 1, requiresAttunement: false, chargesMax: 7, chargesRecover: 'dawn', rarity: 'Uncommon', notes: 'Expend N charges to cast Magic Missile at level N (1-7). Recover 1d6+1 charges at dawn. Roll d20 if last charge used: 1 = wand crumbles.' },
+  { name: 'Wand of Web',               type: 'wand',     weight: 1, requiresAttunement: true, chargesMax: 7, chargesRecover: 'dawn', rarity: 'Uncommon', notes: 'Cast Web (DC 15). Recover 1d6+1 charges at dawn.' }
+];
+
 // 2024 PHB common tools list (for Specialized Design + background picks).
 const TOOL_LIST = [
   'Alchemist\'s Supplies', 'Brewer\'s Supplies', 'Calligrapher\'s Supplies',
@@ -4304,10 +4660,90 @@ const DEFAULT_STATE = {
   // Phase 2L: Found magic items (looted/awarded, separate from Replicate plans)
   // Each entry: { id, name, type, rarity, attunement: bool, attuned: bool,
   //   chargesMax, chargesUsed, notes }
-  magicItems: []
+  magicItems: [],
+  // GEAR — structured inventory (drives AC, attacks, saves, etc.)
+  gear: [
+      {
+          "id": "rivet-mask",
+          "name": "Porcelain Rabbit Mask Fragment",
+          "type": "misc",
+          "equipped": true,
+          "weight": 0.5,
+          "notes": "Upper-half of a smashed bunny mask, white with blue floral filigree. Bolted to her chassis."
+      },
+      {
+          "id": "rivet-core",
+          "name": "Capacitor Core",
+          "type": "misc",
+          "weight": 1,
+          "notes": "Glowing, unstable. Don't poke it."
+      },
+      {
+          "id": "rivet-ears",
+          "name": "Antenna Ears",
+          "type": "misc",
+          "equipped": true,
+          "weight": 0.5,
+          "notes": "Bent wire, unspooled guitar strings, rusted brass telescope casing. Vibrate when she channels something (or shorts out)."
+      },
+      {
+          "id": "rivet-hoard",
+          "name": "Pocket of Shiny Things",
+          "type": "misc",
+          "weight": 1,
+          "notes": "A magpie hoard. Rivet does not remember where most of these came from."
+      }
+  ]
 };
 
+// IS_DM must be initialized before any code path that calls saveState() (which
+// reads IS_DM to decide whether to skip cloud writes). The legacy-magic-items
+// migration runs saveState() and was hitting a temporal-dead-zone ReferenceError.
+const IS_DM = new URLSearchParams(location.search).get('view') === 'dm';
+if (document.body) document.body.classList.toggle('dm-mode', IS_DM);
+
 let state = loadState();
+try { migrateLegacyMagicItemsToGear(); } catch (e) { console.error('migrateLegacyMagicItemsToGear failed:', e); }
+
+// One-time migration: port any entries from the legacy state.magicItems array
+// into state.gear, then empty state.magicItems so they don't double-count in
+// the attunement tracker. Runs every load but is a no-op after the first time
+// (since state.magicItems is left empty after migration).
+function migrateLegacyMagicItemsToGear() {
+  const legacy = state.magicItems || [];
+  if (legacy.length === 0) return;
+  state.gear = state.gear || [];
+  for (const mi of legacy) {
+    // Map legacy free-text 'type' to a structured gear type. Best-effort.
+    const rawType = (mi.type || '').toLowerCase();
+    let gearType = 'wondrous';
+    if (/weapon|sword|axe|hammer|bow|crossbow|spear|polearm|glaive|halberd/.test(rawType)) gearType = 'weapon';
+    else if (/armor/.test(rawType)) gearType = 'armor';
+    else if (/shield/.test(rawType)) gearType = 'shield';
+    else if (/cloak/.test(rawType)) gearType = 'cloak';
+    else if (/ring/.test(rawType)) gearType = 'ring';
+    else if (/boots/.test(rawType)) gearType = 'boots';
+    else if (/wand/.test(rawType)) gearType = 'wand';
+    else if (/rod/.test(rawType)) gearType = 'rod';
+    else if (/amulet/.test(rawType)) gearType = 'amulet';
+    state.gear.push({
+      id: mi.id || ('gear-mig-' + Date.now() + '-' + Math.floor(Math.random() * 99999)),
+      name: mi.name || 'Migrated Magic Item',
+      type: gearType,
+      quantity: 1,
+      weight: 0,
+      rarity: mi.rarity || 'Uncommon',
+      requiresAttunement: !!mi.attunement,
+      attuned: !!mi.attuned,
+      equipped: false,
+      chargesMax: mi.chargesMax || 0,
+      chargesUsed: mi.chargesUsed || 0,
+      notes: (mi.notes || '') + '\n\n[Auto-migrated from legacy Magic Items. Click Edit to add mechanical effect fields (AC, saves, attack, damage, etc.) if this item should drive sheet stats.]'
+    });
+  }
+  state.magicItems = [];
+  saveState();
+}
 
 function loadState() {
   try {
@@ -4335,7 +4771,8 @@ const SB_REST = `https://${SUPABASE_PROJECT}.supabase.co/rest/v1/character_sheet
 const SB_AUTH = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
 
 // DM view: read-only, polls the cloud every 5s. Activated with ?view=dm.
-const IS_DM = new URLSearchParams(location.search).get('view') === 'dm';
+// IS_DM is hoisted near the top of the script (above loadState/migration).
+// Re-apply dm-mode class here in case <body> wasn't ready when the early line ran.
 if (IS_DM) document.body.classList.add('dm-mode');
 
 async function fetchRemote() {
@@ -4573,8 +5010,25 @@ function render() {
     }
   }
 
-  // Defense (AC base = 10 + DEX for unarmored; Warforged Integrated Protection adds +1)
-  document.getElementById('ac-val').textContent = 11 + mod(stats.dex);
+  // Defense — reads gear (equipped armor + shield + magic acBonus). Rivet
+  // legacy fallback: Warforged Integrated Protection grants AC = 11 + DEX
+  // when no armor is equipped.
+  const gearMods = computeGearMods();
+  let ac, acSubText;
+  if (gearMods.equippedArmor) {
+    const a = gearMods.equippedArmor;
+    let dexContrib = 0;
+    if (a.armorType === 'light') dexContrib = mod(stats.dex);
+    else if (a.armorType === 'medium') dexContrib = Math.min(2, mod(stats.dex));
+    ac = (a.armorBase || 0) + dexContrib + (gearMods.shieldEquipped ? gearMods.shieldAcBonus : 0) + gearMods.acBonus;
+    acSubText = `${a.name}${gearMods.shieldEquipped ? ' + Shield' : ''}${gearMods.acBonus ? ' + magic' : ''}`;
+  } else {
+    ac = 11 + mod(stats.dex) + (gearMods.shieldEquipped ? gearMods.shieldAcBonus : 0) + gearMods.acBonus;
+    acSubText = '11 + DEX (Warforged Integrated Protection)' + (gearMods.shieldEquipped ? ' + Shield' : '') + (gearMods.acBonus ? ' + magic' : '');
+  }
+  document.getElementById('ac-val').textContent = ac;
+  const acSub = document.getElementById('ac-sub');
+  if (acSub) acSub.textContent = acSubText;
   document.getElementById('hp-max').textContent = hp;
   document.getElementById('init-val').textContent = fmtMod(mod(stats.dex) - exhaustPen);
 
@@ -4597,9 +5051,10 @@ function render() {
   const savesGrid = document.getElementById('saves-grid');
   savesGrid.innerHTML = '';
   const labels = { str: 'Strength', dex: 'Dexterity', con: 'Constitution', int: 'Intelligence', wis: 'Wisdom', cha: 'Charisma' };
+  const gearModsForSaves = computeGearMods();
   for (const stat of ['str','dex','con','int','wis','cha']) {
     const proficient = hasSaveProf(stat, level);
-    const value = mod(stats[stat]) + (proficient ? pb : 0) - exhaustPen;
+    const value = mod(stats[stat]) + (proficient ? pb : 0) - exhaustPen + (gearModsForSaves.saveBonus || 0);
     const row = document.createElement('div');
     row.className = 'skill-row' + (proficient ? ' proficient' : '');
     row.innerHTML = `<span class="skill-name">${labels[stat]}</span><span class="skill-value">${fmtMod(value)}</span>`;
@@ -4626,7 +5081,8 @@ function render() {
   document.getElementById('prof-bonus').textContent = fmtMod(pb);
   renderProficienciesCard();
 
-  // Inventory + notes + coin
+  // Gear (structured) + Inventory (legacy, mostly empty) + notes + coin
+  renderGear();
   renderInventory();
   document.getElementById('coin').value = state.coin;
   document.getElementById('notes').value = state.notes;
@@ -4654,8 +5110,7 @@ function render() {
   renderAttackProfilesCard(level);
   // Phase 2K: Cunning Strikes card
   renderCunningStrikesCard(level);
-  // Phase 2L: Magic Items card (found loot)
-  renderMagicItemsCard(level);
+  // Phase 2L: Magic Items card subsumed by Gear card (legacy code path no-op'd).
 
   // Point-buy tracker
   renderPointBuy();
@@ -4984,6 +5439,9 @@ function getBaseSpeed(level) {
     const chosen = state.alternates[ld.feat.id] || ld.feat.default;
     if (chosen === 'speedy') speed += 10;
   }
+  // Gear speed bonuses (Boots of Striding etc.)
+  const gearMods = computeGearMods();
+  speed += gearMods.speedBonus || 0;
   return speed;
 }
 
@@ -6063,9 +6521,337 @@ function renderLevelTable(currentLevel) {
   }
 }
 
+// ============================================================
+// GEAR — structured inventory with equip / attune / magical effects
+// ============================================================
+
+// One-shot computation of all bonuses contributed by currently-equipped (and
+// attuned, for attunement-required items) gear. Cache-cheap; called multiple
+// times per render. Pure function — only reads state.gear.
+function computeGearMods() {
+  const mods = {
+    acBonus: 0, saveBonus: 0, hpBonus: 0, speedBonus: 0,
+    attackBonus: 0, damageBonus: 0,
+    statOverrides: {},               // { str: 19, ... } — set when an item overrides a stat
+    equippedArmor: null,             // the equipped armor (light/medium/heavy)
+    shieldEquipped: false,
+    shieldAcBonus: 0,
+    stealthDisadv: false,
+    strReqUnmet: null                // tracks if armor STR req is unmet (for the AC tooltip)
+  };
+  for (const g of (state.gear || [])) {
+    if (!g.equipped) continue;
+    const effectsApply = !g.requiresAttunement || g.attuned;
+    if (g.type === 'armor') {
+      if (g.armorBase) {
+        if (!mods.equippedArmor || (g.armorBase > (mods.equippedArmor.armorBase || 0))) mods.equippedArmor = g;
+      }
+      if (g.stealthDisadv) mods.stealthDisadv = true;
+      // +1/+2/+3 armor (acBonus from a separately-equipped magical armor enhancement)
+      if (effectsApply && g.acBonus) mods.acBonus += g.acBonus;
+    } else if (g.type === 'shield') {
+      mods.shieldEquipped = true;
+      mods.shieldAcBonus = Math.max(mods.shieldAcBonus, g.acBonus || 2);
+      if (effectsApply && g.acBonus && g.acBonus > 2) mods.acBonus += (g.acBonus - 2);
+    } else if (effectsApply) {
+      if (g.acBonus) mods.acBonus += g.acBonus;
+    }
+    if (effectsApply) {
+      if (g.saveBonus) mods.saveBonus += g.saveBonus;
+      if (g.hpBonus) mods.hpBonus += g.hpBonus;
+      if (g.speedBonus) mods.speedBonus += g.speedBonus;
+      if (g.statOverride) {
+        for (const k of Object.keys(g.statOverride)) {
+          const v = g.statOverride[k];
+          if (!mods.statOverrides[k] || v > mods.statOverrides[k]) mods.statOverrides[k] = v;
+        }
+      }
+    }
+  }
+  return mods;
+}
+
+function totalAttunedCount() {
+  return (state.gear || []).filter(g => g.attuned).length
+    + (state.attunedReplicas || []).length
+    + (state.magicItems || []).filter(mi => mi.attuned).length;
+}
+
+function renderGear() {
+  const list = document.getElementById('gear-list');
+  if (!list) return;
+  const gear = state.gear || [];
+  list.innerHTML = '';
+  if (gear.length === 0) {
+    list.innerHTML = '<div class="gear-empty">No gear yet. Click <strong>+ Add Gear</strong> to add armor, weapons, or magic items.</div>';
+  }
+  // Sort: equipped first (armor → shield → weapon), then by type, then by name
+  const typeOrder = { armor: 0, shield: 1, weapon: 2, cloak: 3, ring: 4, amulet: 5, boots: 6, wondrous: 7, wand: 8, rod: 9, misc: 99 };
+  const sorted = [...gear].sort((a, b) => {
+    if (a.equipped !== b.equipped) return a.equipped ? -1 : 1;
+    const ta = typeOrder[a.type] ?? 50, tb = typeOrder[b.type] ?? 50;
+    if (ta !== tb) return ta - tb;
+    return (a.name || '').localeCompare(b.name || '');
+  });
+  for (const g of sorted) {
+    const row = document.createElement('div');
+    row.className = 'gear-row' + (g.equipped ? ' equipped' : '');
+    const metaParts = [];
+    if (g.quantity && g.quantity > 1) metaParts.push(`×${g.quantity}`);
+    if (g.weight) metaParts.push(`${g.weight} lb`);
+    if (g.rarity && g.rarity !== 'Mundane') metaParts.push(g.rarity);
+    if (g.type === 'armor' && g.armorBase) metaParts.push(`AC ${g.armorBase} (${g.armorType || '?'})`);
+    if (g.type === 'weapon' && g.damage) metaParts.push(`${g.damage} ${g.damageType || ''}`);
+    if (g.type === 'shield' && g.acBonus) metaParts.push(`+${g.acBonus} AC`);
+    const effects = [];
+    if (g.acBonus && g.type !== 'shield' && g.type !== 'armor') effects.push(`+${g.acBonus} AC`);
+    if (g.saveBonus) effects.push(`+${g.saveBonus} saves`);
+    if (g.attackBonus) effects.push(`+${g.attackBonus} hit`);
+    if (g.damageBonus) effects.push(`+${g.damageBonus} dmg`);
+    if (g.hpBonus) effects.push(`+${g.hpBonus} HP`);
+    if (g.speedBonus) effects.push(`+${g.speedBonus} ft Speed`);
+    if (g.statOverride) effects.push(...Object.entries(g.statOverride).map(([k, v]) => `${k.toUpperCase()} → ${v}`));
+    const chargesHtml = g.chargesMax ? `<div class="gear-meta">Charges: ${g.chargesMax - (g.chargesUsed || 0)} / ${g.chargesMax}</div>` : '';
+    // Equip pill — shown for every item. For armor/shield/weapon/magic-effect items
+    // it drives mechanical stats; for misc items it's just a 'worn/carried' marker.
+    const mechanical = ['armor', 'shield', 'weapon'].includes(g.type)
+                    || g.acBonus || g.saveBonus || g.attackBonus || g.damageBonus
+                    || g.hpBonus || g.speedBonus || g.statOverride;
+    const equipLabel = mechanical
+      ? (g.equipped ? '✓ Equipped' : 'Equip')
+      : (g.equipped ? '✓ Worn' : 'Wear');
+    const equipPill = `<button class="gear-toggle equip ${g.equipped ? 'on' : ''}" title="${mechanical ? 'Equip to apply this item\'s mechanical effects (AC, attacks, etc.)' : 'Mark as currently worn / carried (no mechanical effect for misc items)'}">${equipLabel}</button>`;
+    // Attune pill — only shown for items that require attunement.
+    const attunePill = g.requiresAttunement
+      ? `<button class="gear-toggle attune ${g.attuned ? 'on' : ''}" title="Attune (3 max — magic effects only apply when attuned)">${g.attuned ? '✦ Attuned' : 'Attune'}</button>`
+      : '';
+    row.innerHTML = `
+      <div class="gear-toggles">${equipPill}${attunePill}</div>
+      <div class="gear-main">
+        <div><span class="gear-type">${g.type}</span><span class="gear-name">${g.name}</span></div>
+        ${metaParts.length ? `<div class="gear-meta">${metaParts.join(' · ')}</div>` : ''}
+        ${effects.length ? `<div class="gear-meta" style="color:var(--gold);">Effects: ${effects.join(' · ')}</div>` : ''}
+        ${chargesHtml}
+        ${g.notes ? `<div class="gear-meta" style="font-style:italic;">${g.notes}</div>` : ''}
+      </div>
+      <div class="gear-actions">
+        <button class="gear-edit-btn">Edit</button>
+        <button class="gear-del-btn">Delete</button>
+      </div>
+    `;
+    const equipBtn = row.querySelector('.gear-toggle.equip');
+    if (equipBtn) equipBtn.addEventListener('click', () => {
+      g.equipped = !g.equipped;
+      saveState();
+      render();
+    });
+    const attuneBtn = row.querySelector('.gear-toggle.attune');
+    if (attuneBtn) attuneBtn.addEventListener('click', () => {
+      if (!g.requiresAttunement) return;
+      if (!g.attuned) {
+        const currentAttuned = totalAttunedCount();
+        if (currentAttuned >= 3) {
+          alert('Attunement cap reached (3). Unattune another item first.');
+          return;
+        }
+      }
+      g.attuned = !g.attuned;
+      saveState();
+      render();
+    });
+    row.querySelector('.gear-edit-btn').addEventListener('click', () => openGearModal(g));
+    row.querySelector('.gear-del-btn').addEventListener('click', () => {
+      if (!confirm(`Remove "${g.name}" from gear?`)) return;
+      state.gear = (state.gear || []).filter(x => x.id !== g.id);
+      saveState();
+      render();
+    });
+    list.appendChild(row);
+  }
+  // Attunement counter in card header
+  const counter = document.getElementById('gear-attunement-counter');
+  if (counter) {
+    const attCount = (state.gear || []).filter(g => g.attuned).length;
+    counter.textContent = `Attuned: ${attCount} / 3`;
+    counter.style.color = attCount >= 3 ? 'var(--silver-crack)' : 'var(--parchment-aged)';
+  }
+}
+
+// Currently-editing gear id (null = adding new)
+let _gearEditingId = null;
+
+function openGearModal(editGear) {
+  _gearEditingId = editGear ? editGear.id : null;
+  document.getElementById('gear-modal-title').textContent = editGear ? 'Edit Gear' : 'Add Gear';
+  document.getElementById('gear-overlay').hidden = false;
+  // Reset to library tab unless editing (then jump to custom panel pre-filled)
+  if (editGear) {
+    document.getElementById('gear-tab-custom').click();
+    fillGearFormFrom(editGear);
+  } else {
+    document.getElementById('gear-tab-library').click();
+    populateGearLibraryGrid('');
+    clearGearForm();
+  }
+}
+
+function clearGearForm() {
+  const fields = ['name', 'qty', 'weight', 'armor-base', 'armor-strreq', 'weapon-damage', 'weapon-properties',
+                  'acbonus', 'savebonus', 'hpbonus', 'attackbonus', 'dmgbonus', 'speedbonus',
+                  'str-override', 'con-override', 'int-override', 'charges-max', 'charges-used', 'notes'];
+  for (const f of fields) {
+    const el = document.getElementById('gear-form-' + f);
+    if (el) el.value = (f === 'qty' ? '1' : (f === 'weight' ? '0' : '0'));
+    if (el && (f === 'name' || f === 'weapon-damage' || f === 'weapon-properties' || f === 'notes')) el.value = '';
+  }
+  document.getElementById('gear-form-type').value = 'misc';
+  document.getElementById('gear-form-attune').checked = false;
+  document.getElementById('gear-form-equipped').checked = false;
+  document.getElementById('gear-form-rarity').value = 'Mundane';
+  document.getElementById('gear-form-armor-stealth').checked = false;
+  document.getElementById('gear-form-armor-type').value = 'medium';
+  document.getElementById('gear-form-weapon-damage-type').value = 'slashing';
+  document.getElementById('gear-form-weapon-ability').value = 'str';
+  document.getElementById('gear-form-weapon-mastery').value = '';
+  document.getElementById('gear-form-charges-recover').value = '';
+  updateGearFormFieldsForType();
+}
+
+function fillGearFormFrom(g) {
+  document.getElementById('gear-form-name').value = g.name || '';
+  document.getElementById('gear-form-type').value = g.type || 'misc';
+  document.getElementById('gear-form-qty').value = g.quantity || 1;
+  document.getElementById('gear-form-weight').value = g.weight || 0;
+  document.getElementById('gear-form-rarity').value = g.rarity || 'Mundane';
+  document.getElementById('gear-form-attune').checked = !!g.requiresAttunement;
+  document.getElementById('gear-form-equipped').checked = !!g.equipped;
+  document.getElementById('gear-form-armor-base').value = g.armorBase || 0;
+  document.getElementById('gear-form-armor-type').value = g.armorType || 'medium';
+  document.getElementById('gear-form-armor-strreq').value = g.strReq || 0;
+  document.getElementById('gear-form-armor-stealth').checked = !!g.stealthDisadv;
+  document.getElementById('gear-form-weapon-damage').value = g.damage || '';
+  document.getElementById('gear-form-weapon-damage-type').value = g.damageType || 'slashing';
+  document.getElementById('gear-form-weapon-ability').value = g.ability || 'str';
+  document.getElementById('gear-form-weapon-properties').value = g.properties || '';
+  document.getElementById('gear-form-weapon-mastery').value = g.mastery || '';
+  document.getElementById('gear-form-acbonus').value = g.acBonus || 0;
+  document.getElementById('gear-form-savebonus').value = g.saveBonus || 0;
+  document.getElementById('gear-form-hpbonus').value = g.hpBonus || 0;
+  document.getElementById('gear-form-attackbonus').value = g.attackBonus || 0;
+  document.getElementById('gear-form-dmgbonus').value = g.damageBonus || 0;
+  document.getElementById('gear-form-speedbonus').value = g.speedBonus || 0;
+  document.getElementById('gear-form-str-override').value = (g.statOverride && g.statOverride.str) || 0;
+  document.getElementById('gear-form-con-override').value = (g.statOverride && g.statOverride.con) || 0;
+  document.getElementById('gear-form-int-override').value = (g.statOverride && g.statOverride.int) || 0;
+  document.getElementById('gear-form-charges-max').value = g.chargesMax || 0;
+  document.getElementById('gear-form-charges-used').value = g.chargesUsed || 0;
+  document.getElementById('gear-form-charges-recover').value = g.chargesRecover || '';
+  document.getElementById('gear-form-notes').value = g.notes || '';
+  updateGearFormFieldsForType();
+}
+
+function updateGearFormFieldsForType() {
+  const t = document.getElementById('gear-form-type').value;
+  document.getElementById('gear-form-armor-fields').hidden = (t !== 'armor');
+  document.getElementById('gear-form-weapon-fields').hidden = (t !== 'weapon');
+}
+
+function populateGearLibraryGrid(filter) {
+  const grid = document.getElementById('gear-library-grid');
+  if (!grid) return;
+  const f = (filter || '').toLowerCase().trim();
+  const items = GEAR_LIBRARY.filter(g => !f || g.name.toLowerCase().includes(f));
+  grid.innerHTML = '';
+  for (const lib of items) {
+    const btn = document.createElement('button');
+    btn.className = 'gear-library-pick';
+    const metaParts = [];
+    if (lib.type === 'armor' && lib.armorBase) metaParts.push(`AC ${lib.armorBase}`);
+    if (lib.type === 'weapon' && lib.damage) metaParts.push(`${lib.damage} ${lib.damageType || ''}`);
+    if (lib.acBonus) metaParts.push(`+${lib.acBonus} AC`);
+    if (lib.saveBonus) metaParts.push(`+${lib.saveBonus} saves`);
+    if (lib.attackBonus) metaParts.push(`+${lib.attackBonus} hit / +${lib.damageBonus || 0} dmg`);
+    if (lib.statOverride) metaParts.push(...Object.entries(lib.statOverride).map(([k, v]) => `${k.toUpperCase()}→${v}`));
+    if (lib.requiresAttunement) metaParts.push('attune');
+    btn.innerHTML = `<div class="lib-name">${lib.name}</div>
+      <div class="lib-meta">${lib.type}${metaParts.length ? ' · ' + metaParts.join(' · ') : ''}</div>`;
+    btn.addEventListener('click', () => {
+      // Pre-fill the custom form, switch to it, but DON'T save yet — let user tweak.
+      const seed = { ...lib, equipped: false, attuned: false, quantity: 1, chargesUsed: 0 };
+      fillGearFormFrom(seed);
+      document.getElementById('gear-tab-custom').click();
+    });
+    grid.appendChild(btn);
+  }
+}
+
+function saveGearForm() {
+  const t = document.getElementById('gear-form-type').value;
+  const item = {
+    id: _gearEditingId || ('gear-' + Date.now() + '-' + Math.floor(Math.random() * 9999)),
+    name: document.getElementById('gear-form-name').value.trim() || 'Unnamed',
+    type: t,
+    quantity: Math.max(1, parseInt(document.getElementById('gear-form-qty').value, 10) || 1),
+    weight: parseFloat(document.getElementById('gear-form-weight').value) || 0,
+    rarity: document.getElementById('gear-form-rarity').value,
+    requiresAttunement: document.getElementById('gear-form-attune').checked,
+    equipped: document.getElementById('gear-form-equipped').checked,
+    attuned: false,
+    notes: document.getElementById('gear-form-notes').value.trim()
+  };
+  if (t === 'armor') {
+    item.armorBase = parseInt(document.getElementById('gear-form-armor-base').value, 10) || 0;
+    item.armorType = document.getElementById('gear-form-armor-type').value;
+    item.strReq = parseInt(document.getElementById('gear-form-armor-strreq').value, 10) || 0;
+    item.stealthDisadv = document.getElementById('gear-form-armor-stealth').checked;
+  }
+  if (t === 'weapon') {
+    item.damage = document.getElementById('gear-form-weapon-damage').value.trim();
+    item.damageType = document.getElementById('gear-form-weapon-damage-type').value;
+    item.ability = document.getElementById('gear-form-weapon-ability').value;
+    item.properties = document.getElementById('gear-form-weapon-properties').value.trim();
+    item.mastery = document.getElementById('gear-form-weapon-mastery').value;
+  }
+  const num = (id) => parseInt(document.getElementById(id).value, 10) || 0;
+  const acB = num('gear-form-acbonus'), saveB = num('gear-form-savebonus'),
+        hpB = num('gear-form-hpbonus'), attB = num('gear-form-attackbonus'),
+        dmgB = num('gear-form-dmgbonus'), spdB = num('gear-form-speedbonus');
+  if (acB) item.acBonus = acB;
+  if (saveB) item.saveBonus = saveB;
+  if (hpB) item.hpBonus = hpB;
+  if (attB) item.attackBonus = attB;
+  if (dmgB) item.damageBonus = dmgB;
+  if (spdB) item.speedBonus = spdB;
+  const sO = num('gear-form-str-override'), cO = num('gear-form-con-override'), iO = num('gear-form-int-override');
+  if (sO || cO || iO) {
+    item.statOverride = {};
+    if (sO) item.statOverride.str = sO;
+    if (cO) item.statOverride.con = cO;
+    if (iO) item.statOverride.int = iO;
+  }
+  const cMax = num('gear-form-charges-max');
+  if (cMax) {
+    item.chargesMax = cMax;
+    item.chargesUsed = Math.max(0, Math.min(cMax, num('gear-form-charges-used')));
+    item.chargesRecover = document.getElementById('gear-form-charges-recover').value;
+  }
+  state.gear = state.gear || [];
+  if (_gearEditingId) {
+    state.gear = state.gear.map(g => g.id === _gearEditingId ? { ...g, ...item } : g);
+  } else {
+    state.gear.push(item);
+  }
+  saveState();
+  document.getElementById('gear-overlay').hidden = true;
+  _gearEditingId = null;
+  render();
+}
+
+
 function renderInventory() {
   for (const cat of ['armament', 'person']) {
     const ul = document.getElementById('inv-' + cat);
+    if (!ul) continue;  // String-inventory cards replaced by the Gear card.
     ul.innerHTML = '';
     state.inventory[cat].forEach((item, idx) => {
       const li = document.createElement('li');
@@ -7290,6 +8076,26 @@ function confirmLevelUp() {
 }
 
 document.getElementById('level-up-btn').addEventListener('click', openLevelUpModal);
+
+// Gear modal wiring
+document.getElementById('gear-add-btn').addEventListener('click', () => openGearModal(null));
+document.getElementById('gear-close').addEventListener('click', () => { document.getElementById('gear-overlay').hidden = true; _gearEditingId = null; });
+document.getElementById('gear-form-cancel').addEventListener('click', () => { document.getElementById('gear-overlay').hidden = true; _gearEditingId = null; });
+document.getElementById('gear-form-save').addEventListener('click', saveGearForm);
+document.getElementById('gear-form-type').addEventListener('change', updateGearFormFieldsForType);
+document.getElementById('gear-tab-library').addEventListener('click', () => {
+  document.getElementById('gear-tab-library').classList.add('active');
+  document.getElementById('gear-tab-custom').classList.remove('active');
+  document.getElementById('gear-tab-library-panel').hidden = false;
+  document.getElementById('gear-tab-custom-panel').hidden = true;
+});
+document.getElementById('gear-tab-custom').addEventListener('click', () => {
+  document.getElementById('gear-tab-custom').classList.add('active');
+  document.getElementById('gear-tab-library').classList.remove('active');
+  document.getElementById('gear-tab-custom-panel').hidden = false;
+  document.getElementById('gear-tab-library-panel').hidden = true;
+});
+document.getElementById('gear-library-search').addEventListener('input', (e) => populateGearLibraryGrid(e.target.value));
 document.getElementById('modal-close').addEventListener('click', closeLevelUpModal);
 document.getElementById('levelup-back').addEventListener('click', () => {
   document.getElementById('levelup-step1').hidden = false;
@@ -7695,16 +8501,19 @@ function deleteMagicItem() {
   }, { okLabel: 'Delete' });
 }
 
-document.getElementById('add-magic-item-btn').addEventListener('click', (e) => {
-  e.preventDefault(); // also handled by summary-button guard, but be explicit
-  openMagicItemModal(null);
-});
-document.getElementById('magic-item-close').addEventListener('click', closeMagicItemModal);
-document.getElementById('magic-item-save').addEventListener('click', saveMagicItem);
-document.getElementById('magic-item-delete').addEventListener('click', deleteMagicItem);
-document.getElementById('magic-item-overlay').addEventListener('click', (e) => {
-  if (e.target.id === 'magic-item-overlay') closeMagicItemModal();
-});
+// Legacy Magic Items modal listeners — null-guarded (card removed, modal removed).
+{
+  const _addMi = document.getElementById('add-magic-item-btn');
+  if (_addMi) _addMi.addEventListener('click', (e) => { e.preventDefault(); openMagicItemModal(null); });
+  const _miClose = document.getElementById('magic-item-close');
+  if (_miClose) _miClose.addEventListener('click', closeMagicItemModal);
+  const _miSave = document.getElementById('magic-item-save');
+  if (_miSave) _miSave.addEventListener('click', saveMagicItem);
+  const _miDel = document.getElementById('magic-item-delete');
+  if (_miDel) _miDel.addEventListener('click', deleteMagicItem);
+  const _miOverlay = document.getElementById('magic-item-overlay');
+  if (_miOverlay) _miOverlay.addEventListener('click', (e) => { if (e.target.id === 'magic-item-overlay') closeMagicItemModal(); });
+}
 document.getElementById('levelup-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'levelup-overlay') closeLevelUpModal();
 });

@@ -1386,6 +1386,11 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
 }
 .stat-input:focus { border-color: var(--gold); }
 
+.stats-grid.locked .stat-input { display: none; }
+.stats-grid.locked .stat-block { padding: 0.6rem 0.4rem; }
+.point-buy-tracker.locked { display: none; }
+.bg-bonuses-hint.locked { display: none; }
+
 .point-buy-tracker {
   display: flex;
   align-items: center;
@@ -3169,7 +3174,7 @@ body.dm-mode .dm-hide { display: none; }
       <span class="pb-spent" id="pb-spent">0</span> / <span class="pb-cap">27</span>
       <span class="pb-status" id="pb-status">empty pool — set her scores</span>
     </div>
-    <p style="text-align:center; font-style:italic; color:var(--parchment-aged); font-size:0.9rem; margin-top: 0.5rem;">
+    <p style="text-align:center; font-style:italic; color:var(--parchment-aged); font-size:0.9rem; margin-top: 0.5rem;" class="bg-bonuses-hint">
       Background bonuses (The Toymaker's Mistake): <strong>+2 INT</strong>, <strong>+1 CON</strong>. Edit the inputs above to set her point-buy scores.
     </p>
 
@@ -8202,7 +8207,25 @@ function confirmLevelUp() {
   render();
 }
 
-document.getElementById('level-up-btn').addEventListener('click', openLevelUpModal);
+// Level Up button: warn if the player hasn't allocated any point-buy yet
+// (all six base scores still at default 8 = 48 total).
+document.getElementById('level-up-btn').addEventListener('click', () => {
+  if ((state.maxLevel || 0) === 0) {
+    const bs = state.baseStats || (typeof BASE_STATS_DEFAULT !== 'undefined' ? BASE_STATS_DEFAULT : (typeof BASE_STATS !== 'undefined' ? BASE_STATS : null));
+    if (bs) {
+      const total = (bs.str || 0) + (bs.dex || 0) + (bs.con || 0) + (bs.int || 0) + (bs.wis || 0) + (bs.cha || 0);
+      if (total === 48) {
+        showConfirm('Set ability scores first?',
+          `<p>Looks like the point-buy editor is untouched — every base score is still 8.</p>
+           <p>You can <strong>cancel</strong>, set scores in the row at the top of the sheet, then click Level Up again — OR <strong>proceed anyway</strong> and edit base stats later.</p>`,
+          () => openLevelUpModal(),
+          { okLabel: 'Proceed anyway', cancelLabel: 'Set scores first' });
+        return;
+      }
+    }
+  }
+  openLevelUpModal();
+});
 
 // Gear modal wiring
 document.getElementById('gear-add-btn').addEventListener('click', () => openGearModal(null));

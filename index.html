@@ -5058,6 +5058,15 @@ function render() {
   document.getElementById('title-classes').textContent = classString(level);
   document.getElementById('level-display').textContent = level;
 
+  // Lock the point-buy editor once the character has been levelled.
+  const _pbLocked = (state.maxLevel || 0) >= 1;
+  const _statsGrid = document.querySelector('.stats-grid');
+  if (_statsGrid) _statsGrid.classList.toggle('locked', _pbLocked);
+  const _pbTracker = document.querySelector('.point-buy-tracker');
+  if (_pbTracker) _pbTracker.classList.toggle('locked', _pbLocked);
+  const _bgHint = document.querySelector('.bg-bonuses-hint');
+  if (_bgHint) _bgHint.classList.toggle('locked', _pbLocked);
+
   // Stat blocks
   for (const stat of ['str','dex','con','int','wis','cha']) {
     const v = stats[stat];

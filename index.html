@@ -4940,12 +4940,15 @@ async function fetchRemote() {
 }
 
 async function pushRemote(snapshot) {
-  const r = await fetch(`${SB_REST}?id=eq.${ROW_ID}`, {
-    method: 'PATCH',
-    headers: { ...SB_AUTH, 'Content-Type': 'application/json', Prefer: 'return=representation' },
-    body: JSON.stringify({ data: snapshot, schema_version: snapshot.schemaVersion || 1 })
+  // Upsert: creates the row on first save, updates on subsequent saves. Earlier
+  // PATCH version silently no-op'd when the row didn't yet exist, leading to
+  // saves disappearing for sheets whose UUID was never INSERTed.
+  const r = await fetch(SB_REST, {
+    method: 'POST',
+    headers: { ...SB_AUTH, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=representation' },
+    body: JSON.stringify({ id: ROW_ID, data: snapshot, schema_version: snapshot.schemaVersion || 1 })
   });
-  if (!r.ok) throw new Error(`patch ${r.status}: ${await r.text()}`);
+  if (!r.ok) throw new Error(`upsert ${r.status}: ${await r.text()}`);
   const rows = await r.json();
   return rows[0];
 }

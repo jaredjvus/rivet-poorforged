@@ -736,6 +736,72 @@ body::before {
 }
 .magic-card .pip.used { background: transparent; }
 .magic-card .pip:hover { border-color: var(--gold-bright); }
+.concentration-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.6rem;
+  background: rgba(193, 154, 74, 0.12);
+  border: 1px solid var(--silver-crack);
+  border-radius: 4px;
+}
+.conc-banner-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--silver-crack);
+}
+.conc-banner-spell {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--parchment);
+  flex: 1;
+  min-width: 0;
+}
+.conc-banner-drop {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--silver-crack);
+  color: var(--silver-crack);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.conc-banner-drop:hover { background: var(--silver-crack); color: var(--ink); }
+.spell-search-wrap { position: relative; margin: 0.6rem 0 0.8rem; }
+.spell-search {
+  width: 100%;
+  background: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--gold-tarnish);
+  border-radius: 4px;
+  padding: 0.4rem 2rem 0.4rem 0.7rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  outline: none;
+}
+.spell-search:focus { border-color: var(--gold); }
+.spell-search::placeholder { color: var(--parchment-dim); font-style: italic; }
+.spell-search-clear {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.3rem;
+  line-height: 1;
+}
 .spell-section-title {
   font-family: 'Cinzel', serif;
   font-size: 0.78rem;
@@ -1538,6 +1604,23 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
 }
 .hp-current .sep { color: var(--gold-tarnish); }
 
+.hp-actions { display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.45rem; }
+.hp-action-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.55rem;
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment-aged);
+  border-radius: 3px;
+  cursor: pointer;
+  flex: 1;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.hp-action-btn:hover { color: var(--gold); border-color: var(--gold); }
+.hp-action-btn.hp-damage:hover { color: var(--blood-bright); border-color: var(--blood); }
 .temp-hp-row {
   display: flex;
   align-items: center;
@@ -3206,6 +3289,10 @@ body.dm-mode .dm-hide { display: none; }
         <div class="temp-hp-row">
           + <input type="number" id="temp-hp" value="0" min="0"> <span class="temp-hp-label">temp</span>
         </div>
+        <div class="hp-actions">
+          <button class="hp-action-btn hp-damage" id="hp-damage-btn" title="Apply damage (eats temp HP first)">− Damage</button>
+          <button class="hp-action-btn hp-heal" id="hp-heal-btn" title="Restore HP (capped at max)">+ Heal</button>
+        </div>
         <button class="inspiring-btn" id="inspiring-btn" hidden title="Inspiring Leader: temp HP = character level + CHA mod (doesn't stack — only replaces if higher)">↻ Inspiring Leader</button>
         <div class="death-saves" id="death-saves" hidden>
           <div class="ds-title">Death Saves</div>
@@ -3360,6 +3447,15 @@ body.dm-mode .dm-hide { display: none; }
       </summary>
       <div class="collapsible-body">
       <div id="spell-slots"></div>
+      <div class="concentration-banner" id="concentration-banner" hidden>
+        <span class="conc-banner-label">⚡ Concentrating on</span>
+        <span class="conc-banner-spell" id="conc-banner-spell"></span>
+        <button class="conc-banner-drop" id="conc-banner-drop">Drop Concentration</button>
+      </div>
+      <div class="spell-search-wrap">
+        <input id="spell-search" type="text" class="spell-search" placeholder="Search spells…" autocomplete="off">
+        <button class="spell-search-clear" id="spell-search-clear" title="Clear search" hidden>×</button>
+      </div>
       <div class="spell-section-title"><span>Cantrips</span><span class="spell-count" id="cantrip-count"></span></div>
       <div id="cantrip-list"></div>
       <div class="spell-section-title"><span>Prepared</span><span class="spell-count" id="prepared-count"></span></div>
@@ -5367,11 +5463,51 @@ function renderCombatResources(level) {
 }
 
 function toggleHitDie(index, max) {
+  // Click an unused pip → prompt to roll & heal. Click a used pip → restore.
   const used = state.hitDiceUsed || 0;
   const isAvailable = index < (max - used);
-  state.hitDiceUsed = isAvailable ? (max - index) : (max - index - 1);
+  if (isAvailable) { promptHitDieSpend(index, max); return; }
+  state.hitDiceUsed = max - index - 1;
   saveState();
   render();
+}
+
+function promptHitDieSpend(index, max) {
+  // Both of Rivet's classes (Artificer + Rogue Thief) are d8.
+  const die = 8;
+  const stats = computeStats(state.level);
+  const conMod = mod(stats.con);
+  const avg = Math.ceil((die + 1) / 2);
+  const maxHp = computeHP(state.level, stats);
+  const currentHp = state.hpCurrent == null ? maxHp : state.hpCurrent;
+  showConfirm(`Spend a Hit Die (d${die})`,
+    `<p>Roll <strong>1d${die}</strong> and add your CON modifier (<strong>${conMod >= 0 ? '+' : ''}${conMod}</strong>) to recover Hit Points.</p>
+     <div style="margin:0.8rem 0;">
+       <label style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:0.4rem;">Roll result (1–${die})</label>
+       <input type="number" id="hd-roll-input" value="${avg}" min="1" max="${die}" style="width:5rem;text-align:center;padding:0.3rem;border:1px solid var(--gold-tarnish);background:rgba(15, 25, 50, 0.18);color:var(--parchment);font-family:'Cinzel',serif;font-size:1.1rem;">
+       <span style="margin-left:0.6rem;color:var(--parchment-aged);font-family:'EB Garamond',serif;font-style:italic;">+ CON ${conMod >= 0 ? '+' : ''}${conMod} = <span id="hd-heal-readout" style="color:var(--gold);font-weight:600;">${Math.max(1, avg + conMod)}</span> HP healed</span>
+     </div>
+     <p style="font-size:0.85rem;color:var(--parchment-aged);font-style:italic;">Current HP: ${currentHp} / ${maxHp}. Healing caps at max.</p>`,
+    () => {
+      const roll = parseInt(document.getElementById('hd-roll-input').value, 10) || avg;
+      const heal = Math.max(1, roll + conMod);
+      state.hitDiceUsed = max - index;
+      state.hpCurrent = Math.min(maxHp, currentHp + heal);
+      saveState();
+      render();
+    },
+    { okLabel: 'Spend & Heal' });
+  setTimeout(() => {
+    const inp = document.getElementById('hd-roll-input');
+    const readout = document.getElementById('hd-heal-readout');
+    if (inp && readout) {
+      inp.addEventListener('input', () => {
+        const r = Math.max(1, Math.min(die, parseInt(inp.value, 10) || 1));
+        readout.textContent = Math.max(1, r + conMod);
+      });
+      inp.focus(); inp.select();
+    }
+  }, 0);
 }
 
 function toggleFlashOfGenius(index, max) {
@@ -5642,9 +5778,24 @@ function renderMagicCard(level) {
   }
 
   // Cantrips list
+  // Concentration banner — visible when state.concentratingOn is set.
+  const _concBanner = document.getElementById('concentration-banner');
+  if (_concBanner) {
+    if (state.concentratingOn) {
+      _concBanner.hidden = false;
+      document.getElementById('conc-banner-spell').textContent = state.concentratingOn;
+    } else {
+      _concBanner.hidden = true;
+    }
+  }
+
   const cantripList = document.getElementById('cantrip-list');
   cantripList.innerHTML = '';
-  const cantrips = (state.cantripsKnown || []).map(name => SPELLS.find(s => s.name === name)).filter(Boolean);
+  const _spellSearch = (document.getElementById('spell-search')?.value || '').toLowerCase().trim();
+  const _clearBtn = document.getElementById('spell-search-clear');
+  if (_clearBtn) _clearBtn.hidden = !_spellSearch;
+  let cantrips = (state.cantripsKnown || []).map(name => SPELLS.find(s => s.name === name)).filter(Boolean);
+  if (_spellSearch) cantrips = cantrips.filter(s => (s.name || '').toLowerCase().includes(_spellSearch) || (s.school || '').toLowerCase().includes(_spellSearch));
   cantrips.sort((a, b) => a.name.localeCompare(b.name));
   document.getElementById('cantrip-count').textContent = `${cantrips.length} / ${artData ? artData.cantrips : 0}`;
   if (cantrips.length === 0) {
@@ -5672,7 +5823,8 @@ function renderMagicCard(level) {
   // Prepared list — show user picks tagged normally, Armorer always-prepared tagged "auto"
   const preparedList = document.getElementById('prepared-list');
   preparedList.innerHTML = '';
-  const userPrepared = (state.preparedSpells || []).map(name => ({ spell: SPELLS.find(s => s.name === name), always: false })).filter(x => x.spell);
+  let userPrepared = (state.preparedSpells || []).map(name => ({ spell: SPELLS.find(s => s.name === name), always: false })).filter(x => x.spell);
+  if (_spellSearch) userPrepared = userPrepared.filter(x => (x.spell.name || '').toLowerCase().includes(_spellSearch) || (x.spell.school || '').toLowerCase().includes(_spellSearch));
   const armorerAlwaysPrep = getArmorerAlwaysPrepared(a);
   const alwaysPreparedSpells = armorerAlwaysPrep.map(name => ({ spell: SPELLS.find(s => s.name === name) || { name, level: '—', school: 'Armorer', time: '—', range: '—' }, always: true }));
   const all = [...userPrepared, ...alwaysPreparedSpells];
@@ -7052,6 +7204,46 @@ function levelDown() {
     { okLabel: 'Level Down' });
 }
 
+// Damage / Heal quick-apply buttons. Eat temp HP first on damage; cap heal at max.
+function promptHpDelta(kind) {
+  const isDmg = kind === 'damage';
+  const title = isDmg ? 'Apply Damage' : 'Apply Heal';
+  const body = `
+    <p>Amount of ${isDmg ? 'damage to apply' : 'healing to apply'}:</p>
+    <input id="hp-delta-input" type="number" min="0" value="" autofocus
+      style="width:100%;padding:0.6rem;font-size:1.4rem;text-align:center;background:var(--ink);border:1px solid var(--gold-tarnish);color:var(--parchment);font-family:'Cinzel',serif;letter-spacing:0.08em;">
+    <p style="font-style:italic;color:var(--parchment-aged);font-size:0.85rem;margin-top:0.6rem;">
+      ${isDmg ? 'Temp HP absorbs first; remainder reduces current HP (floored at 0).' : 'Healing adds to current HP, capped at max.'}
+    </p>
+  `;
+  showConfirm(title, body, () => {
+    const n = parseInt(document.getElementById('hp-delta-input').value, 10);
+    if (!n || n < 0) return;
+    const maxHp = computeHP(state.level, computeStats(state.level));
+    const cur = state.hpCurrent === null ? maxHp : state.hpCurrent;
+    if (isDmg) {
+      let remaining = n;
+      const temp = state.tempHp || 0;
+      if (temp > 0) {
+        const ate = Math.min(temp, remaining);
+        state.tempHp = temp - ate;
+        remaining -= ate;
+      }
+      state.hpCurrent = Math.max(0, cur - remaining);
+    } else {
+      state.hpCurrent = Math.min(maxHp, cur + n);
+      // Auto-reset death saves on heal above 0
+      if (state.hpCurrent > 0) { state.deathSavesSuccess = 0; state.deathSavesFail = 0; }
+    }
+    saveState();
+    render();
+  }, { okLabel: isDmg ? 'Apply Damage' : 'Apply Heal' });
+  // Focus the input once the modal is on screen.
+  setTimeout(() => document.getElementById('hp-delta-input')?.focus(), 60);
+}
+document.getElementById('hp-damage-btn')?.addEventListener('click', () => promptHpDelta('damage'));
+document.getElementById('hp-heal-btn')?.addEventListener('click', () => promptHpDelta('heal'));
+
 document.getElementById('hp-current').addEventListener('input', (e) => {
   const v = parseInt(e.target.value, 10);
   state.hpCurrent = isNaN(v) ? null : v;
@@ -8218,6 +8410,25 @@ function confirmLevelUp() {
 
 // Level Up button: warn if the player hasn't allocated any point-buy yet
 // (all six base scores still at default 8 = 48 total).
+// conc-banner-drop-wired
+{
+  const _cbDrop = document.getElementById('conc-banner-drop');
+  if (_cbDrop) _cbDrop.addEventListener('click', () => {
+    if (!state.concentratingOn) return;
+    state.concentratingOn = null;
+    saveState();
+    render();
+  });
+}
+
+// spell-search-clear-listener-wired
+{
+  const _ss = document.getElementById('spell-search');
+  if (_ss) _ss.addEventListener('input', () => render());
+  const _ssc = document.getElementById('spell-search-clear');
+  if (_ssc) _ssc.addEventListener('click', () => { _ss.value = ''; render(); _ss.focus(); });
+}
+
 document.getElementById('level-up-btn').addEventListener('click', () => {
   if ((state.maxLevel || 0) === 0) {
     const bs = state.baseStats || (typeof BASE_STATS_DEFAULT !== 'undefined' ? BASE_STATS_DEFAULT : (typeof BASE_STATS !== 'undefined' ? BASE_STATS : null));

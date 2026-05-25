@@ -1468,9 +1468,12 @@ body.dm-mode .infusion-row input { pointer-events: none; opacity: 0.5; }
 /* DEFENSE ROW */
 .defense-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.8rem;
   margin-top: 2rem;
+}
+@media (max-width: 720px) {
+  .defense-row { grid-template-columns: repeat(2, 1fr); }
 }
 
 .defense-cell {

@@ -4891,6 +4891,7 @@ const DEFAULT_STATE = {
   hpCurrent: null,                       // null = match max
   tempHp: 0,
   coin: '',
+  coins: { cp: 0, sp: 0, gp: 0, pp: 0 },
   notes: '',
   inventory: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
   alternates: {},
@@ -9426,6 +9427,31 @@ if (IS_DM) {
     }
   }, 5000);
 }
+
+// ============================================================
+// FLUSH ON PAGE HIDE
+// ============================================================
+// If the tab is closed while saveTimer or cloudTimer is still pending,
+// the debounced push never fires and Supabase ends up stale.
+// pagehide fires reliably on tab close / navigation. We flush immediately
+// using fetch({ keepalive: true }) so the browser completes the request
+// even after the document is gone.
+window.addEventListener('pagehide', () => {
+  if (IS_DM) return;
+  clearTimeout(saveTimer);
+  clearTimeout(cloudTimer);
+  if (!state || Object.keys(state).length === 0) return;
+  state.updatedAt = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  try { localStorage.setItem(STORAGE_KEY_BAK, JSON.stringify(state)); } catch (e) {}
+  const body = JSON.stringify({ id: ROW_ID, data: state, schema_version: state.schemaVersion || 1 });
+  fetch(SB_REST, {
+    method: 'POST',
+    headers: { ...SB_AUTH, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+});
 
 </script>
 

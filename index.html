@@ -2870,6 +2870,66 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 .notes-area:focus { border-color: var(--gold); }
 .notes-area::placeholder { color: var(--parchment-dim); font-style: italic; }
 
+/* Coin denomination row */
+.coin-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.coin-field {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 70px;
+}
+.coin-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: default;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 1px 2px rgba(0,0,0,0.25);
+}
+.coin-dot.cp { background: radial-gradient(circle at 35% 35%, #d4895a, #8b4513); }
+.coin-dot.sp { background: radial-gradient(circle at 35% 35%, #e8e8e8, #909090); }
+.coin-dot.gp { background: radial-gradient(circle at 35% 35%, #f5d060, #b8860b); }
+.coin-dot.pp { background: radial-gradient(circle at 35% 35%, #f0f0f5, #a0a0b8); }
+.coin-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.coin-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  padding: 0.2rem 0.1rem;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  text-align: right;
+}
+.coin-input:focus { border-bottom-color: var(--gold); }
+.coin-input::-webkit-inner-spin-button,
+.coin-input::-webkit-outer-spin-button { opacity: 0.4; }
+.coin-total {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--parchment-aged);
+  text-align: right;
+  margin-bottom: 1rem;
+  padding-right: 0.1rem;
+}
+
 /* ALTERNATES */
 .alt-control {
   margin-top: 1rem;
@@ -2985,6 +3045,37 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
   letter-spacing: 0.3em;
   color: var(--gold-tarnish);
   text-transform: uppercase;
+}
+
+/* Cloud error banner */
+.cloud-error-banner {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background: var(--blood);
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.55rem 1rem;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  animation: banner-pulse 2.5s ease-in-out infinite;
+}
+.cloud-error-banner.visible { display: flex; align-items: center; justify-content: center; gap: 1rem; }
+.cloud-error-banner a {
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+@keyframes banner-pulse {
+  0%, 100% { background: var(--blood); }
+  50% { background: var(--blood-bright); }
 }
 
 /* Save indicator */
@@ -3562,9 +3653,29 @@ body.dm-mode .dm-hide { display: none; }
       <h3>Coin &amp; Field Log</h3>
       </summary>
       <div class="collapsible-body">
-      <p style="margin-bottom: 1rem; display: flex; align-items: baseline; gap: 0.6rem;"><strong>Coin:</strong>
-        <input type="text" id="coin" placeholder="Coin and shiny things…" style="background:transparent;border:none;border-bottom:1px solid var(--gold-tarnish);color:var(--parchment);font-family:inherit;font-size:1rem;padding:0.2rem;outline:none;flex:1;min-width:0;">
-      </p>
+      <div class="coin-row">
+        <div class="coin-field">
+          <span class="coin-dot cp" title="Copper Pieces — 100 cp = 1 gp"></span>
+          <label class="coin-label" for="coin-cp">CP</label>
+          <input class="coin-input" type="number" id="coin-cp" min="0" placeholder="0">
+        </div>
+        <div class="coin-field">
+          <span class="coin-dot sp" title="Silver Pieces — 10 sp = 1 gp"></span>
+          <label class="coin-label" for="coin-sp">SP</label>
+          <input class="coin-input" type="number" id="coin-sp" min="0" placeholder="0">
+        </div>
+        <div class="coin-field">
+          <span class="coin-dot gp" title="Gold Pieces — the standard currency"></span>
+          <label class="coin-label" for="coin-gp">GP</label>
+          <input class="coin-input" type="number" id="coin-gp" min="0" placeholder="0">
+        </div>
+        <div class="coin-field">
+          <span class="coin-dot pp" title="Platinum Pieces — 1 pp = 10 gp"></span>
+          <label class="coin-label" for="coin-pp">PP</label>
+          <input class="coin-input" type="number" id="coin-pp" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="coin-total" id="coin-total"></div>
       <textarea class="notes-area" id="notes" placeholder="Field notes. Things observed. Suspected purpose. Inconclusive."></textarea>
       </div>
     </details>
@@ -3642,6 +3753,11 @@ body.dm-mode .dm-hide { display: none; }
     Field log, Neverwinter. Subject R-1V3T continues to operate within unexpected parameters.
   </footer>
 
+</div>
+
+<div class="cloud-error-banner" id="cloud-error-banner">
+  <span>⚠ Cloud sync offline — changes saved locally only. Data may be lost if you clear your browser.</span>
+  <a id="banner-export-btn">Export backup now</a>
 </div>
 
 <div class="save-indicator">
@@ -4897,17 +5013,22 @@ function migrateLegacyMagicItemsToGear() {
   saveState();
 }
 
+const STORAGE_KEY_BAK = STORAGE_KEY + '-bak';
+
 function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
-    const parsed = JSON.parse(raw);
-    // Merge defaults for missing keys (forward compat)
-    return { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...parsed };
-  } catch (e) {
-    console.error('Failed to load state', e);
-    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  const tryParse = (raw) => {
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  };
+  const primary = tryParse(localStorage.getItem(STORAGE_KEY));
+  if (primary) return { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...primary };
+  // Primary missing or corrupt — fall back to backup
+  const backup = tryParse(localStorage.getItem(STORAGE_KEY_BAK));
+  if (backup) {
+    console.warn('Loaded from backup localStorage key');
+    return { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...backup };
   }
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
 }
 
 // ============================================================
@@ -4969,6 +5090,11 @@ function syncToCloud() {
   }, 800);
 }
 
+function setCloudErrorBanner(visible) {
+  const banner = document.getElementById('cloud-error-banner');
+  if (banner) banner.classList.toggle('visible', visible);
+}
+
 function setCloudStatus(kind, text) {
   const el = document.getElementById('save-cloud');
   el.textContent = text;
@@ -4977,6 +5103,7 @@ function setCloudStatus(kind, text) {
   if (kind === 'syncing') el.classList.add('cloud-syncing');
   if (kind === 'error')   el.classList.add('cloud-error');
   if (kind === 'loading') el.classList.add('cloud-loading');
+  setCloudErrorBanner(kind === 'error');
   el.classList.add('show');
 }
 
@@ -5001,7 +5128,9 @@ function saveState() {
   saveTimer = setTimeout(() => {
     try {
       state.updatedAt = new Date().toISOString();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const snapshot = JSON.stringify(state);
+      localStorage.setItem(STORAGE_KEY, snapshot);
+      localStorage.setItem(STORAGE_KEY_BAK, snapshot);
       showSaveIndicator();
       syncToCloud();
     } catch (e) { console.error('Save failed', e); }
@@ -5249,7 +5378,12 @@ function render() {
   // Gear (structured) + Inventory (legacy, mostly empty) + notes + coin
   renderGear();
   renderInventory();
-  document.getElementById('coin').value = state.coin;
+  const coins = state.coins || {};
+  document.getElementById('coin-cp').value = coins.cp || '';
+  document.getElementById('coin-sp').value = coins.sp || '';
+  document.getElementById('coin-gp').value = coins.gp || '';
+  document.getElementById('coin-pp').value = coins.pp || '';
+  updateCoinTotal();
   document.getElementById('notes').value = state.notes;
 
   // Combat resources + concentration + death saves + conditions
@@ -5706,9 +5840,17 @@ function renderConditions() {
     pill.textContent = name;
     pill.title = CONDITION_DESCRIPTIONS[key] || '';
     pill.addEventListener('click', () => {
-      state.conditions[key] = !state.conditions[key];
-      saveState();
-      render(); // condition flips can change Speed and other displayed stats
+      if (state.conditions[key]) {
+        showConfirm(name, `<p style="line-height:1.6">${CONDITION_DESCRIPTIONS[key] || ''}</p>`, () => {
+          state.conditions[key] = false;
+          saveState();
+          render();
+        }, { okLabel: 'Clear Condition' });
+      } else {
+        state.conditions[key] = true;
+        saveState();
+        render();
+      }
     });
     container.appendChild(pill);
   }
@@ -9072,9 +9214,21 @@ document.getElementById('long-rest-btn').addEventListener('click', () => {
   }, { okLabel: 'Long Rest' });
 });
 
-document.getElementById('coin').addEventListener('input', (e) => {
-  state.coin = e.target.value;
-  saveState();
+function updateCoinTotal() {
+  const c = state.coins || {};
+  const total = (c.pp || 0) * 10 + (c.gp || 0) + (c.sp || 0) / 10 + (c.cp || 0) / 100;
+  const el = document.getElementById('coin-total');
+  if (el) el.textContent = total > 0 ? `≈ ${total.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} gp total` : '';
+}
+
+['cp', 'sp', 'gp', 'pp'].forEach(denom => {
+  document.getElementById(`coin-${denom}`).addEventListener('input', (e) => {
+    if (!state.coins) state.coins = {};
+    const val = parseInt(e.target.value, 10);
+    state.coins[denom] = isNaN(val) ? 0 : val;
+    updateCoinTotal();
+    saveState();
+  });
 });
 
 document.getElementById('notes').addEventListener('input', (e) => {
@@ -9140,19 +9294,22 @@ document.getElementById('level-down-btn').addEventListener('click', () => {
   levelDown();
 });
 
-document.getElementById('export-btn').addEventListener('click', () => {
+function doExport() {
   const payload = { ...state, _exportedAt: new Date().toISOString(), _app: STORAGE_KEY };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const stamp = new Date().toISOString().slice(0, 10);
   a.href = url;
-  a.download = `caelen-ravenshade-${stamp}.json`;
+  a.download = `rivet-poorforged-${stamp}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-});
+}
+
+document.getElementById('export-btn').addEventListener('click', doExport);
+document.getElementById('banner-export-btn').addEventListener('click', doExport);
 
 document.getElementById('import-btn').addEventListener('click', () => {
   document.getElementById('import-file').click();

@@ -3475,12 +3475,6 @@ body.dm-mode .dm-hide { display: none; }
       </div>
     </details>
 
-    <div class="concentration-tracker" id="concentration-wrap" style="margin-top: 2rem;">
-      <span class="concentration-label">Concentrating on</span>
-      <select id="concentration-select">
-        <option value="">— not concentrating —</option>
-      </select>
-    </div>
   </details>
 
   <!-- FEATURES -->
@@ -5726,6 +5720,7 @@ function renderConditions() {
 
 function renderConcentrationOptions(level) {
   const sel = document.getElementById('concentration-select');
+  if (!sel) return; // tracker UI was removed in favor of the in-card concentration banner
   sel.innerHTML = '<option value="">— not concentrating —</option>';
   // Concentration options are the union of prepared spells + Armorer always-prepared,
   // filtered to spells with concentration: true in the SPELLS catalog.
@@ -8966,11 +8961,6 @@ document.getElementById('conditions-clear').addEventListener('click', () => {
     saveState();
     render();
   }, { okLabel: 'Clear All' });
-});
-
-document.getElementById('concentration-select').addEventListener('change', (e) => {
-  state.concentratingOn = e.target.value || null;
-  saveState();
 });
 
 // Rest buttons

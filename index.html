@@ -4879,6 +4879,7 @@ const DEFAULT_INVENTORY = {
 // ============================================================
 
 const STORAGE_KEY = 'rivet-sheet-v1';
+const STORAGE_KEY_BAK = STORAGE_KEY + '-bak';
 
 const DEFAULT_STATE = {
   schemaVersion: 1,
@@ -5013,8 +5014,6 @@ function migrateLegacyMagicItemsToGear() {
   state.magicItems = [];
   saveState();
 }
-
-const STORAGE_KEY_BAK = STORAGE_KEY + '-bak';
 
 function loadState() {
   const tryParse = (raw) => {

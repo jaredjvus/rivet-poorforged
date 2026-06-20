@@ -909,6 +909,14 @@ body::before {
   justify-content: center;
 }
 .spell-row .spell-info:hover { background: var(--gold); color: #fff; }
+.rep-info {
+  font-size: 0.78rem; color: var(--gold); background: transparent;
+  border: 1px solid var(--gold-tarnish); cursor: pointer;
+  width: 19px; height: 19px; border-radius: 50%; padding: 0; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: 0.4rem; vertical-align: middle; flex: none;
+}
+.rep-info:hover { background: var(--gold); color: #fff; }
 body.dm-mode .spell-cast { pointer-events: none; opacity: 0.5; }
 .edit-prepared-btn {
   font-family: 'Cinzel', serif;
@@ -3132,6 +3140,29 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 .save-line.cloud-syncing { color: var(--parchment-dim); }
 .save-line.cloud-error { color: var(--blood-bright); }
 .save-line.cloud-loading { color: var(--parchment-dim); }
+
+/* Floating quick-nav — jump to any section */
+.quick-nav { position: fixed; bottom: 1rem; left: 1rem; z-index: 1001; display: flex; flex-direction: column; align-items: flex-start; }
+.quick-nav-toggle {
+  font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.96); border: 1px solid var(--gold); color: var(--parchment);
+  padding: 0.45rem 0.85rem; cursor: pointer; box-shadow: 0 2px 10px rgba(31, 78, 163, 0.15);
+}
+.quick-nav-toggle:hover { border-color: var(--gold-bright); color: var(--gold); }
+.quick-nav-list {
+  list-style: none; margin: 0 0 0.4rem; padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.98); border: 1px solid var(--gold);
+  box-shadow: 0 2px 14px rgba(31, 78, 163, 0.2);
+  max-height: 62vh; overflow-y: auto; min-width: 190px;
+}
+.quick-nav-list[hidden] { display: none; }
+.quick-nav-list li { margin: 0; }
+.quick-nav-list a {
+  display: block; padding: 0.35rem 0.6rem;
+  font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--parchment); text-decoration: none; cursor: pointer; border-left: 2px solid transparent;
+}
+.quick-nav-list a:hover { background: var(--gold); color: var(--ink); border-left-color: var(--gold-bright); }
 .loaded-from {
   font-family: 'EB Garamond', serif;
   font-style: italic;
@@ -3789,6 +3820,11 @@ body.dm-mode .dm-hide { display: none; }
   <div class="save-line" id="save-cloud">Cloud</div>
 </div>
 
+<nav class="quick-nav" id="quick-nav" aria-label="Jump to section">
+  <ul class="quick-nav-list" id="quick-nav-list" hidden></ul>
+  <button class="quick-nav-toggle" id="quick-nav-toggle" type="button" aria-expanded="false" aria-controls="quick-nav-list" title="Jump to section">☰ Sections</button>
+</nav>
+
 <div class="cast-popover" id="cast-popover" hidden></div>
 
 <div class="modal-overlay" id="levelup-overlay" hidden>
@@ -4431,6 +4467,8 @@ const INFUSION_PLANS = [
   { name: 'Ring of Protection',        type: 'Ring',                                rarity: 'Rare',     attunement: true,  minLevel: 14 },
   { name: 'Ring of the Ram',           type: 'Ring',                                rarity: 'Rare',     attunement: true,  minLevel: 14 }
 ];
+
+const REPLICATE_DESC = { "Alchemy Jug": "Wondrous Item, Uncommon\nThis ceramic jug appears to be able to hold a gallon of liquid and weighs 12 pounds whether full or empty. The jug sloshes when it is shaken, even if the jug is empty.\nYou can take a Magic action and name one liquid from the Alchemy Jug Liquids table to cause the jug to produce the chosen liquid. Afterward, you can uncork the jug as a Utilize action and pour that liquid out, up to 2 gallons per minute. The maximum amount of liquid the jug can produce depends on the liquid you named.\nOnce the jug starts producing a liquid, it can’t produce a different one, or more of one that has reached its maximum, until the next dawn.\nAlchemy Jug Liquids\nLiquid\nMax. Amount\nAcid\n8 ounces\nBasic Poison\n4 ounces\nBeer\n4 gallons\nHoney\n1 gallon\nMayonnaise\n2 gallons\nOil\n1 quart\nVinegar\n2 gallons\nWater, fresh\n8 gallons\nWater, salt\n12 gallons\nWine\n1 gallon", "Bag of Holding": "Wondrous Item, Uncommon\nThis bag has an interior space considerably larger than its outside dimensions—roughly 2 feet square and 4 feet deep on the inside. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 5 pounds, regardless of its contents. Retrieving an item from the bag requires a Utilize action.\nIf the bag is overloaded, pierced, or torn, it is destroyed, and its contents are scattered in the Astral Plane. If the bag is turned inside out, its contents spill forth unharmed, but the bag must be put right before it can be used again. The bag holds enough air for 10 minutes of breathing, divided by the number of breathing creatures inside.\nPlacing a Bag of Holding inside an extradimensional space created by a Heward’s Handy Haversack , Portable Hole , or similar item instantly destroys both items and opens a gate to the Astral Plane. The gate originates where the one item was placed inside the other. Any creature within a 10-foot-radius Sphere centered on the gate is sucked through it to a random location on the Astral Plane. The gate then closes. The gate is one-way and can’t be reopened.", "Cap of Water Breathing": "Wondrous Item, Uncommon\nWhile wearing this cap underwater, you can take a Magic action to create a bubble of air around your head. This bubble allows you to breathe normally underwater. This bubble stays with you until the cap is removed or you are no longer underwater.", "Goggles of Night": "Wondrous Item, Uncommon\nWhile wearing these dark lenses, you have Darkvision out to 60 feet. If you already have Darkvision, wearing the goggles increases its range by 60 feet.", "Manifold Tool": "Wondrous Item, Common (Requires Attunement)\nThis tool takes the form of a wrench, a screwdriver, or another basic tool. As a Magic action, you can touch the item and transform it into a type of Artisan’s Tools of your choice. Whatever form the tool takes, you have proficiency with it when you use it.", "Repeating Shot": "Weapon (Any Simple or Martial with the Ammunition Property), Uncommon (Requires Attunement)\nThis magic weapon grants a +1 bonus to attack and damage rolls made with it when it’s used to make a ranged attack, and it ignores the Loading property if it has that property.\nIf the weapon lacks ammunition, it produces its own, automatically creating one piece of magic ammunition when the wielder makes a ranged attack roll with it. The ammunition created by the weapon vanishes the instant after it hits or misses a target.", "Returning Weapon": "Weapon (Any Simple or Martial with the Thrown Property), Uncommon\nThis magic weapon grants a +1 bonus to attack and damage rolls made with it, and it returns to your hand immediately after you use it to make a ranged attack roll.", "Rope of Climbing": "Wondrous Item, Uncommon\nThis 60-foot length of rope can hold up to 3,000 pounds. While holding one end of the rope, you can take a Magic action to command the other end of the rope to animate and move toward a destination you choose, up to the rope’s length away from you. That end moves 10 feet on your turn when you first command it and 10 feet at the start of each of your subsequent turns until reaching its destination or until you tell it to stop. You can also tell the rope to fasten itself securely to an object or to unfasten itself, to knot or unknot itself, or to coil itself for carrying.\nIf you tell the rope to knot, large knots appear at 1-foot intervals along the rope. While knotted, the rope shortens to a 50-foot length and grants Advantage on ability checks made to climb using the rope.\nThe rope has AC 20, HP 20, and Immunity to Poison and Psychic damage. It regains 1 Hit Point every 5 minutes as long as it has at least 1 Hit Point. If the rope drops to 0 Hit Points, it is destroyed.", "Sending Stones": "Wondrous Item, Uncommon\nSending Stones come in pairs, with each stone carved to match the other so the pairing is easily recognized. While you touch one stone, you can cast Sending from it. The target is the bearer of the other stone. If no creature bears the other stone, you know that fact as soon as you use the stone, and you don’t cast the spell.\nOnce Sending is cast using either stone, the stones can’t be used again until the next dawn. If one of the stones in a pair is destroyed, the other one becomes nonmagical.", "Shield +1": "Armor (Shield), Uncommon (+1), Rare (+2), or Very Rare (+3)\nWhile holding this Shield, you have a bonus to Armor Class determined by the Shield’s rarity, in addition to the Shield’s normal bonus to AC.", "Wand of Magic Detection": "Wand, Uncommon\nThis wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.", "Wand of Secrets": "Wand, Uncommon\nThis wand has 3 charges and regains 1d3 expended charges daily at dawn. While holding it, you can take a Magic action to expend 1 charge, and if a secret door or trap is within 60 feet of you, the wand pulses and points at the one nearest to you.", "Wand of the War Mage +1": "Wand, Uncommon (+1), Rare (+2), or Very Rare (+3) (Requires Attunement by a Spellcaster)\nWhile holding this wand, you gain a bonus to spell attack rolls determined by the wand’s rarity. In addition, you ignore Half Cover when making a spell attack roll.", "Weapon +1": "Weapon (Any Simple or Martial), Uncommon (+1), Rare (+2), or Very Rare (+3)\nYou have a bonus to attack rolls and damage rolls made with this magic weapon. The bonus is determined by the weapon’s rarity.", "Wraps of Unarmed Power +1": "Wondrous Item, Uncommon (+1), Rare (+2), or Very Rare (+3)\nWhile wearing these wraps, you have a bonus to attack rolls and damage rolls made with your Unarmed Strikes. The bonus is determined by the wraps' rarity, and those strikes deal your choice of Force damage or their normal damage type.", "Armor +1": "Armor (Any Light, Medium, or Heavy), Rare(+1), Very Rare (+2), or Legendary (+3)\nYou have a bonus to Armor Class while wearing this armor. The bonus is determined by its rarity.", "Boots of Elvenkind": "Wondrous Item, Uncommon\nWhile you wear these boots, your steps make no sound, regardless of the surface you are moving across. You also have Advantage on Dexterity (Stealth) checks.", "Boots of the Winding Path": "Wondrous Item, Uncommon (Requires Attunement)\nWhile wearing these boots, you can take a Bonus Action to teleport up to 15 feet to an unoccupied space you can see. You must have occupied that space at some point during the current turn.", "Cloak of Elvenkind": "Wondrous Item, Uncommon (Requires Attunement)\nWhile you wear this cloak, Wisdom (Perception) checks made to perceive you have Disadvantage, and you have Advantage on Dexterity (Stealth) checks.", "Cloak of the Manta Ray": "Wondrous Item, Uncommon (Requires Attunement)\nWhile wearing this cloak, you can breathe underwater, and you have a Swim Speed of 60 feet.", "Dazzling Weapon": "Weapon (Any Simple or Martial), Rare (Requires Attunement)\nThis magic weapon grants a +1 bonus to attack and damage rolls made with it. While holding it, you can take a Bonus Action to cause it to shed Bright Light in a 30-foot radius and Dim Light for an additional 30 feet. You can extinguish the light as a Bonus Action.\nThe weapon has 4 charges. You can take a Reaction immediately after being hit by an attack roll to expend 1 of the weapon’s charges and force the attacker to make a DC 15 Constitution saving throw. On a failed save, the attacker has the Blinded condition until the end of its next turn. The weapon regains 1d4 expended charges daily at dawn.", "Eyes of Charming": "Wondrous Item, Uncommon (Requires Attunement)\nThese crystal lenses fit over the eyes. They have 3 charges. While wearing them, you can expend 1 or more charges to cast Charm Person (save DC 13). For 1 charge, you cast the level 1 version of the spell. You increase the spell’s level by one for each additional charge you expend. The lenses regain all expended charges daily at dawn.", "Eyes of Minute Seeing": "Wondrous Item, Uncommon\nThese crystal lenses fit over the eyes. While wearing them, your vision improves significantly out to a range of 1 foot, granting you Darkvision within that range and Advantage on Intelligence (Investigation) checks made to examine something within that range.", "Gloves of Thievery": "Wondrous Item, Uncommon\nThese gloves are imperceptible while worn. While wearing them, you gain a +5 bonus to Dexterity (Sleight of Hand) checks.", "Helm of Awareness": "Wondrous Item, Uncommon\nWhile wearing this helmet, you have Advantage on Initiative rolls.", "Lantern of Revealing": "Wondrous Item, Uncommon\nWhile lit, this hooded lantern burns for 6 hours on 1 pint of oil, shedding Bright Light in a 30-foot radius and Dim Light for an additional 30 feet. Invisible creatures and objects are visible as long as they are in the lantern’s Bright Light. You can take a Utilize action to lower the hood, reducing the lantern’s light to Dim Light in a 5-foot radius.", "Mind Sharpener": "Ring, Uncommon (Requires Attunement)\nThe item has 4 charges. When you fail a Constitution saving throw to maintain Concentration, you can take a Reaction and expend 1 of the item’s charges to succeed instead. The item regains 1d4 expended charges daily at dawn.", "Necklace of Adaptation": "Wondrous Item, Uncommon (Requires Attunement)\nWhile wearing this necklace, you can breathe normally in any environment, and you have Advantage on saving throws made to avoid or end the Poisoned condition.", "Pipes of Haunting": "Wondrous Item, Uncommon\nThese pipes have 3 charges and regain 1d3 expended charges daily at dawn. You can take a Magic action to play them and expend 1 charge to create an eerie, spellbinding tune. Each creature of your choice within 30 feet of you must succeed on a DC 15 Wisdom saving throw or have the Frightened condition for 1 minute. A creature that fails the save repeats it at the end of each of its turns, ending the effect on itself on a success. A creature that succeeds on its save is immune to the effect of these pipes for 24 hours.", "Repulsion Shield": "Armor (Shield), Uncommon\nYou gain a +1 bonus to Armor Class while wielding this shield.\nThe shield has 4 charges. While holding it, when a Large or smaller creature within 5 feet of you hits you with a melee attack roll, you can take a Reaction to expend 1 of the shield’s charges and push the attacker up to 15 feet straight away. The shield regains 1d4 expended charges daily at dawn.", "Ring of Swimming": "Ring, Uncommon\nYou have a Swim Speed of 40 feet while wearing this ring.", "Ring of Water Walking": "Ring, Uncommon\nWhile wearing this ring, you cast Water Walk from it, targeting only yourself.", "Sentinel Shield": "Armor (Shield), Uncommon\nWhile holding this Shield, you have Advantage on Initiative rolls and Wisdom (Perception) checks. The Shield is emblazoned with a symbol of an eye.", "Spell-Refueling Ring": "Ring, Uncommon (Requires Attunement by a Spellcaster)\nWhile wearing this ring, you can recover one expended spell slot as a Bonus Action. The recovered slot can be of level 3 or lower. Once used, the ring can’t be used again until the next dawn.", "Wand of Magic Missiles": "Wand, Uncommon\nThis wand has 7 charges. While holding it, you can expend no more than 3 charges to cast Magic Missile from it. For 1 charge, you cast the level 1 version of the spell. You can increase the spell’s level by 1 for each additional charge you expend.\nRegaining Charges. The wand regains 1d6 + 1 expended charges daily at dawn. If you expend the wand’s last charge, roll 1d20. On a 1, the wand crumbles into ashes and is destroyed.", "Wand of Web": "Wand, Uncommon (Requires Attunement by a Spellcaster)\nThis wand has 7 charges. While holding it, you can expend 1 charge to cast Web (save DC 13) from it.\nRegaining Charges. The wand regains 1d6 + 1 expended charges daily at dawn. If you expend the wand’s last charge, roll 1d20. On a 1, the wand crumbles into ashes and is destroyed.", "Weapon of Warning": "Weapon (Any Simple or Martial), Uncommon (Requires Attunement)\nAs long as this weapon is within your reach and you are attuned to it, you and allies within 30 feet of you gain the following benefits.\nAlarm. The weapon magically awakens each subject who is sleeping naturally when combat begins. This benefit doesn't wake a subject from magically induced sleep.\nSupernatural Readiness. Each subject has Advantage on its Initiative rolls.", "Armor of Resistance": "Armor (Any Light, Medium, or Heavy), Rare (Requires Attunement)\nYou have Resistance to one type of damage while you wear this armor. The DM chooses the type or determines it randomly by rolling on the following table.\n1d10\nDamage Type\n1\nAcid\n2\nCold\n3\nFire\n4\nForce\n5\nLightning\n6\nNecrotic\n7\nPoison\n8\nPsychic\n9\nRadiant\n10\nThunder", "Dagger of Venom": "Weapon (Dagger), Rare\nYou gain a +1 bonus to attack rolls and damage rolls made with this magic weapon.\nYou can take a Bonus Action to magically coat the blade with poison. The poison remains for 1 minute or until an attack using this weapon hits a creature. That creature must succeed on a DC 15 Constitution saving throw or take 2d10 Poison damage and have the Poisoned condition for 1 minute. The weapon can’t be used this way again until the next dawn.", "Elven Chain": "Armor (Chain Mail or Chain Shirt), Rare\nYou gain a +1 bonus to Armor Class while you wear this armor. You are considered trained with this armor even if you lack training with Medium or Heavy armor.", "Ring of Feather Falling": "Ring, Rare (Requires Attunement)\nWhen you fall while wearing this ring, you descend 60 feet per round and take no damage from falling.", "Ring of Jumping": "Ring, Uncommon (Requires Attunement)\nWhile wearing this ring, you can cast Jump from it, but can target only yourself when you do so.", "Ring of Mind Shielding": "Ring, Uncommon (Requires Attunement)\nWhile wearing this ring, you are immune to magic that allows other creatures to read your thoughts, determine whether you are lying, know your alignment, or know your creature type. Creatures can telepathically communicate with you only if you allow it.\nYou can take a Magic action to cause the ring to become imperceptible until you take another Magic action to make it perceptible, until you remove the ring, or until you die.\nIf you die while wearing the ring, your soul enters it, unless it already houses a soul. You can remain in the ring or depart for the afterlife. As long as your soul is in the ring, you can telepathically communicate with any creature wearing it. A wearer can’t prevent this telepathic communication.", "Shield +2": "Armor (Shield), Uncommon (+1), Rare (+2), or Very Rare (+3)\nWhile holding this Shield, you have a bonus to Armor Class determined by the Shield’s rarity, in addition to the Shield’s normal bonus to AC.", "Wand of the War Mage +2": "Wand, Uncommon (+1), Rare (+2), or Very Rare (+3) (Requires Attunement by a Spellcaster)\nWhile holding this wand, you gain a bonus to spell attack rolls determined by the wand’s rarity. In addition, you ignore Half Cover when making a spell attack roll.", "Weapon +2": "Weapon (Any Simple or Martial), Uncommon (+1), Rare (+2), or Very Rare (+3)\nYou have a bonus to attack rolls and damage rolls made with this magic weapon. The bonus is determined by the weapon’s rarity.", "Wraps of Unarmed Power +2": "Wondrous Item, Uncommon (+1), Rare (+2), or Very Rare (+3)\nWhile wearing these wraps, you have a bonus to attack rolls and damage rolls made with your Unarmed Strikes. The bonus is determined by the wraps' rarity, and those strikes deal your choice of Force damage or their normal damage type.", "Armor +2": "Armor (Any Light, Medium, or Heavy), Rare(+1), Very Rare (+2), or Legendary (+3)\nYou have a bonus to Armor Class while wearing this armor. The bonus is determined by its rarity.", "Arrow-Catching Shield": "Armor (Shield), Rare (Requires Attunement)\nYou gain a +2 bonus to Armor Class against ranged attack rolls while you wield this Shield. This bonus is in addition to the Shield’s normal bonus to AC.\nWhenever an attacker makes a ranged attack roll against a target within 5 feet of you, you can take a Reaction to become the target of the attack instead.", "Flame Tongue": "Weapon (Any Melee Weapon), Rare (Requires Attunement)\nWhile holding this magic weapon, you can take a Bonus Action and use a command word to cause flames to engulf the damage-dealing part of the weapon. These flames shed Bright Light in a 40-foot radius and Dim Light for an additional 40 feet. While the weapon is ablaze, it deals an extra 2d6 Fire damage on a hit. The flames last until you take a Bonus Action to issue the command again or until you drop, stow, or sheathe the weapon.", "Ring of Free Action": "Ring, Rare (Requires Attunement)\nWhile you wear this ring, Difficult Terrain doesn’t cost you extra movement. In addition, magic can neither reduce any of your Speeds nor cause you to have the Paralyzed or Restrained condition.", "Ring of Protection": "Ring, Rare (Requires Attunement)\nYou gain a +1 bonus to Armor Class and saving throws while wearing this ring.", "Ring of the Ram": "Ring, Rare (Requires Attunement)\nThis ring has 3 charges and regains 1d3 expended charges daily at dawn. While wearing the ring, you can take a Magic action to expend 1 to 3 charges to make a ranged spell attack against one creature you can see within 60 feet of yourself. The ring produces a spectral ram’s head and makes its attack roll with a +7 bonus. On a hit, for each charge you spend, the target takes 2d10 Force damage and is pushed 5 feet away from you.\nAlternatively, you can expend 1 to 3 of the ring’s charges as a Magic action to try to break a nonmagical object you can see within 60 feet of yourself that isn’t being worn or carried. The ring makes a Strength check with a +5 bonus for each charge you spend.", "Common Magic Item": "Wondrous Item (or other), Common\nReplicate any Common magic item that isn't a Potion, a Scroll, or cursed. You can learn this plan multiple times, choosing a different item each time; each counts as a separate plan. Attunement depends on the chosen item.", "Uncommon Wondrous Item": "Wondrous Item, Uncommon\nReplicate any Uncommon Wondrous Item that isn't cursed. You can learn this plan multiple times, choosing a different item each time; each counts as a separate plan. Attunement depends on the chosen item.", "Rare Wondrous Item": "Wondrous Item, Rare\nReplicate any Rare Wondrous Item that isn't cursed. You can learn this plan multiple times, choosing a different item each time; each counts as a separate plan. Attunement depends on the chosen item." };
 
 // Sorcerer multiclass spell slot table — based on Sorcerer level only since Warlock uses Pact Magic separately
 const SORC_SLOTS = {
@@ -6141,7 +6179,7 @@ function renderInfusionsCard(level) {
     row.innerHTML = `
       <input type="checkbox" data-idx="${idx}" ${isActive ? 'checked' : ''} title="Replicated today">
       <div>
-        <div class="infusion-name">${plan.name}<span class="rarity-tag">${plan.rarity}</span><span class="attune-tag${isAttuned ? ' attune-tag-on' : ''}">${attuneText}</span></div>
+        <div class="infusion-name">${plan.name}<button type="button" class="rep-info" data-rep="${plan.name}" title="Description">ⓘ</button><span class="rarity-tag">${plan.rarity}</span><span class="attune-tag${isAttuned ? ' attune-tag-on' : ''}">${attuneText}</span></div>
         <div class="infusion-meta">${plan.type}</div>
       </div>
       ${attuneToggle}
@@ -7792,7 +7830,7 @@ function buildInfusionPickerHTML(klass, classLevel) {
     groupedHTML.push(`
       <label class="infusion-pick" data-plan="${plan.name}"${plan.multiPick ? ' data-multi="1"' : ''}>
         <input type="checkbox" value="${plan.name}">
-        <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span>
+        <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span><button type="button" class="rep-info" data-rep="${plan.name}" title="Description">ⓘ</button>
       </label>
     `);
   }
@@ -8822,7 +8860,7 @@ function openEditInfusions() {
     if (plan.multiPick) {
       groupedHTML.push(`
         <div class="infusion-pick" data-plan="${plan.name}" data-multi="1">
-          <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span>
+          <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span><button type="button" class="rep-info" data-rep="${plan.name}" title="Description">ⓘ</button>
           <div class="multi-pick-stepper">
             <button type="button" data-step="-1">−</button>
             <span class="count" data-count>${current}</span>
@@ -8834,7 +8872,7 @@ function openEditInfusions() {
       groupedHTML.push(`
         <label class="infusion-pick" data-plan="${plan.name}">
           <input type="checkbox" value="${plan.name}"${current ? ' checked' : ''}>
-          <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span>
+          <span class="infusion-pick-name">${plan.name}<span class="infusion-pick-meta"> · ${plan.type} · ${plan.rarity} · ${attuneText}</span></span><button type="button" class="rep-info" data-rep="${plan.name}" title="Description">ⓘ</button>
         </label>
       `);
     }
@@ -9516,6 +9554,59 @@ window.addEventListener('pagehide', () => {
   }).catch(() => {});
 });
 
+// Floating quick-nav: build links from the top-level sections, smooth-scroll + open on click
+(function buildQuickNav() {
+  const nav = document.getElementById('quick-nav');
+  const list = document.getElementById('quick-nav-list');
+  const toggle = document.getElementById('quick-nav-toggle');
+  if (!nav || !list || !toggle) return;
+  let n = 0;
+  document.querySelectorAll('details.section, .section-bar').forEach((sec) => {
+    const titleEl = sec.querySelector('.section-title');
+    if (!titleEl) return;
+    const label = titleEl.textContent.trim();
+    if (!sec.id) sec.id = 'sec-' + (++n) + '-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#' + sec.id;
+    a.textContent = label;
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (sec.tagName === 'DETAILS') sec.open = true;
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      hideNav();
+    });
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+  function hideNav() { list.hidden = true; toggle.setAttribute('aria-expanded', 'false'); }
+  toggle.addEventListener('click', () => {
+    const show = list.hidden;
+    list.hidden = !show;
+    toggle.setAttribute('aria-expanded', String(show));
+  });
+  document.addEventListener('click', (e) => { if (!nav.contains(e.target)) hideNav(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideNav(); });
+})();
+
+
+// Replicate Magic Item info: click the ⓘ on any plan (chosen or in the picker) to read its full description
+function showReplicateInfo(name) {
+  const raw = (typeof REPLICATE_DESC !== 'undefined' && REPLICATE_DESC[name]) || '';
+  if (!raw) { showInfo(name, '<p>No description available.</p>'); return; }
+  const lines = raw.split('\n').filter(Boolean);
+  const subtitle = lines.shift() || '';
+  const body = '<div class="spell-info-subtitle">' + subtitle + '</div>' +
+    lines.map(l => '<p style="margin:0.5rem 0 0;font-size:0.92rem;line-height:1.6;">' + l + '</p>').join('');
+  showInfo(name, body);
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.rep-info');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  showReplicateInfo(btn.dataset.rep);
+});
 </script>
 
 </body>

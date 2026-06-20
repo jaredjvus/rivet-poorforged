@@ -3163,6 +3163,10 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
   color: var(--parchment); text-decoration: none; cursor: pointer; border-left: 2px solid transparent;
 }
 .quick-nav-list a:hover { background: var(--gold); color: var(--ink); border-left-color: var(--gold-bright); }
+.quick-nav-list a.quick-nav-sub { padding-left: 1.4rem; font-size: 0.6rem; text-transform: none; letter-spacing: 0.06em; opacity: 0.9; }
+.quick-nav-list a.quick-nav-sub::before { content: '\2039 '; color: var(--gold); }
+.quick-nav-list a.quick-nav-sub:hover { opacity: 1; }
+.quick-nav-list a.quick-nav-sub:hover::before { color: var(--ink); }
 .loaded-from {
   font-family: 'EB Garamond', serif;
   font-style: italic;
@@ -9554,34 +9558,58 @@ window.addEventListener('pagehide', () => {
   }).catch(() => {});
 });
 
-// Floating quick-nav: build links from the top-level sections, smooth-scroll + open on click
+// Floating quick-nav: build links from sections + their visible subsections; smooth-scroll + open on click
 (function buildQuickNav() {
   const nav = document.getElementById('quick-nav');
   const list = document.getElementById('quick-nav-list');
   const toggle = document.getElementById('quick-nav-toggle');
   if (!nav || !list || !toggle) return;
-  let n = 0;
-  document.querySelectorAll('details.section, .section-bar').forEach((sec) => {
-    const titleEl = sec.querySelector('.section-title');
-    if (!titleEl) return;
-    const label = titleEl.textContent.trim();
-    if (!sec.id) sec.id = 'sec-' + (++n) + '-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  let counter = 0;
+  function idFor(el, label) {
+    if (!el.id) el.id = 'nav-' + (++counter) + '-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    return el.id;
+  }
+  function addLink(target, label, isSub) {
     const li = document.createElement('li');
     const a = document.createElement('a');
-    a.href = '#' + sec.id;
+    a.href = '#' + target.id;
     a.textContent = label;
+    if (isSub) a.className = 'quick-nav-sub';
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      if (sec.tagName === 'DETAILS') sec.open = true;
-      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      let p = target;
+      while (p) { if (p.tagName === 'DETAILS') p.open = true; p = p.parentElement ? p.parentElement.closest('details') : null; }
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       hideNav();
     });
     li.appendChild(a);
     list.appendChild(li);
-  });
+  }
+  function rebuild() {
+    list.innerHTML = '';
+    document.querySelectorAll('details.section, .section-bar').forEach((sec) => {
+      const titleEl = sec.querySelector('.section-title');
+      if (!titleEl) return;
+      const label = titleEl.textContent.trim();
+      idFor(sec, label);
+      addLink(sec, label, false);
+      sec.querySelectorAll('.collapsible-card').forEach((card) => {
+        if (card.hidden) return;
+        const h = card.querySelector(':scope > summary h3');
+        if (!h) return;
+        const hc = h.cloneNode(true);
+        hc.querySelectorAll('button').forEach((b) => b.remove());
+        const subLabel = hc.textContent.trim().replace(/\s+/g, ' ');
+        if (!subLabel) return;
+        idFor(card, subLabel);
+        addLink(card, subLabel, true);
+      });
+    });
+  }
   function hideNav() { list.hidden = true; toggle.setAttribute('aria-expanded', 'false'); }
   toggle.addEventListener('click', () => {
     const show = list.hidden;
+    if (show) rebuild();
     list.hidden = !show;
     toggle.setAttribute('aria-expanded', String(show));
   });

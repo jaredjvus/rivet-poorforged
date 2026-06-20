@@ -3928,6 +3928,7 @@ body.dm-mode .dm-hide { display: none; }
               <select id="gear-form-weapon-ability">
                 <option value="str">STR</option>
                 <option value="dex">DEX</option>
+                <option value="int">INT (artificer)</option>
                 <option value="finesse">Finesse (best of STR/DEX)</option>
                 <option value="cha">CHA (pact / smite)</option>
               </select>
@@ -4517,7 +4518,10 @@ const WEAPONS_DATA = [
   { name: 'Blowgun',         category: 'martial-ranged', mastery: 'Vex',  damage: '1 P',   properties: 'Ammunition (25/100), Loading' },
   { name: 'Hand Crossbow',   category: 'martial-ranged', mastery: 'Vex',  damage: '1d6 P', properties: 'Ammunition (30/120), Light, Loading' },
   { name: 'Heavy Crossbow',  category: 'martial-ranged', mastery: 'Push', damage: '1d10 P', properties: 'Ammunition (100/400), Heavy, Loading, Two-Handed' },
-  { name: 'Longbow',         category: 'martial-ranged', mastery: 'Slow', damage: '1d8 P', properties: 'Ammunition (150/600), Heavy, Two-Handed' }
+  { name: 'Longbow',         category: 'martial-ranged', mastery: 'Slow', damage: '1d8 P', properties: 'Ammunition (150/600), Heavy, Two-Handed' },
+  // Firearms (2024 PHB)
+  { name: 'Pistol',          category: 'martial-ranged', mastery: 'Vex',  damage: '1d10 P', properties: 'Ammunition (30/90), Loading' },
+  { name: 'Musket',          category: 'martial-ranged', mastery: 'Slow', damage: '1d12 P', properties: 'Ammunition (40/120), Loading, Two-Handed' }
 ];
 
 // Mastery property descriptions (2024 PHB).
@@ -4616,6 +4620,27 @@ const GEAR_LIBRARY = [
   { name: 'Heavy Crossbow',    type: 'weapon', weight: 18, damage: '1d10', damageType: 'piercing',  weaponCategory: 'martial-ranged', properties: 'Ammunition (100/400), Heavy, Loading, Two-Handed', mastery: 'Push', ability: 'dex', rarity: 'Mundane' },
   { name: 'Shortbow',          type: 'weapon', weight: 2,  damage: '1d6',  damageType: 'piercing',  weaponCategory: 'simple-ranged', properties: 'Ammunition (80/320), Two-Handed', mastery: 'Vex', ability: 'dex', rarity: 'Mundane' },
   { name: 'Longbow',           type: 'weapon', weight: 2,  damage: '1d8',  damageType: 'piercing',  weaponCategory: 'martial-ranged', properties: 'Ammunition (150/600), Heavy, Two-Handed', mastery: 'Slow', ability: 'dex', rarity: 'Mundane' },
+  { name: 'Pistol',            type: 'weapon', weight: 3,  damage: '1d10', damageType: 'piercing',  weaponCategory: 'martial-ranged', properties: 'Ammunition (30/90), Loading', mastery: 'Vex', ability: 'dex', rarity: 'Mundane', notes: 'Firearm. Uses Firearm Bullets. Artificers may set ability to INT.' },
+  { name: 'Musket',            type: 'weapon', weight: 10, damage: '1d12', damageType: 'piercing',  weaponCategory: 'martial-ranged', properties: 'Ammunition (40/120), Loading, Two-Handed', mastery: 'Slow', ability: 'dex', rarity: 'Mundane', notes: 'Firearm. Uses Firearm Bullets. Artificers may set ability to INT.' },
+  // ----- REMAINING MUNDANE WEAPONS (2024 PHB) -----
+  { name: 'Club',              type: 'weapon', weight: 2,  damage: '1d4',  damageType: 'bludgeoning', weaponCategory: 'simple-melee', properties: 'Light', mastery: 'Slow', ability: 'str', rarity: 'Mundane' },
+  { name: 'Greatclub',         type: 'weapon', weight: 10, damage: '1d8',  damageType: 'bludgeoning', weaponCategory: 'simple-melee', properties: 'Two-Handed', mastery: 'Push', ability: 'str', rarity: 'Mundane' },
+  { name: 'Handaxe',           type: 'weapon', weight: 2,  damage: '1d6',  damageType: 'slashing', weaponCategory: 'simple-melee', properties: 'Light, Thrown (20/60)', mastery: 'Vex', ability: 'str', rarity: 'Mundane' },
+  { name: 'Light Hammer',      type: 'weapon', weight: 2,  damage: '1d4',  damageType: 'bludgeoning', weaponCategory: 'simple-melee', properties: 'Light, Thrown (20/60)', mastery: 'Nick', ability: 'str', rarity: 'Mundane' },
+  { name: 'Mace',              type: 'weapon', weight: 4,  damage: '1d6',  damageType: 'bludgeoning', weaponCategory: 'simple-melee', properties: '—', mastery: 'Sap', ability: 'str', rarity: 'Mundane' },
+  { name: 'Sickle',            type: 'weapon', weight: 2,  damage: '1d4',  damageType: 'slashing', weaponCategory: 'simple-melee', properties: 'Light', mastery: 'Nick', ability: 'str', rarity: 'Mundane' },
+  { name: 'Dart',              type: 'weapon', weight: 0.25, damage: '1d4', damageType: 'piercing', weaponCategory: 'simple-ranged', properties: 'Finesse, Thrown (20/60)', mastery: 'Vex', ability: 'finesse', rarity: 'Mundane' },
+  { name: 'Sling',             type: 'weapon', weight: 0,  damage: '1d4',  damageType: 'bludgeoning', weaponCategory: 'simple-ranged', properties: 'Ammunition (30/120)', mastery: 'Slow', ability: 'dex', rarity: 'Mundane' },
+  { name: 'Battleaxe',         type: 'weapon', weight: 4,  damage: '1d8',  damageType: 'slashing', weaponCategory: 'martial-melee', properties: 'Versatile (1d10)', mastery: 'Topple', ability: 'str', rarity: 'Mundane' },
+  { name: 'Flail',             type: 'weapon', weight: 2,  damage: '1d8',  damageType: 'bludgeoning', weaponCategory: 'martial-melee', properties: '—', mastery: 'Sap', ability: 'str', rarity: 'Mundane' },
+  { name: 'Lance',             type: 'weapon', weight: 6,  damage: '1d10', damageType: 'piercing', weaponCategory: 'martial-melee', properties: 'Heavy, Reach, Two-Handed', mastery: 'Topple', ability: 'str', rarity: 'Mundane' },
+  { name: 'Morningstar',       type: 'weapon', weight: 4,  damage: '1d8',  damageType: 'piercing', weaponCategory: 'martial-melee', properties: '—', mastery: 'Sap', ability: 'str', rarity: 'Mundane' },
+  { name: 'Scimitar',          type: 'weapon', weight: 3,  damage: '1d6',  damageType: 'slashing', weaponCategory: 'martial-melee', properties: 'Finesse, Light', mastery: 'Nick', ability: 'finesse', rarity: 'Mundane' },
+  { name: 'Trident',           type: 'weapon', weight: 4,  damage: '1d8',  damageType: 'piercing', weaponCategory: 'martial-melee', properties: 'Thrown (20/60), Versatile (1d10)', mastery: 'Topple', ability: 'str', rarity: 'Mundane' },
+  { name: 'War Pick',          type: 'weapon', weight: 2,  damage: '1d8',  damageType: 'piercing', weaponCategory: 'martial-melee', properties: 'Versatile (1d10)', mastery: 'Sap', ability: 'str', rarity: 'Mundane' },
+  { name: 'Whip',              type: 'weapon', weight: 3,  damage: '1d4',  damageType: 'slashing', weaponCategory: 'martial-melee', properties: 'Finesse, Reach', mastery: 'Slow', ability: 'finesse', rarity: 'Mundane' },
+  { name: 'Blowgun',           type: 'weapon', weight: 1,  damage: '1',    damageType: 'piercing', weaponCategory: 'martial-ranged', properties: 'Ammunition (25/100), Loading', mastery: 'Vex', ability: 'dex', rarity: 'Mundane' },
+  { name: 'Hand Crossbow',     type: 'weapon', weight: 3,  damage: '1d6',  damageType: 'piercing', weaponCategory: 'martial-ranged', properties: 'Ammunition (30/120), Light, Loading', mastery: 'Vex', ability: 'dex', rarity: 'Mundane' },
   // ----- WONDROUS - STAT OVERRIDES -----
   { name: 'Amulet of Health',          type: 'amulet',   weight: 1, requiresAttunement: true, statOverride: { con: 19 }, rarity: 'Rare',    notes: 'Sets CON to 19 while worn (attuned). No effect if CON ≥ 19.' },
   { name: 'Gauntlets of Ogre Power',   type: 'wondrous', weight: 2, requiresAttunement: true, statOverride: { str: 19 }, rarity: 'Uncommon', notes: 'Sets STR to 19 while worn (attuned).' },
@@ -6235,6 +6260,10 @@ function renderMagicItemsCard(level) {
 // Choose the best ability mod for a weapon: finesse picks max(STR, DEX);
 // ranged uses DEX; everything else uses STR.
 function weaponAbilityForRoll(weapon, stats) {
+  // Explicit override (str/dex/int/cha) wins; 'finesse' = best of STR/DEX.
+  const ov = weapon.ability;
+  if (ov === 'finesse') return mod(stats.dex) >= mod(stats.str) ? 'dex' : 'str';
+  if (ov === 'str' || ov === 'dex' || ov === 'int' || ov === 'cha') return ov;
   if (weapon.category === 'simple-ranged' || weapon.category === 'martial-ranged') return 'dex';
   const isFinesse = /Finesse/i.test(weapon.properties || '');
   if (isFinesse) return mod(stats.dex) >= mod(stats.str) ? 'dex' : 'str';

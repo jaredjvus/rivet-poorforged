@@ -2533,8 +2533,8 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 /* FEATURE BLOCK */
 .feature-block {
   border-left: 2px solid var(--blood);
-  padding: 0.5rem 0 0.5rem 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  margin-bottom: 0.45rem;
   transition: opacity 0.4s;
 }
 .feature-block.locked {
@@ -2560,6 +2560,30 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 }
 
 .feature-block p { font-size: 0.95rem; line-height: 1.7; }
+
+/* Collapsible feature/feat rows — show only the name; click it to reveal the description */
+.feature-block > p,
+.feat-block > p { display: none; }
+.feature-block.open > p,
+.feat-block.open > p { display: block; }
+.feature-block.open > p { margin-top: 0.4rem; }
+.feature-block > h4,
+.feat-block > h4 { cursor: pointer; user-select: none; margin-bottom: 0; }
+.feature-block > h4::before,
+.feat-block > h4::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.55rem;
+  border-right: 2px solid var(--gold-tarnish);
+  border-bottom: 2px solid var(--gold-tarnish);
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+  vertical-align: middle;
+}
+.feature-block.open > h4::before,
+.feat-block.open > h4::before { transform: rotate(45deg); margin-bottom: 2px; }
 
 /* COMBAT LOOPS */
 .loop {
@@ -8984,6 +9008,17 @@ document.getElementById('mastery-close').addEventListener('click', closeSwapMast
 document.getElementById('mastery-confirm').addEventListener('click', saveSwapMastery);
 document.getElementById('mastery-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'mastery-overlay') closeSwapMastery();
+});
+
+// Collapsible feature/feat rows: click a name (h4) to toggle its description.
+// Delegated so it covers both static and dynamically-rendered blocks.
+document.addEventListener('click', (e) => {
+  const h4 = e.target.closest('h4');
+  if (!h4) return;
+  const block = h4.parentElement;
+  if (block && (block.classList.contains('feature-block') || block.classList.contains('feat-block'))) {
+    block.classList.toggle('open');
+  }
 });
 
 // ============================================================

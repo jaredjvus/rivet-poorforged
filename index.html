@@ -2902,6 +2902,36 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
 .notes-area:focus { border-color: var(--gold); }
 .notes-area::placeholder { color: var(--parchment-dim); font-style: italic; }
 
+/* Field Log */
+.log-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.log-search { flex: 1; min-width: 160px; padding: 0.45rem 0.7rem; background: rgba(0,0,0,0.04); border: 1px solid var(--gold-tarnish); color: var(--parchment); font-family: 'EB Garamond', serif; font-size: 0.95rem; }
+.log-search:focus { border-color: var(--gold); outline: none; }
+.log-tag-filter { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.log-tag-chip { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.5rem; background: transparent; border: 1px solid var(--gold-tarnish); color: var(--parchment-aged); cursor: pointer; border-radius: 2px; }
+.log-tag-chip:hover { border-color: var(--gold); color: var(--gold); }
+.log-tag-chip.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.log-save-status { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment-dim); margin-left: auto; }
+.log-save-status.saved { color: var(--gold); }
+.log-save-status.saving { color: var(--parchment-dim); font-style: italic; }
+.log-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.log-empty { color: var(--parchment-aged); font-style: italic; font-size: 0.9rem; }
+.log-entry { border: 1px solid var(--gold-tarnish); border-left: 3px solid var(--gold); background: rgba(0,0,0,0.02); }
+.log-entry > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; }
+.log-entry > summary::-webkit-details-marker { display: none; }
+.log-entry-title { flex: 1; font-family: 'Cinzel', serif; font-size: 0.82rem; letter-spacing: 0.04em; color: var(--gold); }
+.log-entry-tags { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.log-chip { font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.1rem 0.35rem; background: var(--gold-tarnish); color: var(--ink); border-radius: 2px; }
+.log-entry-date { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--parchment-dim); white-space: nowrap; }
+.log-entry-body { padding: 0.2rem 0.8rem 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.log-title-input, .log-tags-input, .log-body-input { width: 100%; background: rgba(0,0,0,0.04); border: 1px solid var(--gold-tarnish); color: var(--parchment); font-family: 'EB Garamond', serif; }
+.log-title-input, .log-tags-input { padding: 0.4rem 0.6rem; font-size: 0.95rem; }
+.log-body-input { padding: 0.5rem 0.6rem; font-size: 1rem; line-height: 1.6; resize: vertical; }
+.log-title-input:focus, .log-body-input:focus, .log-tags-input:focus { border-color: var(--gold); outline: none; }
+.log-entry-actions { display: flex; align-items: center; justify-content: space-between; }
+.log-entry-meta { font-size: 0.7rem; color: var(--parchment-dim); font-style: italic; }
+.log-delete-btn { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; background: transparent; border: 1px solid var(--blood); color: var(--blood-bright); padding: 0.25rem 0.6rem; cursor: pointer; }
+.log-delete-btn:hover { background: var(--blood); color: #fff; }
+
 /* Coin denomination row */
 .coin-row {
   display: flex;
@@ -3674,7 +3704,7 @@ body.dm-mode .dm-hide { display: none; }
     <!-- Legacy Magic Items card removed — Gear card now handles everything. -->
     <details class="card collapsible-card" style="margin-top: 2rem;" open>
       <summary>
-      <h3>Coin &amp; Field Log</h3>
+      <h3>Coin</h3>
       </summary>
       <div class="collapsible-body">
       <div class="coin-row">
@@ -3700,9 +3730,21 @@ body.dm-mode .dm-hide { display: none; }
         </div>
       </div>
       <div class="coin-total" id="coin-total"></div>
-      <textarea class="notes-area" id="notes" placeholder="Field notes. Things observed. Suspected purpose. Inconclusive."></textarea>
       </div>
     </details>
+  </details>
+
+  <!-- FIELD LOG -->
+  <details class="section" open>
+    <summary><h2 class="section-title">Field Log</h2></summary>
+    <div class="log-toolbar">
+      <input id="log-search" class="log-search" type="text" placeholder="Search entries…" autocomplete="off">
+      <div id="log-tag-filter" class="log-tag-filter"></div>
+      <button class="header-action" id="log-add-btn">+ New Entry</button>
+      <button class="header-action" id="log-export-btn" title="Copy all entries as Markdown">Copy all</button>
+      <span class="log-save-status" id="log-save-status"></span>
+    </div>
+    <div id="log-list" class="log-list"></div>
   </details>
 
   <!-- QUOTE -->
@@ -5475,7 +5517,8 @@ function render() {
   document.getElementById('coin-gp').value = coins.gp || '';
   document.getElementById('coin-pp').value = coins.pp || '';
   updateCoinTotal();
-  document.getElementById('notes').value = state.notes;
+  migrateLog();
+  renderLog();
 
   // Combat resources + concentration + death saves + conditions
   renderCombatResources(level);
@@ -9337,11 +9380,6 @@ function updateCoinTotal() {
   });
 });
 
-document.getElementById('notes').addEventListener('input', (e) => {
-  state.notes = e.target.value;
-  saveState();
-});
-
 document.querySelectorAll('[data-add]').forEach(btn => {
   btn.addEventListener('click', () => {
     const cat = btn.getAttribute('data-add');
@@ -9635,6 +9673,164 @@ document.addEventListener('click', (e) => {
   e.stopPropagation();
   showReplicateInfo(btn.dataset.rep);
 });
+
+// ============================================================
+// FIELD LOG — structured, searchable, tagged session journal
+// ============================================================
+function logEsc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+function logUid() {
+  return 'log-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e6).toString(36);
+}
+function migrateLog() {
+  if (!Array.isArray(state.logEntries)) {
+    state.logEntries = [];
+    if (state.notes && state.notes.trim()) {
+      const now = Date.now();
+      state.logEntries.push({ id: logUid(), title: 'Imported notes', body: state.notes, tags: [], createdAt: now, updatedAt: now });
+    }
+  }
+}
+function allLogTags() {
+  const s = new Set();
+  (state.logEntries || []).forEach(e => (e.tags || []).forEach(t => s.add(t)));
+  return Array.from(s).sort();
+}
+function fmtLogDate(ts) {
+  try { return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+  catch (e) { return ''; }
+}
+function setLogStatus(kind) {
+  const el = document.getElementById('log-save-status');
+  if (!el) return;
+  if (kind === 'saving') { el.textContent = 'Saving…'; el.className = 'log-save-status saving'; }
+  else {
+    const t = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    el.textContent = 'Saved ✓ ' + t;
+    el.className = 'log-save-status saved';
+  }
+}
+function logSave() {
+  setLogStatus('saving');
+  saveState();
+  clearTimeout(logSave._t);
+  logSave._t = setTimeout(() => setLogStatus('saved'), 500);
+}
+function renderLog() {
+  const listEl = document.getElementById('log-list');
+  if (!listEl) return;
+  if (!renderLog.state) renderLog.state = { search: '', tag: null, open: new Set() };
+  const S = renderLog.state;
+
+  const filterEl = document.getElementById('log-tag-filter');
+  if (filterEl) {
+    filterEl.innerHTML = allLogTags().map(t =>
+      `<button type="button" class="log-tag-chip${S.tag === t ? ' active' : ''}" data-tag="${logEsc(t)}">#${logEsc(t)}</button>`).join('');
+  }
+
+  const q = (S.search || '').trim().toLowerCase();
+  let entries = (state.logEntries || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  if (S.tag) entries = entries.filter(e => (e.tags || []).includes(S.tag));
+  if (q) entries = entries.filter(e =>
+    (e.title || '').toLowerCase().includes(q) ||
+    (e.body || '').toLowerCase().includes(q) ||
+    (e.tags || []).join(' ').toLowerCase().includes(q));
+
+  if (entries.length === 0) {
+    const any = (state.logEntries || []).length;
+    listEl.innerHTML = `<p class="log-empty">${any ? 'No entries match your search/filter.' : 'No entries yet. Click + New Entry to start your log.'}</p>`;
+    return;
+  }
+
+  listEl.innerHTML = entries.map(e => {
+    const open = S.open.has(e.id) ? ' open' : '';
+    const tagsHtml = (e.tags || []).map(t => `<span class="log-chip">#${logEsc(t)}</span>`).join('');
+    return `<details class="log-entry" data-id="${e.id}"${open}>
+      <summary>
+        <span class="log-entry-title">${e.title ? logEsc(e.title) : '<em>untitled</em>'}</span>
+        <span class="log-entry-tags">${tagsHtml}</span>
+        <span class="log-entry-date">${fmtLogDate(e.createdAt)}</span>
+      </summary>
+      <div class="log-entry-body">
+        <input class="log-title-input" type="text" value="${logEsc(e.title)}" placeholder="Title — e.g. Session 12 · the warren">
+        <textarea class="log-body-input" rows="6" placeholder="What happened, who you met, what you learned…">${logEsc(e.body)}</textarea>
+        <input class="log-tags-input" type="text" value="${logEsc((e.tags || []).join(', '))}" placeholder="tags, comma-separated — npc, quest, loot">
+        <div class="log-entry-actions">
+          <span class="log-entry-meta">edited ${e.updatedAt ? fmtLogDate(e.updatedAt) : '—'}</span>
+          <button type="button" class="log-delete-btn" data-del="${e.id}">Delete</button>
+        </div>
+      </div>
+    </details>`;
+  }).join('');
+
+  listEl.querySelectorAll('.log-entry').forEach(det => {
+    const id = det.dataset.id;
+    const entry = () => (state.logEntries || []).find(x => x.id === id);
+    det.addEventListener('toggle', () => { if (det.open) S.open.add(id); else S.open.delete(id); });
+    const titleI = det.querySelector('.log-title-input');
+    const bodyI = det.querySelector('.log-body-input');
+    const tagsI = det.querySelector('.log-tags-input');
+    titleI.addEventListener('input', () => { const e = entry(); if (!e) return; e.title = titleI.value; e.updatedAt = Date.now(); det.querySelector('.log-entry-title').innerHTML = e.title ? logEsc(e.title) : '<em>untitled</em>'; logSave(); });
+    bodyI.addEventListener('input', () => { const e = entry(); if (!e) return; e.body = bodyI.value; e.updatedAt = Date.now(); logSave(); });
+    titleI.addEventListener('blur', () => setLogStatus('saved'));
+    bodyI.addEventListener('blur', () => setLogStatus('saved'));
+    tagsI.addEventListener('input', () => { const e = entry(); if (!e) return; e.tags = tagsI.value.split(',').map(s => s.trim()).filter(Boolean); e.updatedAt = Date.now(); logSave(); });
+    tagsI.addEventListener('change', () => renderLog());
+    det.querySelector('.log-delete-btn').addEventListener('click', () => {
+      const e = entry(); if (!e) return;
+      showConfirm('Delete this log entry?', `<p>"${e.title ? logEsc(e.title) : 'untitled'}" will be removed. This can't be undone.</p>`, () => {
+        state.logEntries = (state.logEntries || []).filter(x => x.id !== id);
+        S.open.delete(id);
+        logSave();
+        renderLog();
+      }, { okLabel: 'Delete' });
+    });
+  });
+}
+// Toolbar wiring (static elements; attach once)
+(function wireFieldLog() {
+  renderLog.state = renderLog.state || { search: '', tag: null, open: new Set() };
+  const addBtn = document.getElementById('log-add-btn');
+  const searchI = document.getElementById('log-search');
+  const filterEl = document.getElementById('log-tag-filter');
+  const exportBtn = document.getElementById('log-export-btn');
+  if (!addBtn) return;
+  addBtn.addEventListener('click', () => {
+    const now = Date.now();
+    const e = { id: logUid(), title: '', body: '', tags: [], createdAt: now, updatedAt: now };
+    state.logEntries = state.logEntries || [];
+    state.logEntries.unshift(e);
+    renderLog.state.open.add(e.id);
+    renderLog.state.search = '';
+    renderLog.state.tag = null;
+    if (searchI) searchI.value = '';
+    logSave();
+    renderLog();
+    const det = document.querySelector(`.log-entry[data-id="${e.id}"]`);
+    if (det) { det.scrollIntoView({ behavior: 'smooth', block: 'center' }); const t = det.querySelector('.log-title-input'); if (t) t.focus(); }
+  });
+  if (searchI) searchI.addEventListener('input', e => { renderLog.state.search = e.target.value; renderLog(); });
+  if (filterEl) filterEl.addEventListener('click', e => {
+    const b = e.target.closest('.log-tag-chip'); if (!b) return;
+    renderLog.state.tag = renderLog.state.tag === b.dataset.tag ? null : b.dataset.tag;
+    renderLog();
+  });
+  if (exportBtn) exportBtn.addEventListener('click', async () => {
+    const md = (state.logEntries || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).map(e => {
+      const tags = (e.tags || []).map(t => '#' + t).join(' ');
+      return '## ' + (e.title || 'Untitled') + '  (' + fmtLogDate(e.createdAt) + ')' + (tags ? '\n' + tags : '') + '\n\n' + (e.body || '');
+    }).join('\n\n---\n\n');
+    try {
+      await navigator.clipboard.writeText(md);
+      exportBtn.textContent = 'Copied!';
+      setTimeout(() => { exportBtn.textContent = 'Copy all'; }, 1200);
+    } catch (err) {
+      showInfo('Field Log (Markdown)', `<textarea style="width:100%;height:320px;font-family:monospace;font-size:0.8rem;">${logEsc(md)}</textarea>`);
+    }
+  });
+})();
+
 </script>
 
 </body>

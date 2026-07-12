@@ -4293,72 +4293,72 @@ const SPELLS = [
   { name: 'Sanctuary',            level: '1st', school: 'Abjuration',   time: 'Bonus Action',  range: '30 feet', components: 'V, S, M',     duration: '1 minute',                  description: 'Ward a creature. Any creature that targets the warded creature with an attack or harmful spell must first make a WIS save. On a failure, it must choose a new target or lose its action. If the warded creature attacks or casts a harmful spell, the ward ends.' },
 
   // ===== 2nd LEVEL =====
-  { name: 'Aid',                level: '2nd', school: 'Abjuration',   time: 'Action',       range: '30 feet', components: 'V, S, M',    duration: '8 hours' },
-  { name: 'Alter Self',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Self',    components: 'V, S',       duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Arcane Lock',        level: '2nd', school: 'Abjuration',   time: 'Action',       range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled' },
-  { name: 'Arcane Vigor',       level: '2nd', school: 'Abjuration',   time: 'Bonus Action', range: 'Self',    components: 'V, S',       duration: 'Instantaneous' },
-  { name: 'Blur',               level: '2nd', school: 'Illusion',     time: 'Action',       range: 'Self',    components: 'V',          duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Continual Flame',    level: '2nd', school: 'Evocation',    time: 'Action',       range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled' },
-  { name: 'Darkvision',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: '8 hours' },
-  { name: 'Dragon\'s Breath',   level: '2nd', school: 'Transmutation',time: 'Bonus Action', range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Enhance Ability',    level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Enlarge/Reduce',     level: '2nd', school: 'Transmutation',time: 'Action',       range: '30 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Heat Metal',         level: '2nd', school: 'Transmutation',time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Homunculus Servant', level: '2nd', school: 'Conjuration',  time: '1 hour or Ritual', range: '10 feet', components: 'V, S, M(C)', duration: 'Instantaneous' },
-  { name: 'Invisibility',       level: '2nd', school: 'Illusion',     time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Lesser Restoration', level: '2nd', school: 'Abjuration',   time: 'Bonus Action', range: 'Touch',   components: 'V, S',       duration: 'Instantaneous' },
-  { name: 'Levitate',           level: '2nd', school: 'Transmutation',time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 10 minutes', concentration: true },
-  { name: 'Magic Mouth',        level: '2nd', school: 'Illusion',     time: '1 minute or R',range: '30 feet', components: 'V, S, M(C*)',duration: 'Until dispelled' },
-  { name: 'Magic Weapon',       level: '2nd', school: 'Transmutation',time: 'Bonus Action', range: 'Touch',   components: 'V, S',       duration: '1 hour' },
-  { name: 'Protection from Poison', level: '2nd', school: 'Abjuration', time: 'Action',     range: 'Touch',   components: 'V, S',       duration: '1 hour' },
-  { name: 'Rope Trick',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: '1 hour' },
-  { name: 'See Invisibility',   level: '2nd', school: 'Divination',   time: 'Action',       range: 'Self',    components: 'V, S, M',    duration: '1 hour' },
-  { name: 'Spider Climb',       level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Web',                level: '2nd', school: 'Conjuration',  time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Aid',                level: '2nd', school: 'Abjuration',   time: 'Action',       range: '30 feet', components: 'V, S, M',    duration: '8 hours', description: 'Choose up to three creatures within range. Each target\'s HP maximum and current HP increase by 5 for the duration. At higher levels, increase by 5 per slot above 2nd.' },
+  { name: 'Alter Self',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Self',    components: 'V, S',       duration: 'C, up to 1 hour', concentration: true, description: 'Alter your physical form for the duration, choosing Aquatic Adaptation (breathe underwater, swim speed = your speed), Change Appearance, or Natural Weapons (claws/fangs/horns/hooves dealing 1d6 using your spellcasting ability for attack and damage). You can take a Magic action to swap options while the spell lasts.' },
+  { name: 'Arcane Lock',        level: '2nd', school: 'Abjuration',   time: 'Action',       range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled', description: 'Touch a closed door, window, gate, container, or hatch and magically lock it until dispelled. It can\'t be unlocked by nonmagical means; you and creatures you designate can open and close it despite the lock, and you can set a password that unlocks it for 1 minute when spoken nearby.' },
+  { name: 'Arcane Vigor',       level: '2nd', school: 'Abjuration',   time: 'Bonus Action', range: 'Self',    components: 'V, S',       duration: 'Instantaneous', description: 'Roll one or two of your unexpended Hit Point Dice and regain HP equal to the roll plus your spellcasting modifier; those dice are then expended. At higher levels, roll one additional Hit Die per slot above 2nd.' },
+  { name: 'Blur',               level: '2nd', school: 'Illusion',     time: 'Action',       range: 'Self',    components: 'V',          duration: 'C, up to 1 minute', concentration: true, description: 'Your body becomes blurred. Any creature has Disadvantage on attack rolls against you for the duration, unless it has Blindsight or Truesight.' },
+  { name: 'Continual Flame',    level: '2nd', school: 'Evocation',    time: 'Action',       range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled', description: 'A flame springs from a touched object, shedding bright light in a 20-foot radius and dim light for an additional 20 feet, until dispelled. It creates no heat and consumes no fuel; it can be covered or hidden but not smothered.' },
+  { name: 'Darkvision',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: '8 hours', description: 'A willing creature you touch gains Darkvision with a range of 150 feet for 8 hours.' },
+  { name: 'Dragon\'s Breath',   level: '2nd', school: 'Transmutation',time: 'Bonus Action', range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true, description: 'Touch a willing creature and choose Acid, Cold, Fire, Lightning, or Poison. Until the spell ends the target can take a Magic action to exhale a 15-foot cone; each creature in it makes a DEX save, taking 3d6 damage of the chosen type on a failure or half on a success. At higher levels, damage increases by 1d6 per slot above 2nd.' },
+  { name: 'Enhance Ability',    level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true, description: 'Touch a creature and choose an ability score. For the duration the target has Advantage on ability checks using that score. At higher levels, target one additional creature per slot above 2nd, choosing separately for each.' },
+  { name: 'Enlarge/Reduce',     level: '2nd', school: 'Transmutation',time: 'Action',       range: '30 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true, description: 'Enlarge or reduce a creature or unattended object you can see (unwilling creatures get a CON save to negate). Enlarge: size increases one category, Advantage on STR checks/saves, weapon and Unarmed Strike damage +1d4. Reduce: size decreases one category, Disadvantage on STR checks/saves, weapon and Unarmed Strike damage −1d4 (minimum 1).' },
+  { name: 'Heat Metal',         level: '2nd', school: 'Transmutation',time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true, description: 'Choose a manufactured metal object you can see; it glows red-hot, and any creature in physical contact takes 2d8 fire damage immediately (repeatable as a bonus action on later turns while it stays in range). A creature holding or wearing it must succeed on a CON save or drop it, or else have Disadvantage on attacks and ability checks until your next turn. At higher levels, damage increases by 1d8 per slot above 2nd.' },
+  { name: 'Homunculus Servant', level: '2nd', school: 'Conjuration',  time: '1 hour or Ritual', range: '10 feet', components: 'V, S, M(C)', duration: 'Instantaneous', description: 'Summon a Tiny homunculus (mechanical bird, winged vials, or similar) that uses the Homunculus Servant stat block and acts as your ally, sharing your Initiative and taking its turn right after you. If you already have one from this spell, it\'s replaced.' },
+  { name: 'Invisibility',       level: '2nd', school: 'Illusion',     time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true, description: 'A creature you touch gains the Invisible condition for the duration. The spell ends early the instant the target makes an attack roll, deals damage, or casts a spell. At higher levels, target one additional creature per slot above 2nd.' },
+  { name: 'Lesser Restoration', level: '2nd', school: 'Abjuration',   time: 'Bonus Action', range: 'Touch',   components: 'V, S',       duration: 'Instantaneous', description: 'Touch a creature and end one of the following on it: Blinded, Deafened, Paralyzed, or Poisoned.' },
+  { name: 'Levitate',           level: '2nd', school: 'Transmutation',time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 10 minutes', concentration: true, description: 'A creature or loose object you can see (up to 500 lb) rises vertically up to 20 feet and hovers there for the duration (unwilling creatures get a CON save to negate). You can shift the target\'s altitude up to 20 feet on your turn; it floats gently to the ground when the spell ends.' },
+  { name: 'Magic Mouth',        level: '2nd', school: 'Illusion',     time: '1 minute or R',range: '30 feet', components: 'V, S, M(C*)',duration: 'Until dispelled', description: 'Implant a 25-word-or-fewer message in an unattended object you can see, set to trigger on a visual or audible condition within 30 feet. When triggered, a magical mouth appears and speaks the message in your voice; you choose whether it delivers once or repeats every time the trigger occurs, until dispelled.' },
+  { name: 'Magic Weapon',       level: '2nd', school: 'Transmutation',time: 'Bonus Action', range: 'Touch',   components: 'V, S',       duration: '1 hour', description: 'Touch a nonmagical weapon; for 1 hour it becomes magical with a +1 bonus to attack and damage rolls. A level 3–5 slot raises the bonus to +2, and a level 6+ slot raises it to +3.' },
+  { name: 'Protection from Poison', level: '2nd', school: 'Abjuration', time: 'Action',     range: 'Touch',   components: 'V, S',       duration: '1 hour', description: 'Touch a creature to end the Poisoned condition on it. For 1 hour the target has Advantage on saving throws against being poisoned and Resistance to poison damage.' },
+  { name: 'Rope Trick',         level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: '1 hour', description: 'Touch a rope; one end rises until it hangs from an Invisible extradimensional portal (reachable by climbing) that lasts 1 hour. The space holds up to eight Medium or smaller creatures — nothing can pass in or out except through the portal, though those inside can see out. Anything inside drops out when the spell ends.' },
+  { name: 'See Invisibility',   level: '2nd', school: 'Divination',   time: 'Action',       range: 'Self',    components: 'V, S, M',    duration: '1 hour', description: 'For 1 hour you see creatures and objects with the Invisible condition as if they were visible, and you can see into the Ethereal Plane (ghostly).' },
+  { name: 'Spider Climb',       level: '2nd', school: 'Transmutation',time: 'Action',       range: 'Touch',   components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true, description: 'A willing creature you touch can move up, down, and across vertical surfaces and along ceilings, hands free, and gains a Climb Speed equal to its Speed, for the duration. At higher levels, target one additional creature per slot above 2nd.' },
+  { name: 'Web',                level: '2nd', school: 'Conjuration',  time: 'Action',       range: '60 feet', components: 'V, S, M',    duration: 'C, up to 1 hour', concentration: true, description: 'Conjure sticky webbing filling a 20-foot cube; the area is Difficult Terrain and Lightly Obscured for the duration. A creature entering the webs or starting its turn there must succeed on a DEX save or gain the Restrained condition; a Restrained creature can use an action to make a STR (Athletics) check against your spell save DC to break free. The webs are flammable — a 5-foot cube exposed to fire burns away in 1 round, dealing 2d4 fire damage to anyone who starts their turn in the flame.' },
 
   // ===== 3rd LEVEL =====
-  { name: 'Blink',                level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Self',    components: 'V, S',      duration: '1 minute' },
-  { name: 'Create Food and Water',level: '3rd', school: 'Conjuration',  time: 'Action',     range: '30 feet', components: 'V, S',      duration: 'Instantaneous' },
-  { name: 'Dispel Magic',         level: '3rd', school: 'Abjuration',   time: 'Action',     range: '120 feet',components: 'V, S',      duration: 'Instantaneous' },
-  { name: 'Elemental Weapon',     level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S',      duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Fly',                  level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M',   duration: 'C, up to 10 minutes', concentration: true },
-  { name: 'Glyph of Warding',     level: '3rd', school: 'Abjuration',   time: '1 hour',     range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled or triggered' },
-  { name: 'Haste',                level: '3rd', school: 'Transmutation',time: 'Action',     range: '30 feet', components: 'V, S, M',   duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Protection from Energy',level: '3rd', school: 'Abjuration', time: 'Action',     range: 'Touch',   components: 'V, S',      duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Revivify',             level: '3rd', school: 'Necromancy',  time: 'Action',     range: 'Touch',   components: 'V, S, M(C*)',duration: 'Instantaneous' },
-  { name: 'Water Breathing',      level: '3rd', school: 'Transmutation',time: 'Action or R',range: '30 feet', components: 'V, S, M',   duration: '24 hours' },
-  { name: 'Water Walk',           level: '3rd', school: 'Transmutation',time: 'Action or R',range: '30 feet', components: 'V, S, M',   duration: '1 hour' },
+  { name: 'Blink',                level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Self',    components: 'V, S',      duration: '1 minute', description: 'Roll 1d6 at the end of each of your turns for 1 minute. On a 4–6 you vanish to the Ethereal Plane until the start of your next turn (and when the spell ends), reappearing within 10 feet of where you left. While on the Ethereal Plane you can perceive but not affect the other plane, and vice versa.' },
+  { name: 'Create Food and Water',level: '3rd', school: 'Conjuration',  time: 'Action',     range: '30 feet', components: 'V, S',      duration: 'Instantaneous', description: 'Create 45 pounds of food and 30 gallons of fresh water on the ground or in containers within range. The food is bland but nourishing and spoils after 24 hours if uneaten.' },
+  { name: 'Dispel Magic',         level: '3rd', school: 'Abjuration',   time: 'Action',     range: '120 feet',components: 'V, S',      duration: 'Instantaneous', description: 'Choose a creature, object, or magical effect within range. Any ongoing spell of 3rd level or lower on the target ends automatically; for each ongoing spell of 4th level or higher, make a spellcasting ability check (DC 10 + that spell\'s level) to end it. At higher levels, automatically end any targeted spell whose level is ≤ the slot used.' },
+  { name: 'Elemental Weapon',     level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S',      duration: 'C, up to 1 hour', concentration: true, description: 'Touch a nonmagical weapon and choose Acid, Cold, Fire, Lightning, or Thunder. For the duration it\'s magical, with a +1 bonus to attack rolls and an extra 1d4 damage of the chosen type on a hit. A level 5–6 slot raises this to +2/2d4; a level 7+ slot raises it to +3/3d4.' },
+  { name: 'Fly',                  level: '3rd', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M',   duration: 'C, up to 10 minutes', concentration: true, description: 'A willing creature you touch gains a Fly Speed of 60 feet and can hover for the duration. It falls if still aloft when the spell ends, unless it can stop the fall. At higher levels, target one additional creature per slot above 3rd.' },
+  { name: 'Glyph of Warding',     level: '3rd', school: 'Abjuration',   time: '1 hour',     range: 'Touch',   components: 'V, S, M(C*)',duration: 'Until dispelled or triggered', description: 'Inscribe a glyph on a surface or within a closable object (area up to 10 feet across); it requires a Perception check against your spell save DC to notice. You set a trigger and choose either an explosive-rune glyph (bursts for damage in a 20-foot sphere) or a spell glyph (delivers a stored spell of up to 3rd level, or higher-level with a higher slot). Lasts until dispelled or triggered.' },
+  { name: 'Haste',                level: '3rd', school: 'Transmutation',time: 'Action',     range: '30 feet', components: 'V, S, M',   duration: 'C, up to 1 minute', concentration: true, description: 'A willing creature you can see has its Speed doubled, gains a +2 bonus to AC, has Advantage on DEX saves, and gains an extra action each turn (limited to Attack [one attack], Dash, Disengage, Hide, or Utilize) for the duration. When the spell ends the target is Incapacitated with Speed 0 until the end of its next turn.' },
+  { name: 'Protection from Energy',level: '3rd', school: 'Abjuration', time: 'Action',     range: 'Touch',   components: 'V, S',      duration: 'C, up to 1 hour', concentration: true, description: 'A willing creature you touch has Resistance to one damage type of your choice — Acid, Cold, Fire, Lightning, or Thunder — for the duration.' },
+  { name: 'Revivify',             level: '3rd', school: 'Necromancy',  time: 'Action',     range: 'Touch',   components: 'V, S, M(C*)',duration: 'Instantaneous', description: 'Touch a creature that died within the last minute; it returns to life with 1 HP. Can\'t revive a creature that died of old age, and doesn\'t restore missing body parts.' },
+  { name: 'Water Breathing',      level: '3rd', school: 'Transmutation',time: 'Action or R',range: '30 feet', components: 'V, S, M',   duration: '24 hours', description: 'Up to ten willing creatures you choose within range can breathe underwater for 24 hours; they retain their normal mode of breathing too.' },
+  { name: 'Water Walk',           level: '3rd', school: 'Transmutation',time: 'Action or R',range: '30 feet', components: 'V, S, M',   duration: '1 hour', description: 'Up to ten willing creatures you choose within range can move across any liquid surface — water, acid, mud, snow, quicksand, lava — as if it were solid ground for 1 hour (creatures crossing lava can still take heat damage). Passing from the surface into the liquid (or vice versa) costs a bonus action, unless the creature falls in.' },
 
   // ===== 4th LEVEL =====
-  { name: 'Arcane Eye',                       level: '4th', school: 'Divination',   time: 'Action',     range: '30 feet', components: 'V, S, M',     duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Fabricate',                        level: '4th', school: 'Transmutation',time: '10 minutes', range: '120 feet',components: 'V, S',        duration: 'Instantaneous' },
-  { name: 'Freedom of Movement',              level: '4th', school: 'Abjuration',   time: 'Action',     range: 'Touch',   components: 'V, S, M',     duration: '1 hour' },
-  { name: 'Leomund\'s Secret Chest',          level: '4th', school: 'Conjuration',  time: 'Action',     range: 'Touch',   components: 'V, S, M(C)',  duration: 'Until dispelled' },
-  { name: 'Mordenkainen\'s Private Sanctum',  level: '4th', school: 'Abjuration',   time: '10 minutes', range: '120 feet',components: 'V, S, M',     duration: '24 hours' },
-  { name: 'Otiluke\'s Resilient Sphere',      level: '4th', school: 'Abjuration',   time: 'Action',     range: '30 feet', components: 'V, S, M',     duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Stone Shape',                      level: '4th', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M',     duration: 'Instantaneous' },
-  { name: 'Stoneskin',                        level: '4th', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M(C*)', duration: 'C, up to 1 hour', concentration: true },
-  { name: 'Summon Construct',                 level: '4th', school: 'Conjuration',  time: 'Action',     range: '90 feet', components: 'V, S, M(C)',  duration: 'C, up to 1 hour', concentration: true },
+  { name: 'Arcane Eye',                       level: '4th', school: 'Divination',   time: 'Action',     range: '30 feet', components: 'V, S, M',     duration: 'C, up to 1 hour', concentration: true, description: 'Create an Invisible, invulnerable eye that hovers within range and sends you visual information in every direction, including Darkvision 30 feet, for the duration. As a bonus action you can move it up to 30 feet; it can pass through openings as small as 1 inch but not solid barriers.' },
+  { name: 'Fabricate',                        level: '4th', school: 'Transmutation',time: '10 minutes', range: '120 feet',components: 'V, S',        duration: 'Instantaneous', description: 'Convert raw materials you can see into a finished product of the same material — e.g., trees into a wooden bridge, hemp into rope, flax into clothes. You can fabricate a Large or smaller object (or up to eight connected 5-foot cubes); metal, stone, or other mineral objects are capped at Medium. Quality depends on the raw material, and this can\'t create creatures, magic items, or anything requiring Artisan\'s Tool proficiency you lack (such as weapons or armor).' },
+  { name: 'Freedom of Movement',              level: '4th', school: 'Abjuration',   time: 'Action',     range: 'Touch',   components: 'V, S, M',     duration: '1 hour', description: 'Touch a willing creature. For 1 hour its movement ignores Difficult Terrain, and spells/magical effects can\'t reduce its Speed or impose the Paralyzed or Restrained conditions; it also gains a Swim Speed equal to its Speed and can spend 5 feet of movement to automatically escape nonmagical restraints or a grapple. At higher levels, target one additional creature per slot above 4th.' },
+  { name: 'Leomund\'s Secret Chest',          level: '4th', school: 'Conjuration',  time: 'Action',     range: 'Touch',   components: 'V, S, M(C)',  duration: 'Until dispelled', description: 'Hide a specially prepared chest (holding up to 12 cubic feet) on the Ethereal Plane by touching it and a paired miniature replica. A Magic action touching the replica recalls the chest to an unoccupied space within 5 feet of you; another Magic action sends it back. After 60 days there\'s a cumulative 5% chance per day the spell ends; it also ends if you recast it or the replica is destroyed.' },
+  { name: 'Mordenkainen\'s Private Sanctum',  level: '4th', school: 'Abjuration',   time: '10 minutes', range: '120 feet',components: 'V, S, M',     duration: '24 hours', description: 'Ward a Cube from 5 to 100 feet on a side for 24 hours, choosing any combination of: sound can\'t pass the barrier; the barrier looks dark and foggy, blocking vision (including Darkvision) through it; Divination sensors can\'t enter or cross it; creatures inside can\'t be targeted by Divination; and planar travel in or out is blocked.' },
+  { name: 'Otiluke\'s Resilient Sphere',      level: '4th', school: 'Abjuration',   time: 'Action',     range: '30 feet', components: 'V, S, M',     duration: 'C, up to 1 minute', concentration: true, description: 'A shimmering sphere encloses a Large or smaller creature or object within range for the duration (unwilling creatures get a DEX save to negate). Nothing can pass through the barrier in or out, the sphere is immune to all damage, and nothing inside can be harmed by outside effects or vice versa. It\'s weightless and can be rolled by the creature inside or moved by others; Disintegrate destroys it harmlessly.' },
+  { name: 'Stone Shape',                      level: '4th', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M',     duration: 'Instantaneous', description: 'Touch a Medium or smaller stone object, or a section of stone up to 5 feet in any dimension, and reshape it into any form you like — a weapon, statue, coffer, a passage through a wall, or a door sealed shut. Up to two hinges and a latch are possible; no finer mechanism.' },
+  { name: 'Stoneskin',                        level: '4th', school: 'Transmutation',time: 'Action',     range: 'Touch',   components: 'V, S, M(C*)', duration: 'C, up to 1 hour', concentration: true, description: 'A willing creature you touch has Resistance to Bludgeoning, Piercing, and Slashing damage for the duration.' },
+  { name: 'Summon Construct',                 level: '4th', school: 'Conjuration',  time: 'Action',     range: '90 feet', components: 'V, S, M(C)',  duration: 'C, up to 1 hour', concentration: true, description: 'Call a Construct Spirit (Clay, Metal, or Stone — you choose) into an unoccupied space within range; it\'s your ally, sharing your Initiative and acting right after you, obeying your verbal commands (or Dodging and avoiding danger if you give none). It has AC 13 + the spell\'s level, 40 + 15 HP per slot level above 4th, and makes a number of Slam attacks equal to half the spell\'s level (round down); Metal grants a fire-retaliation trait, Stone slows nearby foes, Clay lashes out when hit. Lasts for the duration or until it drops to 0 HP.' },
 
   // ===== 5th LEVEL =====
-  { name: 'Animate Objects',     level: '5th', school: 'Transmutation', time: 'Action',   range: '120 feet', components: 'V, S',       duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Bigby\'s Hand',       level: '5th', school: 'Evocation',     time: 'Action',   range: '120 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true },
-  { name: 'Circle of Power',     level: '5th', school: 'Abjuration',    time: 'Action',   range: 'Self',     components: 'V',          duration: 'C, up to 10 minutes', concentration: true },
-  { name: 'Creation',            level: '5th', school: 'Illusion',      time: '1 minute', range: '30 feet',  components: 'V, S, M',    duration: 'Special' },
-  { name: 'Greater Restoration', level: '5th', school: 'Abjuration',    time: 'Action',   range: 'Touch',    components: 'V, S, M(C*)',duration: 'Instantaneous' },
-  { name: 'Wall of Stone',       level: '5th', school: 'Evocation',     time: 'Action',   range: '120 feet', components: 'V, S, M',    duration: 'C, up to 10 minutes', concentration: true },
+  { name: 'Animate Objects',     level: '5th', school: 'Transmutation', time: 'Action',   range: '120 feet', components: 'V, S',       duration: 'C, up to 1 minute', concentration: true, description: 'Animate up to a number of nonmagical, unworn, unfixed, non-Gargantuan objects equal to your spellcasting modifier (Large counts as two, Huge as three) into Constructs using the Animated Object stat block, under your control for the duration; they share your Initiative and act right after you. Command them as a bonus action, or they Dodge and avoid harm if uncommanded. At higher levels, their Slam damage increases per slot above 5th.' },
+  { name: 'Bigby\'s Hand',       level: '5th', school: 'Evocation',     time: 'Action',   range: '120 feet', components: 'V, S, M',    duration: 'C, up to 1 minute', concentration: true, description: 'Create a Large hand of shimmering force in an unoccupied space within range for the duration (AC 20, HP = your HP maximum; the spell ends if it drops to 0). On casting and as a bonus action on later turns, move it up to 60 feet and choose one effect: Clenched Fist (melee spell attack, 5d8 force damage), Forceful Hand (STR save or pushed 5 ft + 5 ft per your spellcasting modifier), Grasping Hand (DEX save or Grappled, escape DC = your spell save DC; bonus action to crush for 4d6 + spellcasting modifier bludgeoning), or Interposing Hand (grants you Half Cover from its space and makes its space Difficult Terrain for enemies). At higher levels, Clenched Fist damage +2d8 and Grasping Hand damage +2d6 per slot above 5th.' },
+  { name: 'Circle of Power',     level: '5th', school: 'Abjuration',    time: 'Action',   range: 'Self',     components: 'V',          duration: 'C, up to 10 minutes', concentration: true, description: 'An aura radiates from you in a 30-foot Emanation for the duration. You and allies in the aura have Advantage on saving throws against spells and magical effects; if an affected creature succeeds on a save that would normally deal half damage, it takes no damage instead.' },
+  { name: 'Creation',            level: '5th', school: 'Illusion',      time: '1 minute', range: '30 feet',  components: 'V, S, M',    duration: 'Special', description: 'Pull shadow-stuff from the Shadowfell to create a nonmagical object of vegetable or mineral matter, up to a 5-foot cube, of a form and material you\'ve seen. Duration depends on material — vegetable 24 hours, stone/crystal 12 hours, precious metals 1 hour, gems 10 minutes, adamantine/mithral 1 minute (shortest applies if mixed) — and the object can\'t be used as another spell\'s material component. At higher levels, the cube\'s size increases by 5 feet per slot above 5th.' },
+  { name: 'Greater Restoration', level: '5th', school: 'Abjuration',    time: 'Action',   range: 'Touch',    components: 'V, S, M(C*)',duration: 'Instantaneous', description: 'Touch a creature and remove one of the following: 1 Exhaustion level; the Charmed or Petrified condition; a curse (including Attunement to a cursed magic item); any reduction to an ability score; or any reduction to HP maximum.' },
+  { name: 'Wall of Stone',       level: '5th', school: 'Evocation',     time: 'Action',   range: '120 feet', components: 'V, S, M',    duration: 'C, up to 10 minutes', concentration: true, description: 'Create a nonmagical wall of solid stone (six-inch-thick 10-by-10-foot panels, or 3-inch-thick 10-by-20-foot panels) at a point within range; it can be any shape, doesn\'t need to be vertical, but must merge with existing stone. Each panel has AC 15, 30 HP per inch of thickness, and Immunity to Poison and Psychic damage. A creature the wall would enclose gets a DEX save to use its Reaction to escape. If you concentrate for the full duration the wall becomes permanent.' },
 
   // ===== SUBCLASS-ONLY SPELLS =====
   // Always-prepared via Armorer; not on the base Artificer prepared list, so
   // they shouldn't appear in the prepared-spell picker.
   { name: 'Magic Missile',     level: '1st', school: 'Evocation',    time: 'Action',     range: '120 feet',          components: 'V, S',    duration: 'Instantaneous',                          subclassOnly: true, description: 'Create three glowing darts of magical force that automatically hit. Each dart deals 1d4 + 1 force damage. You can direct them at one target or multiple. At higher spell levels, create one additional dart per slot above 1st.' },
   { name: 'Thunderwave',       level: '1st', school: 'Evocation',    time: 'Action',     range: 'Self (15-ft cube)', components: 'V, S',    duration: 'Instantaneous',                          subclassOnly: true, description: 'A wave of thunderous force sweeps out from you. Each creature in a 15-foot cube must make a CON save. On a failure, take 2d8 thunder damage and be pushed 10 feet away. On a success, half damage and no push. Unsecured objects are also pushed. Thunder is audible 300 feet away. At higher spell levels add 1d8 per slot above 1st.' },
-  { name: 'Mirror Image',      level: '2nd', school: 'Illusion',     time: 'Action',     range: 'Self',              components: 'V, S',    duration: '1 minute',                                subclassOnly: true },
-  { name: 'Shatter',           level: '2nd', school: 'Evocation',    time: 'Action',     range: '60 feet',           components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true },
-  { name: 'Hypnotic Pattern',  level: '3rd', school: 'Illusion',     time: 'Action',     range: '120 feet',          components: 'S, M',    duration: 'C, up to 1 minute', concentration: true, subclassOnly: true },
-  { name: 'Lightning Bolt',    level: '3rd', school: 'Evocation',    time: 'Action',     range: 'Self (100-ft line)',components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true },
-  { name: 'Fire Shield',       level: '4th', school: 'Evocation',    time: 'Action',     range: 'Self',              components: 'V, S, M', duration: '10 minutes',                              subclassOnly: true },
-  { name: 'Passwall',          level: '5th', school: 'Transmutation',time: 'Action',     range: '30 feet',           components: 'V, S, M', duration: '1 hour',                                  subclassOnly: true }
+  { name: 'Mirror Image',      level: '2nd', school: 'Illusion',     time: 'Action',     range: 'Self',              components: 'V, S',    duration: '1 minute',                                subclassOnly: true, description: 'Three illusory duplicates of you appear in your space for 1 minute, moving and mimicking your actions so it\'s hard to tell which is real. Each time an attack hits you, roll a d6 per remaining duplicate — on a 3+ a duplicate is destroyed instead of you taking the hit. Ends when all three are destroyed; ineffective against attackers with Blindsight or Truesight, or while you\'re Blinded.' },
+  { name: 'Shatter',           level: '2nd', school: 'Evocation',    time: 'Action',     range: '60 feet',           components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true, description: 'A loud noise erupts at a point within range. Each creature in a 10-foot-radius sphere makes a CON save, taking 3d8 thunder damage on a failure or half on a success (Constructs have Disadvantage on the save). Unattended nonmagical objects in the area take the damage too. At higher levels, damage increases by 1d8 per slot above 2nd.' },
+  { name: 'Hypnotic Pattern',  level: '3rd', school: 'Illusion',     time: 'Action',     range: '120 feet',          components: 'S, M',    duration: 'C, up to 1 minute', concentration: true, subclassOnly: true, description: 'A twisting pattern of colors fills a 30-foot cube within range. Each creature that can see it must succeed on a WIS save or gain the Charmed condition (Incapacitated, Speed 0) for the duration. The effect ends early for a creature that takes damage or is shaken out of it by another creature\'s action.' },
+  { name: 'Lightning Bolt',    level: '3rd', school: 'Evocation',    time: 'Action',     range: 'Self (100-ft line)',components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true, description: 'A 100-foot-long, 5-foot-wide line of lightning blasts from you in a direction you choose. Each creature in the line makes a DEX save, taking 8d6 lightning damage on a failure or half on a success. At higher levels, damage increases by 1d6 per slot above 3rd.' },
+  { name: 'Fire Shield',       level: '4th', school: 'Evocation',    time: 'Action',     range: 'Self',              components: 'V, S, M', duration: '10 minutes',                              subclassOnly: true, description: 'Flames wreathe your body for 10 minutes, shedding bright light 10 feet and dim light another 10. Choose a warm shield (Resistance to cold damage) or a chill shield (Resistance to fire damage). Whenever a creature within 5 feet hits you with a melee attack, the shield erupts and the attacker takes 2d8 fire (warm) or cold (chill) damage.' },
+  { name: 'Passwall',          level: '5th', school: 'Transmutation',time: 'Action',     range: '30 feet',           components: 'V, S, M', duration: '1 hour',                                  subclassOnly: true, description: 'A passage appears on a wooden, plaster, or stone surface within range and lasts 1 hour — up to 5 feet wide, 8 feet tall, and 20 feet deep, shaped as you choose, without destabilizing the structure. When the spell ends, anyone still inside the passage is safely ejected to the nearest unoccupied space by the entry surface.' }
 ];
 const _SPELLS_PLACEHOLDER_HEAD = [
   // Cantrips
@@ -5084,6 +5084,7 @@ const DEFAULT_STATE = {
   conditions: {},
   exhaustion: 0,
   heroicInspiration: false,
+  sneakAttackUsed: false,    // Rogue: Sneak Attack used this turn — manual toggle, reset by the player each turn
   // Phase 2D: Spell/feat picks driven by the level-up modal.
   cantripsKnown: [],   // array of spell names currently known as cantrips
   preparedSpells: [],  // array of spell names currently prepared (Artificer-only for now)
@@ -5107,6 +5108,8 @@ const DEFAULT_STATE = {
   tinkersMagicUsed: 0,       // Artificer L1: Tinker's Magic create-mundane-item uses
   giantStatureUsed: 0,       // Armorer Dreadnaught L3: bonus-action growth uses
   infiltratorFlyUsed: 0,     // Armorer Infiltrator L15: bonus-action fly uses
+  defensiveFieldUsed: 0,     // Armorer Guardian L3: bonus-action temp HP, 1 / long rest
+  guardianReactionUsed: 0,   // Armorer Guardian L15: forced-movement pull reaction uses
   strokeOfLuckUsed: 0,       // Rogue L20: 1 use / short or long rest
   // Phase 2L: Found magic items (looted/awarded, separate from Replicate plans)
   // Each entry: { id, name, type, rarity, attunement: bool, attuned: bool,
@@ -5669,7 +5672,7 @@ function renderCombatResources(level) {
     dynRows.appendChild(row);
   }
 
-  // ---- Sneak Attack die ---- (Rogue, read-only)
+  // ---- Sneak Attack die ---- (Rogue, once-per-turn toggle)
   if (r >= 1) {
     const rogueData = CLASS_DATA.rogue.perLevel[r];
     const sa = rogueData ? rogueData.sneakAttack : 0;
@@ -5677,10 +5680,15 @@ function renderCombatResources(level) {
       const row = document.createElement('div');
       row.className = 'resource-row';
       row.innerHTML = `
-        <span class="resource-label has-tip" title="Once per turn, +${sa}d6 damage with a Finesse or Ranged weapon vs. a creature you have Advantage against (or an ally is within 5 ft of it).">Sneak Attack</span>
-        <span class="resource-readout">${sa}d6</span>
+        <span class="resource-label has-tip" title="Once per turn, +${sa}d6 damage with a Finesse or Ranged weapon vs. a creature you have Advantage against (or an ally is within 5 ft of it). Click to mark it used; click again at the start of your next turn to reset.">Sneak Attack <span class="resource-meta">${sa}d6</span></span>
+        <button class="resource-toggle${state.sneakAttackUsed ? ' used' : ''}" id="sneak-attack-toggle">${state.sneakAttackUsed ? 'Used' : 'Available'}</button>
       `;
       dynRows.appendChild(row);
+      document.getElementById('sneak-attack-toggle').addEventListener('click', () => {
+        state.sneakAttackUsed = !state.sneakAttackUsed;
+        saveState();
+        renderCombatResources(state.level);
+      });
     }
   }
 
@@ -5726,6 +5734,32 @@ function renderCombatResources(level) {
   if (a >= 15 && armorModel === 'Infiltrator') {
     addIntModRow('infiltratorFlyUsed', 'Infiltrator Fly',
       'Bonus action: gain a fly speed of 2x your Speed until end of turn. INT mod uses per long rest.',
+      true);
+  }
+  // Defensive Field — Armorer Guardian L3 (bonus action while Bloodied: temp HP = Artificer level)
+  if (a >= 3 && armorModel === 'Guardian') {
+    const dfMax = 1;
+    const dfUsed = Math.min(state.defensiveFieldUsed || 0, dfMax);
+    const row = document.createElement('div');
+    row.className = 'resource-row';
+    row.innerHTML = `
+      <span class="resource-label has-tip" title="Bonus action while Bloodied: gain temporary HP equal to your Artificer level (lost if you doff your armor). 1 use per long rest.">Defensive Field</span>
+      <div class="resource-pips" data-resource="defensiveFieldUsed"></div>
+    `;
+    const pipsBox = row.querySelector('.resource-pips');
+    for (let i = 0; i < dfMax; i++) {
+      const pip = document.createElement('div');
+      pip.className = 'pip' + (i >= dfMax - dfUsed ? ' used' : '');
+      pip.title = 'Defensive Field use';
+      pip.addEventListener('click', () => toggleIntModResource('defensiveFieldUsed', i, dfMax));
+      pipsBox.appendChild(pip);
+    }
+    dynRows.appendChild(row);
+  }
+  // Guardian's L15 reaction — forced-movement pull
+  if (a >= 15 && armorModel === 'Guardian') {
+    addIntModRow('guardianReactionUsed', 'Guardian Reaction (Force Pull)',
+      'Reaction: when a Huge-or-smaller creature ends its turn within 30 ft, force a STR save (your spell DC); on fail, pull it up to 25 ft and make a melee attack if it lands within 5 ft. INT mod uses per long rest.',
       true);
   }
 
@@ -5958,6 +5992,11 @@ function getBaseSpeed(level) {
   // Gear speed bonuses (Boots of Striding etc.)
   const gearMods = computeGearMods();
   speed += gearMods.speedBonus || 0;
+  // Infiltrator's Powered Steps — Armorer Infiltrator model, granted at Artificer L3.
+  const { a } = classBreakdown(level);
+  const chosenSub = a >= 3 ? findChosenSubclass('artificer') : null;
+  const armorModel = chosenSub === 'Armorer' ? findArmorModel() : null;
+  if (a >= 3 && armorModel === 'Infiltrator') speed += 5;
   return speed;
 }
 
@@ -8906,12 +8945,19 @@ function eligibleInfusionPlans(artificerLevel) {
 // plansKnown = plans she has memorized; itemsMax = both items created per long
 // rest and max concurrent items existing (oldest vanishes if exceeded).
 function infusionCaps(artificerLevel) {
-  if (artificerLevel < 2) return { plansKnown: 0, itemsMax: 0 };
-  if (artificerLevel < 6) return { plansKnown: 4, itemsMax: 2 };
-  if (artificerLevel < 10) return { plansKnown: 5, itemsMax: 3 };
-  if (artificerLevel < 14) return { plansKnown: 6, itemsMax: 4 };
-  if (artificerLevel < 18) return { plansKnown: 7, itemsMax: 5 };
-  return { plansKnown: 8, itemsMax: 6 };
+  let caps;
+  if (artificerLevel < 2) caps = { plansKnown: 0, itemsMax: 0 };
+  else if (artificerLevel < 6) caps = { plansKnown: 4, itemsMax: 2 };
+  else if (artificerLevel < 10) caps = { plansKnown: 5, itemsMax: 3 };
+  else if (artificerLevel < 14) caps = { plansKnown: 6, itemsMax: 4 };
+  else if (artificerLevel < 18) caps = { plansKnown: 7, itemsMax: 5 };
+  else caps = { plansKnown: 8, itemsMax: 6 };
+  // Improved Armorer (Artificer 9): +1 known plan (Armor category) and +1 item
+  // that can be replicated per long rest. Gated on having the Armorer subclass.
+  if (artificerLevel >= 9 && findArmorModel()) {
+    caps = { plansKnown: caps.plansKnown + 1, itemsMax: caps.itemsMax + 1 };
+  }
+  return caps;
 }
 
 // Max attunement slots: 3 base, +1 at Artificer 10 (Magic Item Adept), +1 at
@@ -9380,6 +9426,8 @@ document.getElementById('long-rest-btn').addEventListener('click', () => {
   const armorModel = a >= 3 ? findArmorModel() : null;
   if (a >= 3 && armorModel === 'Dreadnaught') items.push('Refill Giant Stature uses');
   if (a >= 15 && armorModel === 'Infiltrator') items.push('Refill Infiltrator Fly uses');
+  if (a >= 3 && armorModel === 'Guardian') items.push('Refill Defensive Field use');
+  if (a >= 15 && armorModel === 'Guardian') items.push('Refill Guardian Reaction (Force Pull) uses');
   if (r >= 20) items.push('Refill Stroke of Luck');
   items.push('Reset death saves');
   const body = `
@@ -9399,6 +9447,8 @@ document.getElementById('long-rest-btn').addEventListener('click', () => {
     state.tinkersMagicUsed = 0;
     state.giantStatureUsed = 0;
     state.infiltratorFlyUsed = 0;
+    state.defensiveFieldUsed = 0;
+    state.guardianReactionUsed = 0;
     state.strokeOfLuckUsed = 0;
     // Active replicas + attunement persist (RAW). Concentration not auto-reset.
     saveState();

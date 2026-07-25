@@ -9767,6 +9767,18 @@ if (IS_DM) {
 }
 
 // ============================================================
+// HEARTBEAT — keep Supabase project alive
+// ============================================================
+// Free-tier projects pause after 7 days of inactivity. A lightweight read
+// every 20 minutes while the page is visible prevents that.
+if (!IS_DM) {
+  setInterval(async () => {
+    if (document.visibilityState === 'hidden') return;
+    try { await fetchRemote(); } catch (e) {}
+  }, 20 * 60 * 1000);
+}
+
+// ============================================================
 // FLUSH ON PAGE HIDE
 // ============================================================
 // If the tab is closed while saveTimer or cloudTimer is still pending,

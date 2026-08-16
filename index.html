@@ -4452,7 +4452,31 @@ const SPELLS = [
   { name: 'Hypnotic Pattern',  level: '3rd', school: 'Illusion',     time: 'Action',     range: '120 feet',          components: 'S, M',    duration: 'C, up to 1 minute', concentration: true, subclassOnly: true, description: 'A twisting pattern of colors fills a 30-foot cube within range. Each creature that can see it must succeed on a WIS save or gain the Charmed condition (Incapacitated, Speed 0) for the duration. The effect ends early for a creature that takes damage or is shaken out of it by another creature\'s action.' },
   { name: 'Lightning Bolt',    level: '3rd', school: 'Evocation',    time: 'Action',     range: 'Self (100-ft line)',components: 'V, S, M', duration: 'Instantaneous',                          subclassOnly: true, description: 'A 100-foot-long, 5-foot-wide line of lightning blasts from you in a direction you choose. Each creature in the line makes a DEX save, taking 8d6 lightning damage on a failure or half on a success. At higher levels, damage increases by 1d6 per slot above 3rd.' },
   { name: 'Fire Shield',       level: '4th', school: 'Evocation',    time: 'Action',     range: 'Self',              components: 'V, S, M', duration: '10 minutes',                              subclassOnly: true, description: 'Flames wreathe your body for 10 minutes, shedding bright light 10 feet and dim light another 10. Choose a warm shield (Resistance to cold damage) or a chill shield (Resistance to fire damage). Whenever a creature within 5 feet hits you with a melee attack, the shield erupts and the attacker takes 2d8 fire (warm) or cold (chill) damage.' },
-  { name: 'Passwall',          level: '5th', school: 'Transmutation',time: 'Action',     range: '30 feet',           components: 'V, S, M', duration: '1 hour',                                  subclassOnly: true, description: 'A passage appears on a wooden, plaster, or stone surface within range and lasts 1 hour — up to 5 feet wide, 8 feet tall, and 20 feet deep, shaped as you choose, without destabilizing the structure. When the spell ends, anyone still inside the passage is safely ejected to the nearest unoccupied space by the entry surface.' }
+  { name: 'Passwall',          level: '5th', school: 'Transmutation',time: 'Action',     range: '30 feet',           components: 'V, S, M', duration: '1 hour',                                  subclassOnly: true, description: 'A passage appears on a wooden, plaster, or stone surface within range and lasts 1 hour — up to 5 feet wide, 8 feet tall, and 20 feet deep, shaped as you choose, without destabilizing the structure. When the spell ends, anyone still inside the passage is safely ejected to the nearest unoccupied space by the entry surface.' },
+
+  // ===== FEAT-GRANTED SPELLS (Fey Touched) =====
+  // Not on the Artificer spell list — granted directly by the Fey Touched
+  // feat, independent of class. Tagged source:'feat' so they're excluded
+  // from the normal cantrip/prepared-spell pickers (buildSpellPickerHTML,
+  // openEditPrepared) and only ever enter state.preparedSpells via the
+  // feat's own grant/backfill flow. Still resolve fine through SPELLS.find()
+  // for rendering, the info popover, and the cast popover like any other spell.
+  { name: 'Misty Step',              level: '2nd', school: 'Conjuration', time: 'Bonus Action', range: 'Self',    components: 'V',       duration: 'Instantaneous',             source: 'feat', description: 'Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see. Granted automatically by Fey Touched — castable once free per long rest, or with a spell slot.' },
+  { name: 'Comprehend Languages',    level: '1st', school: 'Divination',  time: 'Action or R',  range: 'Self',    components: 'V, S, M', duration: '1 hour',                    source: 'feat', description: 'For the duration, you understand the literal meaning of any language you hear or see signed, and any written language you touch. It takes about 1 minute to read one page of text. Doesn\'t decode symbols or secret messages.' },
+  { name: 'Detect Evil and Good',    level: '1st', school: 'Divination',  time: 'Action',       range: 'Self',    components: 'V, S',    duration: 'C, up to 10 minutes', concentration: true, source: 'feat', description: 'For the duration, you sense the location of any Aberration, Celestial, Elemental, Fey, Fiend, or Undead within 30 feet, and whether the Hallow spell is active there. Blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.' },
+  { name: 'Detect Poison and Disease', level: '1st', school: 'Divination', time: 'Action or R', range: 'Self',    components: 'V, S, M', duration: 'C, up to 10 minutes', concentration: true, source: 'feat', description: 'For the duration, you sense the location of poisons, poisonous or venomous creatures, and magical contagions within 30 feet, and the kind of each. Blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.' },
+  { name: 'Speak with Animals',      level: '1st', school: 'Divination',  time: 'Action or R',  range: 'Self',    components: 'V, S',    duration: '10 minutes',                source: 'feat', description: 'For the duration, you can comprehend and verbally communicate with Beasts, and can use any Influence action skill options with them. Most Beasts have little to say beyond survival/companionship topics, but can share what they\'ve perceived in the past day.' },
+  { name: 'Animal Friendship',       level: '1st', school: 'Enchantment', time: 'Action',       range: '30 feet', components: 'V, S, M', duration: '24 hours',                  source: 'feat', description: 'Target a Beast you can see. It must succeed on a WIS save or have the Charmed condition for the duration. The spell ends if you or an ally deals damage to it. At higher levels, target one additional Beast per slot above 1st.' },
+  { name: 'Bane',                    level: '1st', school: 'Enchantment', time: 'Action',       range: '30 feet', components: 'V, S, M', duration: 'C, up to 1 minute', concentration: true, source: 'feat', description: 'Up to three creatures you choose within range make a CHA save. Whenever a target that fails subtracts 1d4 from an attack roll or save it makes before the spell ends. At higher levels, target one additional creature per slot above 1st.' },
+  { name: 'Bless',                   level: '1st', school: 'Enchantment', time: 'Action',       range: '30 feet', components: 'V, S, M', duration: 'C, up to 1 minute', concentration: true, source: 'feat', description: 'Bless up to three creatures within range. Whenever a target makes an attack roll or save before the spell ends, it adds 1d4. At higher levels, target one additional creature per slot above 1st.' },
+  { name: 'Charm Person',            level: '1st', school: 'Enchantment', time: 'Action',       range: '30 feet', components: 'V, S',    duration: '1 hour',                    source: 'feat', description: 'One Humanoid you can see makes a WIS save (with Advantage if you or allies are fighting it). On a failure it has the Charmed condition until the spell ends or it takes damage from you/allies, and is Friendly to you. At higher levels, target one additional creature per slot above 1st.' },
+  { name: 'Command',                 level: '1st', school: 'Enchantment', time: 'Action',       range: '60 feet', components: 'V',       duration: 'Instantaneous',              source: 'feat', description: 'Speak a one-word command (Approach, Drop, Flee, Grovel, or Halt) to a creature you can see. It must succeed on a WIS save or follow the command on its next turn.' },
+  { name: 'Compelled Duel',          level: '1st', school: 'Enchantment', time: 'Bonus Action',range: '30 feet', components: 'V',       duration: 'C, up to 1 minute', concentration: true, source: 'feat', description: 'One creature you can see makes a WIS save. On a failure it has Disadvantage on attack rolls against creatures other than you and can\'t willingly move more than 30 feet from you. Ends if you attack another creature, cast a harmful spell on another enemy, an ally damages the target, or you end your turn more than 30 feet away.' },
+  { name: 'Dissonant Whispers',      level: '1st', school: 'Enchantment', time: 'Action',       range: '60 feet', components: 'V',       duration: 'Instantaneous',              source: 'feat', description: 'One creature you can see makes a WIS save. On a failure it takes 3d6 psychic damage and must immediately use its Reaction (if available) to move as far from you as it can by the safest route; on a success it takes half damage only.' },
+  { name: 'Heroism',                 level: '1st', school: 'Enchantment', time: 'Action',       range: 'Touch',   components: 'V, S',    duration: 'C, up to 1 minute', concentration: true, source: 'feat', description: 'A willing creature you touch is immune to the Frightened condition and gains Temp HP equal to your spellcasting modifier at the start of each of its turns for the duration. At higher levels, target one additional creature per slot above 1st.' },
+  { name: 'Hex',                     level: '1st', school: 'Enchantment', time: 'Bonus Action', range: '90 feet', components: 'V, S, M', duration: 'C, up to 1 hour', concentration: true, source: 'feat', description: 'Curse a creature you can see. You deal an extra 1d6 necrotic damage to it whenever you hit it with an attack, and it has Disadvantage on ability checks with one ability you choose. If it drops to 0 HP before the spell ends, you can curse a new creature as a bonus action on a later turn.' },
+  { name: 'Sleep',                   level: '1st', school: 'Enchantment', time: 'Action',       range: '60 feet', components: 'V, S, M', duration: 'C, up to 1 minute', concentration: true, source: 'feat', description: 'Each creature you choose in a 5-foot-radius Sphere within range must succeed on a WIS save or have the Incapacitated condition until the end of its next turn, then repeat the save or gain the Unconscious condition for the duration. Ends early if the target takes damage or is shaken awake.' },
+  { name: 'Tasha\'s Hideous Laughter', level: '1st', school: 'Enchantment', time: 'Action',     range: '30 feet', components: 'V, S, M', duration: 'C, up to 1 minute', concentration: true, source: 'feat', description: 'One creature you can see makes a WIS save. On a failure it has the Prone and Incapacitated conditions for the duration, laughing uncontrollably and unable to stand. It repeats the save at the end of each turn and whenever it takes damage (Advantage on damage-triggered saves); a success ends the spell.' }
 ];
 const _SPELLS_PLACEHOLDER_HEAD = [
   // Cantrips
@@ -4508,6 +4532,16 @@ const _SPELLS_PLACEHOLDER_HEAD = [
 //   saveProf:   optional save proficiency granted (Resilient family)
 //   prereq:     short text shown in the picker for any prerequisite
 //   effect:     plain-English summary for display on the sheet
+// Fey Touched's spell choice pool: every verified 2024 PHB 1st-level spell in
+// the Divination or Enchantment school, cross-checked spell-by-spell against
+// dnd2024.wikidot.com (not limited to the Artificer spell list — the feat
+// grants access independent of class). Misty Step is granted automatically
+// alongside whichever of these the player picks; it isn't part of the choice.
+const FEY_TOUCHED_SPELL_CHOICES = [
+  'Comprehend Languages', 'Detect Evil and Good', 'Detect Magic', 'Detect Poison and Disease', 'Identify', 'Speak with Animals',
+  'Animal Friendship', 'Bane', 'Bless', 'Charm Person', 'Command', 'Compelled Duel', 'Dissonant Whispers', 'Heroism', 'Hex', 'Sleep', 'Tasha\'s Hideous Laughter'
+];
+
 const FEATS = [
   // ---- Origin feats (background-tied at L1, also pickable anytime as a feat option) ----
   { name: 'Alert',           category: 'Origin',  minLevel: 1, effect: 'Add prof bonus to Initiative. Swap initiative results with a willing ally. Adds Init bonus on surprise rounds.' },
@@ -6311,25 +6345,38 @@ function renderMagicCard(level) {
     }
   }
 
-  // Prepared list — show user picks tagged normally, Armorer always-prepared tagged "auto"
+  // Prepared list — show user picks tagged normally, Armorer always-prepared
+  // tagged "auto", feat-granted spells (e.g. Fey Touched's Misty Step + pick)
+  // tagged "feat". Feat-granted spells live in state.preparedSpells like a
+  // normal pick (so the generic spellsAdded plumbing can grant them) but
+  // don't count against the class's prepared-spell limit, same as "auto".
   const preparedList = document.getElementById('prepared-list');
   preparedList.innerHTML = '';
-  let userPrepared = (state.preparedSpells || []).map(name => ({ spell: SPELLS.find(s => s.name === name), always: false })).filter(x => x.spell);
+  let userPrepared = (state.preparedSpells || [])
+    .map(name => ({ spell: SPELLS.find(s => s.name === name), always: false }))
+    .filter(x => x.spell && x.spell.source !== 'feat');
   if (_spellSearch) userPrepared = userPrepared.filter(x => (x.spell.name || '').toLowerCase().includes(_spellSearch) || (x.spell.school || '').toLowerCase().includes(_spellSearch));
   const armorerAlwaysPrep = getArmorerAlwaysPrepared(a);
   const alwaysPreparedSpells = armorerAlwaysPrep.map(name => ({ spell: SPELLS.find(s => s.name === name) || { name, level: '—', school: 'Armorer', time: '—', range: '—' }, always: true }));
-  const all = [...userPrepared, ...alwaysPreparedSpells];
+  let featPreparedSpells = (state.preparedSpells || [])
+    .map(name => ({ spell: SPELLS.find(s => s.name === name), always: false, feat: true }))
+    .filter(x => x.spell && x.spell.source === 'feat');
+  if (_spellSearch) featPreparedSpells = featPreparedSpells.filter(x => (x.spell.name || '').toLowerCase().includes(_spellSearch) || (x.spell.school || '').toLowerCase().includes(_spellSearch));
+  const all = [...userPrepared, ...alwaysPreparedSpells, ...featPreparedSpells];
   all.sort((a, b) => {
     const da = spellLevelToNum(a.spell.level) - spellLevelToNum(b.spell.level);
     return da !== 0 ? da : a.spell.name.localeCompare(b.spell.name);
   });
-  document.getElementById('prepared-count').textContent = `${userPrepared.length} / ${artData ? artData.prepared : 0}${alwaysPreparedSpells.length ? ` (+${alwaysPreparedSpells.length} auto)` : ''}`;
+  const extraTags = [];
+  if (alwaysPreparedSpells.length) extraTags.push(`+${alwaysPreparedSpells.length} auto`);
+  if (featPreparedSpells.length) extraTags.push(`+${featPreparedSpells.length} feat`);
+  document.getElementById('prepared-count').textContent = `${userPrepared.length} / ${artData ? artData.prepared : 0}${extraTags.length ? ` (${extraTags.join(', ')})` : ''}`;
   if (all.length === 0) {
     preparedList.innerHTML = '<p style="font-style: italic; color: var(--parchment-aged); font-size: 0.85rem; margin: 0.4rem 0;">No prepared spells yet.</p>';
   } else {
     // Group by level for scanability
     let currentLevelLabel = null;
-    for (const { spell, always } of all) {
+    for (const { spell, always, feat } of all) {
       if (spell.level !== currentLevelLabel) {
         currentLevelLabel = spell.level;
         const header = document.createElement('div');
@@ -6340,7 +6387,7 @@ function renderMagicCard(level) {
       const row = document.createElement('div');
       row.className = 'spell-row';
       row.innerHTML = `
-        <span class="spell-name">${spell.name}${spell.concentration ? '<span class="conc-tag">C</span>' : ''}${always ? '<span class="always-tag">auto</span>' : ''}</span>
+        <span class="spell-name">${spell.name}${spell.concentration ? '<span class="conc-tag">C</span>' : ''}${always ? '<span class="always-tag">auto</span>' : ''}${feat ? '<span class="always-tag">feat</span>' : ''}</span>
         <span class="spell-meta">${spell.school} · ${spell.range}</span>
         <span class="spell-actions">
           <button class="spell-info" data-spell="${spell.name}" title="Spell details">ⓘ</button>
@@ -7991,6 +8038,7 @@ function buildSpellPickerHTML(klass, classLevel) {
   const eligiblePrepared = SPELLS.filter(s => {
     if (s.level === 'Cantrip') return false;
     if (s.subclassOnly) return false;
+    if (s.source === 'feat') return false; // feat-granted (e.g. Fey Touched) — not a normal class prepared pick
     if (known.has(s.name)) return false;
     return spellLevelToNum(s.level) <= maxLvl;
   });
@@ -8304,6 +8352,20 @@ function buildAsiFeatPickerHTML(klass, classLevel) {
           </optgroup>` : ''}
         </select>
         <div id="feat-detail" class="feat-detail"></div>
+        <div class="modal-prompt" id="fey-touched-spell-prompt" hidden>
+          <div class="modal-prompt-label">Fey Touched — choose your 1st-level Divination or Enchantment spell (Misty Step is also granted automatically)</div>
+          <div class="spell-picker" data-pick="featSpell" data-max="1">
+            ${FEY_TOUCHED_SPELL_CHOICES.map(name => {
+              const s = SPELLS.find(x => x.name === name);
+              return `<label class="spell-pick">
+                <input type="checkbox" value="${name}">
+                <span class="spell-pick-name">${name}</span>
+                <span class="spell-pick-meta">${s ? s.level + ' · ' + s.school : ''}</span>
+              </label>`;
+            }).join('')}
+          </div>
+          <div class="spell-picker-count" data-count-for="featSpell">0 / 1</div>
+        </div>
       </div>
     </div>
   </div>`;
@@ -8469,16 +8531,26 @@ function wireAsiFeatPicker(promptsEl) {
       const mode = document.querySelector('input[name="asi-feat-mode"]:checked').value;
       asiEl.hidden = mode !== 'asi';
       featEl.hidden = mode !== 'feat';
+      // The Fey Touched spell picker is nested inside asi-feat-feat, so
+      // hiding that whole block already keeps it out of updateConfirmEnabled's
+      // count (it skips hidden pickers) — but re-run it so switching back to
+      // ASI mode immediately re-enables Confirm if the spell pick was pending.
+      updateConfirmEnabled(promptsEl);
     }));
   }
   const featSel = promptsEl.querySelector('#feat-select');
   if (featSel) {
     const detail = promptsEl.querySelector('#feat-detail');
+    const feySpellPrompt = promptsEl.querySelector('#fey-touched-spell-prompt');
     const update = () => {
       const f = FEATS.find(x => x.name === featSel.value);
       detail.innerHTML = f
         ? `${f.prereq ? `<span class="feat-prereq">Prereq · ${f.prereq}</span>` : ''}${f.effect}`
         : '';
+      if (feySpellPrompt) {
+        feySpellPrompt.hidden = !f || f.name !== 'Fey Touched';
+        updateConfirmEnabled(promptsEl);
+      }
     };
     featSel.addEventListener('change', update);
     update();
@@ -8491,6 +8563,10 @@ function updateConfirmEnabled(promptsEl) {
   if (!btn) return;
   let ok = true;
   promptsEl.querySelectorAll('.spell-picker[data-pick], .infusion-picker[data-pick]').forEach(picker => {
+    // Skip pickers that are currently hidden/inactive (e.g. the Fey Touched
+    // spell picker when a different feat — or ASI mode — is selected) so an
+    // unrelated, invisible picker can't block Confirm.
+    if (picker.hidden || picker.closest('[hidden]')) return;
     const max = parseInt(picker.dataset.max, 10);
     const checked = picker.querySelectorAll('input[type="checkbox"]:checked').length;
     if (checked !== max) ok = false;
@@ -9011,6 +9087,17 @@ function confirmLevelUp() {
             state.classSaveProfs = [...set];
           }
           entry.feat = feat.name;
+          // Fey Touched grants Misty Step + a chosen 1st-level Divination or
+          // Enchantment spell — route through the same spellsAdded mechanism
+          // the class spell pickers use so it flows into preparedSpells and
+          // survives history rebuilds (rebuildDerivedStateFromHistory).
+          if (feat.name === 'Fey Touched') {
+            const featSpellPicker = document.querySelector('.spell-picker[data-pick="featSpell"]');
+            const chosen = featSpellPicker ? Array.from(featSpellPicker.querySelectorAll('input:checked')).map(i => i.value) : [];
+            const granted = ['Misty Step', ...chosen];
+            state.preparedSpells = [...(state.preparedSpells || []), ...granted];
+            entry.spellsAdded = [...(entry.spellsAdded || []), ...granted];
+          }
         }
       }
     } else {
@@ -9139,7 +9226,7 @@ function openEditPrepared() {
 
   // Build picker pre-checking current preparedSpells
   const current = new Set(state.preparedSpells || []);
-  const eligible = SPELLS.filter(s => s.level !== 'Cantrip' && !s.subclassOnly && spellLevelToNum(s.level) <= maxLvl);
+  const eligible = SPELLS.filter(s => s.level !== 'Cantrip' && !s.subclassOnly && s.source !== 'feat' && spellLevelToNum(s.level) <= maxLvl);
   eligible.sort((a, b) => {
     const da = spellLevelToNum(a.level) - spellLevelToNum(b.level);
     return da !== 0 ? da : a.name.localeCompare(b.name);
@@ -9197,7 +9284,14 @@ function savePrepared() {
   const picker = overlay.querySelector('.spell-picker');
   if (!picker) return;
   const picked = Array.from(picker.querySelectorAll('input:checked')).map(i => i.value);
-  state.preparedSpells = picked;
+  // Feat-granted spells (Fey Touched's Misty Step + chosen spell) aren't
+  // shown in this picker — carry them over untouched instead of letting
+  // this overwrite silently drop them.
+  const featGranted = (state.preparedSpells || []).filter(name => {
+    const s = SPELLS.find(x => x.name === name);
+    return s && s.source === 'feat';
+  });
+  state.preparedSpells = [...picked, ...featGranted];
   saveState();
   closeEditPrepared();
   render();
@@ -9657,6 +9751,10 @@ function showSpellInfo(spell) {
 function closeConfirmModal() {
   document.getElementById('confirm-overlay').hidden = true;
   _confirmCallback = null;
+  // Safety reset: some callers (e.g. the Fey Touched backfill prompt) gate
+  // this shared button until a picker is complete. Always release it on
+  // close so it doesn't stay disabled for the next, unrelated confirm dialog.
+  document.getElementById('confirm-ok').disabled = false;
 }
 document.getElementById('confirm-ok').addEventListener('click', () => {
   const cb = _confirmCallback;
@@ -9671,6 +9769,79 @@ document.getElementById('confirm-overlay').addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !document.getElementById('confirm-overlay').hidden) closeConfirmModal();
 });
+
+// ============================================================
+// FEY TOUCHED BACKFILL
+// ============================================================
+// Rivet picked the Fey Touched feat before this sheet knew how to grant its
+// spells (Misty Step + a chosen 1st-level Divination/Enchantment spell) — so
+// her saved history has the feat and its ASI, but never got prompted for the
+// spells. Checked once per load (see the initCloudSync call site below),
+// never on every render. The presence of Misty Step in preparedSpells after
+// she completes this is itself the guard, so it naturally won't re-fire.
+function checkFeyTouchedBackfill() {
+  const hasFeyTouched =
+    (state.asiHistory || []).some(a => a.fromFeat === 'Fey Touched') ||
+    (state.levelHistory || []).some(e => e.feat === 'Fey Touched');
+  if (!hasFeyTouched) return;
+  if ((state.preparedSpells || []).includes('Misty Step')) return;
+  // Don't clobber another confirm dialog that might already be open from
+  // this same load (e.g. the pending-transfers inbox) — wait for it to
+  // close, then re-check (the guard above re-evaluates fresh each retry).
+  const overlay = document.getElementById('confirm-overlay');
+  if (overlay && !overlay.hidden) {
+    setTimeout(checkFeyTouchedBackfill, 500);
+    return;
+  }
+  showFeyTouchedBackfillPrompt();
+}
+
+function showFeyTouchedBackfillPrompt() {
+  const body = `
+    <p>Fey Touched grants <strong>Misty Step</strong> plus a 1st-level Divination or Enchantment spell of your choice — Rivet picked this feat, but never got prompted to choose. Pick the Divination/Enchantment spell now (Misty Step is added automatically):</p>
+    <div class="spell-picker" data-pick="featSpellBackfill" data-max="1">
+      ${FEY_TOUCHED_SPELL_CHOICES.map(name => {
+        const s = SPELLS.find(x => x.name === name);
+        return `<label class="spell-pick">
+          <input type="checkbox" value="${name}">
+          <span class="spell-pick-name">${name}</span>
+          <span class="spell-pick-meta">${s ? s.level + ' · ' + s.school : ''}</span>
+        </label>`;
+      }).join('')}
+    </div>
+    <div class="spell-picker-count" data-count-for="featSpellBackfill">0 / 1</div>
+  `;
+  showConfirm('Fey Touched — Choose Your Spell', body, () => {
+    const picker = document.getElementById('confirm-body').querySelector('.spell-picker[data-pick="featSpellBackfill"]');
+    const chosen = picker ? Array.from(picker.querySelectorAll('input:checked')).map(i => i.value) : [];
+    if (chosen.length !== 1) return; // defensive — Confirm is gated below, this shouldn't happen
+    state.preparedSpells = [...(state.preparedSpells || []), 'Misty Step', ...chosen];
+    saveState();
+    render();
+  }, { okLabel: 'Grant Spells' });
+
+  // Gate the shared confirm-ok button until exactly one spell is checked —
+  // same enforce-N pattern as updateConfirmEnabled, scoped to this dialog
+  // since it reuses the generic confirm modal rather than the level-up one.
+  const okBtn = document.getElementById('confirm-ok');
+  const picker = document.getElementById('confirm-body').querySelector('.spell-picker[data-pick="featSpellBackfill"]');
+  const countEl = document.getElementById('confirm-body').querySelector('[data-count-for="featSpellBackfill"]');
+  const checkboxes = Array.from(picker.querySelectorAll('input[type="checkbox"]'));
+  const update = () => {
+    const checked = checkboxes.filter(c => c.checked);
+    countEl.textContent = `${checked.length} / 1`;
+    countEl.classList.toggle('full', checked.length === 1);
+    const reached = checked.length >= 1;
+    checkboxes.forEach(c => {
+      const label = c.closest('.spell-pick');
+      if (!c.checked && reached) { c.disabled = true; label.classList.add('disabled'); }
+      else { c.disabled = false; label.classList.remove('disabled'); }
+    });
+    okBtn.disabled = checked.length !== 1;
+  };
+  checkboxes.forEach(c => c.addEventListener('change', update));
+  update();
+}
 
 document.getElementById('short-rest-btn').addEventListener('click', () => {
   const { a, r } = classBreakdown(state.level);
@@ -10047,6 +10218,7 @@ async function acceptAllTransfers(pending) {
     }
     setCloudStatus('synced', 'Cloud: synced');
     if (!IS_DM) checkPendingTransfersInbox();
+    if (!IS_DM) checkFeyTouchedBackfill();
   } catch (e) {
     console.error('cloud load failed', e);
     setLoadedFrom(hasLocal ? 'local' : 'defaults');

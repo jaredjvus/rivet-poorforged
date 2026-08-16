@@ -2721,6 +2721,19 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
   letter-spacing: 0.1em;
 }
 .gear-row .gear-actions button:hover { background: rgba(74, 138, 115, 0.15); border-color: var(--gold); }
+.gear-row .gear-actions select.gear-give-select {
+  background: transparent;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--gold);
+  padding: 0.25rem 0.4rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+.gear-row .gear-actions select.gear-give-select:hover { background: rgba(74, 138, 115, 0.15); border-color: var(--gold); }
+.gear-row .gear-actions select.gear-give-select option { background: var(--ink); color: var(--parchment); }
 .gear-row .gear-charges { display: flex; gap: 0.2rem; margin-top: 0.2rem; }
 .gear-row .gear-charges-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.2rem; flex-wrap: wrap; }
 .gear-row .gear-charge-btn {
@@ -5227,6 +5240,17 @@ const ROW_ID = 'dcb7e8f3-78c1-425e-bdaa-b4f08d416053';
 const SB_REST = `https://${SUPABASE_PROJECT}.supabase.co/rest/v1/character_sheets`;
 const SB_AUTH = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
 
+// Cross-character item transfers: shared table, same project/key. Each of the
+// 4 party sheets has its own ROW_ID above; this is everyone ELSE's row so we
+// can offer a "Give →" target list on gear rows.
+const OWN_NAME = 'Rivet';
+const SB_REST_TRANSFERS = `https://${SUPABASE_PROJECT}.supabase.co/rest/v1/item_transfers`;
+const PARTY_MEMBERS = [
+  { name: 'Caelen',  rowId: 'c9dbc72f-beed-4c2b-8d67-03dce25b0f7a' },
+  { name: 'Haldeyr', rowId: '2f4ce1a7-0be9-4830-acdb-1cfa0765cb98' },
+  { name: 'Dampe',   rowId: '6976359e-5cbb-4629-b2ff-ec7bcf5a4c5d' }
+];
+
 // DM view: read-only, polls the cloud every 5s. Activated with ?view=dm.
 // IS_DM is hoisted near the top of the script (above loadState/migration).
 // Re-apply dm-mode class here in case <body> wasn't ready when the early line ran.
@@ -5251,6 +5275,34 @@ async function pushRemote(snapshot) {
   if (!r.ok) throw new Error(`upsert ${r.status}: ${await r.text()}`);
   const rows = await r.json();
   return rows[0];
+}
+
+// --- Item transfers (cross-character gifting) ---------------------------
+
+async function createItemTransfer(toRowId, item) {
+  const r = await fetch(SB_REST_TRANSFERS, {
+    method: 'POST',
+    headers: { ...SB_AUTH, 'Content-Type': 'application/json', Prefer: 'return=representation' },
+    body: JSON.stringify({ from_row_id: ROW_ID, from_name: OWN_NAME, to_row_id: toRowId, item })
+  });
+  if (!r.ok) throw new Error(`transfer insert ${r.status}: ${await r.text()}`);
+  const rows = await r.json();
+  return rows[0];
+}
+
+async function fetchPendingTransfers() {
+  const r = await fetch(`${SB_REST_TRANSFERS}?to_row_id=eq.${ROW_ID}&claimed_at=is.null`, { headers: SB_AUTH });
+  if (!r.ok) throw new Error(`transfer fetch ${r.status}`);
+  return await r.json();
+}
+
+async function claimTransfer(transferId) {
+  const r = await fetch(`${SB_REST_TRANSFERS}?id=eq.${transferId}`, {
+    method: 'PATCH',
+    headers: { ...SB_AUTH, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ claimed_at: new Date().toISOString() })
+  });
+  if (!r.ok) throw new Error(`transfer claim ${r.status}: ${await r.text()}`);
 }
 
 let cloudTimer = null;
@@ -7262,6 +7314,10 @@ function renderGear() {
         ${g.notes ? `<div class="gear-meta" style="font-style:italic;">${g.notes}</div>` : ''}
       </div>
       <div class="gear-actions">
+        <select class="gear-give-select" title="Give this item to a party member">
+          <option value="">Give →</option>
+          ${PARTY_MEMBERS.map(m => `<option value="${m.rowId}">${m.name}</option>`).join('')}
+        </select>
         <button class="gear-edit-btn">Edit</button>
         <button class="gear-del-btn">Delete</button>
       </div>
@@ -7307,6 +7363,18 @@ function renderGear() {
       saveState();
       render();
     });
+    const giveSelect = row.querySelector('.gear-give-select');
+    if (giveSelect) giveSelect.addEventListener('change', () => {
+      const targetId = giveSelect.value;
+      giveSelect.value = '';
+      if (!targetId) return;
+      const target = PARTY_MEMBERS.find(m => m.rowId === targetId);
+      if (!target) return;
+      showConfirm(`Give ${g.name} to ${target.name}?`,
+        `<p>Send "${g.name}"${g.quantity > 1 ? ' (1 unit)' : ''} to ${target.name}? It'll leave your gear list and show up in ${target.name}'s inbox to accept.</p>`,
+        () => giveItemToPartyMember(g, target),
+        { okLabel: 'Give' });
+    });
     list.appendChild(row);
   }
   // Attunement counter in card header
@@ -7316,6 +7384,28 @@ function renderGear() {
     counter.textContent = `Attuned: ${attCount} / 3`;
     counter.style.color = attCount >= 3 ? 'var(--silver-crack)' : 'var(--parchment-aged)';
   }
+}
+
+// Give a gear item to another party member: POST it to the shared
+// item_transfers table, then remove it (or one stack unit of it) locally.
+// If the POST fails — table not live yet, network hiccup — bail out
+// without touching state.gear so the item isn't lost.
+async function giveItemToPartyMember(g, target) {
+  const itemCopy = { ...g, quantity: 1, equipped: false, attuned: false };
+  try {
+    await createItemTransfer(target.rowId, itemCopy);
+  } catch (e) {
+    console.error('item transfer failed', e);
+    showInfo('Transfer Failed', `<p>Couldn't send "${g.name}" to ${target.name} — nothing was removed from your gear. Check your connection and try again.</p>`);
+    return;
+  }
+  if (g.quantity && g.quantity > 1) {
+    g.quantity -= 1;
+  } else {
+    state.gear = (state.gear || []).filter(x => x.id !== g.id);
+  }
+  saveState();
+  renderGear();
 }
 
 // Currently-editing gear id (null = adding new)
@@ -9703,6 +9793,39 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 render();
 
 // ============================================================
+// ITEM TRANSFER INBOX
+// ============================================================
+// Checked once per load (right after the normal remote-state sync), never
+// on every render. Skipped in DM view — the DM never has a row of their own
+// to receive gifts into.
+async function checkPendingTransfersInbox() {
+  try {
+    const pending = await fetchPendingTransfers();
+    if (!pending || pending.length === 0) return;
+    const body = `
+      <p>You've received ${pending.length} item${pending.length > 1 ? 's' : ''} from party members:</p>
+      <ul>${pending.map(t => `<li>🎁 ${(t.item && t.item.name) || 'Unknown item'} from ${t.from_name}</li>`).join('')}</ul>
+      <p style="font-style:italic; font-size:0.85rem; color:var(--parchment-aged);">Accept adds all of these to your gear. You can say no for now — they'll still be waiting next time you load the sheet.</p>
+    `;
+    showConfirm('Incoming Gifts', body, () => acceptAllTransfers(pending), { okLabel: 'Accept All', cancelLabel: 'Later' });
+  } catch (e) {
+    console.error('pending transfer check failed', e);
+  }
+}
+
+async function acceptAllTransfers(pending) {
+  if (!state.gear) state.gear = [];
+  for (const t of pending) {
+    const item = t.item || {};
+    const newItem = { ...item, id: 'gear-' + Date.now() + '-' + Math.floor(Math.random() * 9999) };
+    state.gear.push(newItem);
+    try { await claimTransfer(t.id); } catch (e) { console.error('claim failed', e); }
+  }
+  saveState();
+  render();
+}
+
+// ============================================================
 // INITIAL CLOUD LOAD
 // ============================================================
 // localStorage is the fast cache. After the initial render from local,
@@ -9733,6 +9856,7 @@ render();
       if (hasLocal) syncToCloud();
     }
     setCloudStatus('synced', 'Cloud: synced');
+    if (!IS_DM) checkPendingTransfersInbox();
   } catch (e) {
     console.error('cloud load failed', e);
     setLoadedFrom(hasLocal ? 'local' : 'defaults');

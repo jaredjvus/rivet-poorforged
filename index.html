@@ -5539,21 +5539,22 @@ function render() {
     }
   }
 
-  // Defense — reads gear (equipped armor + shield + magic acBonus). Rivet
-  // legacy fallback: Warforged Integrated Protection grants AC = 11 + DEX
-  // when no armor is equipped.
+  // Defense — reads gear (equipped armor + shield + magic acBonus).
+  // Warforged Integrated Protection grants a flat +1 AC that stacks with
+  // worn armor (and with the 10 + DEX unarmored baseline).
   const gearMods = computeGearMods();
+  const INTEGRATED_PROTECTION_BONUS = 1;
   let ac, acSubText;
   if (gearMods.equippedArmor) {
     const a = gearMods.equippedArmor;
     let dexContrib = 0;
     if (a.armorType === 'light') dexContrib = mod(stats.dex);
     else if (a.armorType === 'medium') dexContrib = Math.min(2, mod(stats.dex));
-    ac = (a.armorBase || 0) + dexContrib + (gearMods.shieldEquipped ? gearMods.shieldAcBonus : 0) + gearMods.acBonus;
-    acSubText = `${a.name}${gearMods.shieldEquipped ? ' + Shield' : ''}${gearMods.acBonus ? ' + magic' : ''}`;
+    ac = (a.armorBase || 0) + dexContrib + INTEGRATED_PROTECTION_BONUS + (gearMods.shieldEquipped ? gearMods.shieldAcBonus : 0) + gearMods.acBonus;
+    acSubText = `${a.name} + Integrated Protection${gearMods.shieldEquipped ? ' + Shield' : ''}${gearMods.acBonus ? ' + magic' : ''}`;
   } else {
-    ac = 11 + mod(stats.dex) + (gearMods.shieldEquipped ? gearMods.shieldAcBonus : 0) + gearMods.acBonus;
-    acSubText = '11 + DEX (Warforged Integrated Protection)' + (gearMods.shieldEquipped ? ' + Shield' : '') + (gearMods.acBonus ? ' + magic' : '');
+    ac = 10 + mod(stats.dex) + INTEGRATED_PROTECTION_BONUS + (gearMods.shieldEquipped ? gearMods.shieldAcBonus : 0) + gearMods.acBonus;
+    acSubText = '10 + DEX + Integrated Protection' + (gearMods.shieldEquipped ? ' + Shield' : '') + (gearMods.acBonus ? ' + magic' : '');
   }
   document.getElementById('ac-val').textContent = ac;
   const acSub = document.getElementById('ac-sub');

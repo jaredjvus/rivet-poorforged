@@ -552,6 +552,83 @@ body::before {
 /* Center the Close button when in info-only mode */
 .confirm-actions:has(.modal-cancel[hidden]) { justify-content: center; }
 
+/* Item transfer modal — pick a recipient, then check off items to send */
+.transfer-recipients {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.transfer-recipient {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--gold-tarnish);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--parchment);
+  transition: all 0.2s;
+}
+.transfer-recipient:has(input:checked) {
+  border-color: var(--gold);
+  background: rgba(31, 78, 163, 0.08);
+  color: var(--gold);
+}
+.transfer-recipient input { margin: 0; cursor: pointer; }
+.transfer-item-list {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--gold-tarnish);
+  background: #fff;
+  padding: 0.3rem;
+}
+.transfer-item-list::-webkit-scrollbar { width: 6px; }
+.transfer-item-list::-webkit-scrollbar-thumb { background: var(--gold-tarnish); }
+.transfer-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.88rem;
+  color: var(--parchment);
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.transfer-item-row:hover { background: rgba(31, 78, 163, 0.06); border-color: var(--gold-tarnish); }
+.transfer-item-row:has(.transfer-item-check:disabled) { cursor: not-allowed; }
+.transfer-item-check:disabled ~ .transfer-item-name,
+.transfer-item-check:disabled ~ .transfer-item-type { opacity: 0.4; }
+.transfer-item-name { flex: 1; }
+.transfer-item-type {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--parchment-aged);
+}
+.transfer-item-qty-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--parchment-aged);
+}
+.transfer-item-qty {
+  width: 44px;
+  background: #fff;
+  border: 1px solid var(--gold-tarnish);
+  color: var(--parchment);
+  padding: 0.15rem 0.3rem;
+  font-family: inherit;
+}
+.transfer-item-qty:disabled { opacity: 0.4; }
+
 /* Spell info modal layout */
 .spell-info-subtitle {
   font-family: 'Cinzel', serif;
@@ -2721,19 +2798,6 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
   letter-spacing: 0.1em;
 }
 .gear-row .gear-actions button:hover { background: rgba(74, 138, 115, 0.15); border-color: var(--gold); }
-.gear-row .gear-actions select.gear-give-select {
-  background: transparent;
-  border: 1px solid var(--gold-tarnish);
-  color: var(--gold);
-  padding: 0.25rem 0.4rem;
-  border-radius: 3px;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
-}
-.gear-row .gear-actions select.gear-give-select:hover { background: rgba(74, 138, 115, 0.15); border-color: var(--gold); }
-.gear-row .gear-actions select.gear-give-select option { background: var(--ink); color: var(--parchment); }
 .gear-row .gear-charges { display: flex; gap: 0.2rem; margin-top: 0.2rem; }
 .gear-row .gear-charges-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.2rem; flex-wrap: wrap; }
 .gear-row .gear-charge-btn {
@@ -3750,6 +3814,7 @@ body.dm-mode .dm-hide { display: none; }
         <h3>Gear
           <span id="gear-attunement-counter" style="margin-left:0.8rem;margin-right:2rem;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:400;letter-spacing:0.18em;text-transform:uppercase;color:var(--silver-crack);vertical-align:middle;"></span>
           <button class="header-action" id="gear-add-btn">+ Add Gear</button>
+          <button class="header-action" id="gear-transfer-btn">⇄ Transfer</button>
         </h3>
       </summary>
       <div class="collapsible-body">
@@ -4157,6 +4222,22 @@ body.dm-mode .dm-hide { display: none; }
     <div class="modal-actions" style="margin-top:1rem;display:flex;gap:0.5rem;justify-content:flex-end;">
       <button class="modal-cancel" id="gear-form-cancel">Cancel</button>
       <button class="modal-confirm" id="gear-form-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Item transfer modal: send one or more gear items to another party member -->
+<div class="modal-overlay" id="transfer-overlay" hidden>
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" id="transfer-close" aria-label="Close">×</button>
+    <div class="modal-title">Transfer Gear</div>
+    <div class="modal-subtitle">Pick a recipient, then check off what you're handing over.</div>
+    <div class="transfer-recipients" id="transfer-recipients"></div>
+    <div class="transfer-item-list" id="transfer-item-list"></div>
+    <p class="hint" style="margin-top:0.5rem;font-size:0.78rem;font-style:italic;color:var(--parchment-dim);">Items with more than 1 in stock get a quantity box so you can send part of the stack.</p>
+    <div class="modal-actions" style="margin-top:1rem;display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button class="modal-cancel" id="transfer-cancel">Cancel</button>
+      <button class="modal-confirm" id="transfer-send" disabled>Send</button>
     </div>
   </div>
 </div>
@@ -7315,10 +7396,6 @@ function renderGear() {
         ${g.notes ? `<div class="gear-meta" style="font-style:italic;">${g.notes}</div>` : ''}
       </div>
       <div class="gear-actions">
-        <select class="gear-give-select" title="Give this item to a party member">
-          <option value="">Give →</option>
-          ${PARTY_MEMBERS.map(m => `<option value="${m.rowId}">${m.name}</option>`).join('')}
-        </select>
         <button class="gear-edit-btn">Edit</button>
         <button class="gear-del-btn">Delete</button>
       </div>
@@ -7364,18 +7441,6 @@ function renderGear() {
       saveState();
       render();
     });
-    const giveSelect = row.querySelector('.gear-give-select');
-    if (giveSelect) giveSelect.addEventListener('change', () => {
-      const targetId = giveSelect.value;
-      giveSelect.value = '';
-      if (!targetId) return;
-      const target = PARTY_MEMBERS.find(m => m.rowId === targetId);
-      if (!target) return;
-      showConfirm(`Give ${g.name} to ${target.name}?`,
-        `<p>Send "${g.name}"${g.quantity > 1 ? ' (1 unit)' : ''} to ${target.name}? It'll leave your gear list and show up in ${target.name}'s inbox to accept.</p>`,
-        () => giveItemToPartyMember(g, target),
-        { okLabel: 'Give' });
-    });
     list.appendChild(row);
   }
   // Attunement counter in card header
@@ -7387,26 +7452,143 @@ function renderGear() {
   }
 }
 
-// Give a gear item to another party member: POST it to the shared
-// item_transfers table, then remove it (or one stack unit of it) locally.
-// If the POST fails — table not live yet, network hiccup — bail out
-// without touching state.gear so the item isn't lost.
-async function giveItemToPartyMember(g, target) {
-  const itemCopy = { ...g, quantity: 1, equipped: false, attuned: false };
-  try {
-    await createItemTransfer(target.rowId, itemCopy);
-  } catch (e) {
-    console.error('item transfer failed', e);
-    showInfo('Transfer Failed', `<p>Couldn't send "${g.name}" to ${target.name} — nothing was removed from your gear. Check your connection and try again.</p>`);
+// ============================================================
+// ITEM TRANSFER MODAL — send one or more gear items to a party member
+// ============================================================
+// Recipient (radio) gates the item checklist: nothing in the list is
+// checkable until someone is picked. Stackable items (quantity > 1) get a
+// qty stepper so part of a stack can be sent without giving up the rest.
+function openTransferModal() {
+  document.getElementById('transfer-overlay').hidden = false;
+  renderTransferRecipients();
+  renderTransferItemList();
+  updateTransferSendState();
+}
+function closeTransferModal() {
+  document.getElementById('transfer-overlay').hidden = true;
+}
+function renderTransferRecipients() {
+  const wrap = document.getElementById('transfer-recipients');
+  wrap.innerHTML = PARTY_MEMBERS.map(m => `
+    <label class="transfer-recipient">
+      <input type="radio" name="transfer-recipient" value="${m.rowId}">
+      <span>${m.name}</span>
+    </label>
+  `).join('');
+  wrap.querySelectorAll('input[name="transfer-recipient"]').forEach(r => {
+    r.addEventListener('change', () => {
+      setTransferItemsEnabled(true);
+      updateTransferSendState();
+    });
+  });
+}
+function renderTransferItemList() {
+  const wrap = document.getElementById('transfer-item-list');
+  const gear = state.gear || [];
+  if (gear.length === 0) {
+    wrap.innerHTML = '<p class="hint" style="padding:0.5rem;font-style:italic;color:var(--parchment-dim);">No gear to send.</p>';
     return;
   }
-  if (g.quantity && g.quantity > 1) {
-    g.quantity -= 1;
-  } else {
-    state.gear = (state.gear || []).filter(x => x.id !== g.id);
+  const sorted = [...gear].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  wrap.innerHTML = sorted.map(g => {
+    const stackable = g.quantity && g.quantity > 1;
+    return `
+      <label class="transfer-item-row">
+        <input type="checkbox" class="transfer-item-check" data-gear-id="${g.id}" disabled>
+        <span class="transfer-item-name">${g.name}</span>
+        <span class="transfer-item-type">${g.type}</span>
+        ${stackable ? `<span class="transfer-item-qty-wrap">× <input type="number" class="transfer-item-qty" data-gear-id="${g.id}" min="1" max="${g.quantity}" value="1" disabled></span>` : ''}
+      </label>
+    `;
+  }).join('');
+  wrap.querySelectorAll('.transfer-item-check').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const qtyInput = wrap.querySelector(`.transfer-item-qty[data-gear-id="${cb.dataset.gearId}"]`);
+      if (qtyInput) qtyInput.disabled = !cb.checked;
+      updateTransferSendState();
+    });
+  });
+  wrap.querySelectorAll('.transfer-item-qty').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const min = 1, max = parseInt(inp.max, 10) || 1;
+      const v = parseInt(inp.value, 10) || min;
+      inp.value = Math.max(min, Math.min(max, v));
+    });
+  });
+}
+// Enable/disable the whole item checklist. Called with false only implicitly
+// (list starts disabled on render); called with true once a recipient is
+// chosen. Never force-disables after a recipient's been picked once, so
+// switching between recipients keeps whatever items were already checked.
+function setTransferItemsEnabled(enabled) {
+  const wrap = document.getElementById('transfer-item-list');
+  wrap.querySelectorAll('.transfer-item-check').forEach(cb => { cb.disabled = !enabled; });
+}
+function getTransferRecipient() {
+  const checked = document.querySelector('input[name="transfer-recipient"]:checked');
+  return checked ? PARTY_MEMBERS.find(m => m.rowId === checked.value) : null;
+}
+function updateTransferSendState() {
+  const recipient = getTransferRecipient();
+  const anyChecked = !!document.querySelector('.transfer-item-check:checked');
+  document.getElementById('transfer-send').disabled = !(recipient && anyChecked);
+}
+
+// Send every checked item to the chosen recipient. Each item is POSTed
+// independently so one failure doesn't cost the others: state.gear is only
+// mutated for items whose transfer actually succeeded. On completion (even
+// partial), saveState()/render() and close — failures are reported but their
+// items stay put, untouched.
+async function sendTransfer() {
+  const recipient = getTransferRecipient();
+  if (!recipient) return;
+  const wrap = document.getElementById('transfer-item-list');
+  const checked = [...wrap.querySelectorAll('.transfer-item-check:checked')];
+  if (checked.length === 0) return;
+  const sendBtn = document.getElementById('transfer-send');
+  sendBtn.disabled = true;
+  sendBtn.textContent = 'Sending…';
+
+  const succeeded = [];
+  const failed = [];
+  for (const cb of checked) {
+    const gearId = cb.dataset.gearId;
+    const g = (state.gear || []).find(x => x.id === gearId);
+    if (!g) continue;
+    const qtyInput = wrap.querySelector(`.transfer-item-qty[data-gear-id="${gearId}"]`);
+    const sendQty = qtyInput ? Math.max(1, Math.min(g.quantity || 1, parseInt(qtyInput.value, 10) || 1)) : null;
+    const itemPayload = sendQty
+      ? { ...g, quantity: sendQty, equipped: false, attuned: false }
+      : { ...g, equipped: false, attuned: false };
+    try {
+      await createItemTransfer(recipient.rowId, itemPayload);
+      succeeded.push({ g, sendQty });
+    } catch (e) {
+      console.error('item transfer failed', e);
+      failed.push(g.name);
+    }
   }
+
+  for (const { g, sendQty } of succeeded) {
+    if (sendQty && g.quantity && g.quantity > sendQty) {
+      g.quantity -= sendQty;
+    } else {
+      state.gear = (state.gear || []).filter(x => x.id !== g.id);
+    }
+  }
+
   saveState();
-  renderGear();
+  render();
+  closeTransferModal();
+  sendBtn.disabled = false;
+  sendBtn.textContent = 'Send';
+
+  if (failed.length > 0) {
+    showInfo('Some Transfers Failed',
+      `<p>Sent ${succeeded.length} item${succeeded.length === 1 ? '' : 's'} to ${recipient.name}. These didn't go through and are still in your gear:</p>` +
+      `<ul>${failed.map(n => `<li>${n}</li>`).join('')}</ul>` +
+      `<p style="font-style:italic;font-size:0.85rem;color:var(--parchment-aged);">Check your connection and try again for the ones that failed.</p>`);
+  }
 }
 
 // Currently-editing gear id (null = adding new)
@@ -8901,6 +9083,13 @@ document.getElementById('level-up-btn').addEventListener('click', () => {
 
 // Gear modal wiring
 document.getElementById('gear-add-btn').addEventListener('click', () => openGearModal(null));
+document.getElementById('gear-transfer-btn').addEventListener('click', openTransferModal);
+document.getElementById('transfer-close').addEventListener('click', closeTransferModal);
+document.getElementById('transfer-cancel').addEventListener('click', closeTransferModal);
+document.getElementById('transfer-send').addEventListener('click', sendTransfer);
+document.getElementById('transfer-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'transfer-overlay') closeTransferModal();
+});
 document.getElementById('gear-close').addEventListener('click', () => { document.getElementById('gear-overlay').hidden = true; _gearEditingId = null; });
 document.getElementById('gear-form-cancel').addEventListener('click', () => { document.getElementById('gear-overlay').hidden = true; _gearEditingId = null; });
 document.getElementById('gear-form-save').addEventListener('click', saveGearForm);

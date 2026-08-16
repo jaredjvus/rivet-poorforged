@@ -963,6 +963,26 @@ body::before {
   cursor: pointer;
 }
 .spell-row .spell-cast:hover { background: var(--gold); color: #fff; }
+.spell-row .spell-free-cast {
+  font-size: 0.7rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--gold-tarnish);
+  background: transparent;
+  cursor: pointer;
+}
+.spell-row .spell-free-cast:hover { background: var(--gold); color: #fff; }
+.spell-row .spell-free-cast.used,
+.spell-row .spell-free-cast:disabled {
+  color: var(--parchment-aged, #999);
+  border-color: var(--gold-tarnish);
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: transparent;
+}
 .spell-row .cantrip-cast { font-size: 0.7rem; }
 .spell-row .cantrip-cast.concentrating {
   background: var(--gold);
@@ -994,7 +1014,7 @@ body::before {
   margin-left: 0.4rem; vertical-align: middle; flex: none;
 }
 .rep-info:hover { background: var(--gold); color: #fff; }
-body.dm-mode .spell-cast { pointer-events: none; opacity: 0.5; }
+body.dm-mode .spell-cast, body.dm-mode .spell-free-cast { pointer-events: none; opacity: 0.5; }
 .edit-prepared-btn {
   font-family: 'Cinzel', serif;
   font-size: 0.65rem;
@@ -2449,6 +2469,17 @@ body.dm-mode .resource-pips .pip { pointer-events: none; opacity: 0.6; cursor: d
   padding-bottom: 0.4rem;
   border-bottom: 1px dotted var(--gold-tarnish);
 }
+.cast-popover-rollinfo {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--parchment-aged);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px dotted var(--gold-tarnish);
+}
+.cast-popover-rollinfo strong { color: var(--gold); }
 .cast-popover-option {
   display: flex;
   justify-content: space-between;
@@ -3692,43 +3723,45 @@ body.dm-mode .dm-hide { display: none; }
       </div>
     </details>
 
-    <details class="card collapsible-card" id="attack-profiles-card" style="margin-top: 2rem;" hidden open>
-      <summary><h3>Attack Profiles</h3></summary>
-      <div class="collapsible-body">
-        <p class="cunning-strikes-blurb" id="attack-profiles-blurb"></p>
-        <div id="attack-profiles-list"></div>
-      </div>
-    </details>
+    <div class="two-col" style="margin-top: 2rem;">
+      <details class="card collapsible-card" id="attack-profiles-card" hidden open>
+        <summary><h3>Attack Profiles</h3></summary>
+        <div class="collapsible-body">
+          <p class="cunning-strikes-blurb" id="attack-profiles-blurb"></p>
+          <div id="attack-profiles-list"></div>
+        </div>
+      </details>
+
+      <details class="card collapsible-card magic-card" id="magic-card" hidden open>
+        <summary>
+        <h3>Spells &amp; Slots
+          <button class="edit-prepared-btn" id="edit-prepared-btn">Edit Prepared</button>
+        </h3>
+        </summary>
+        <div class="collapsible-body">
+        <div id="spell-slots"></div>
+        <div class="concentration-banner" id="concentration-banner" hidden>
+          <span class="conc-banner-label">⚡ Concentrating on</span>
+          <span class="conc-banner-spell" id="conc-banner-spell"></span>
+          <button class="conc-banner-drop" id="conc-banner-drop">Drop Concentration</button>
+        </div>
+        <div class="spell-search-wrap">
+          <input id="spell-search" type="text" class="spell-search" placeholder="Search spells…" autocomplete="off">
+          <button class="spell-search-clear" id="spell-search-clear" title="Clear search" hidden>×</button>
+        </div>
+        <div class="spell-section-title"><span>Cantrips</span><span class="spell-count" id="cantrip-count"></span></div>
+        <div id="cantrip-list"></div>
+        <div class="spell-section-title"><span>Prepared</span><span class="spell-count" id="prepared-count"></span></div>
+        <div id="prepared-list"></div>
+        </div>
+      </details>
+    </div>
 
     <details class="card collapsible-card" id="cunning-strikes-card" style="margin-top: 2rem;" hidden open>
       <summary><h3>Cunning Strikes</h3></summary>
       <div class="collapsible-body">
         <p class="cunning-strikes-blurb" id="cunning-strikes-blurb"></p>
         <div id="cunning-strikes-list"></div>
-      </div>
-    </details>
-
-    <details class="card collapsible-card magic-card" id="magic-card" style="margin-top: 2rem;" hidden open>
-      <summary>
-      <h3>Spells &amp; Slots
-        <button class="edit-prepared-btn" id="edit-prepared-btn">Edit Prepared</button>
-      </h3>
-      </summary>
-      <div class="collapsible-body">
-      <div id="spell-slots"></div>
-      <div class="concentration-banner" id="concentration-banner" hidden>
-        <span class="conc-banner-label">⚡ Concentrating on</span>
-        <span class="conc-banner-spell" id="conc-banner-spell"></span>
-        <button class="conc-banner-drop" id="conc-banner-drop">Drop Concentration</button>
-      </div>
-      <div class="spell-search-wrap">
-        <input id="spell-search" type="text" class="spell-search" placeholder="Search spells…" autocomplete="off">
-        <button class="spell-search-clear" id="spell-search-clear" title="Clear search" hidden>×</button>
-      </div>
-      <div class="spell-section-title"><span>Cantrips</span><span class="spell-count" id="cantrip-count"></span></div>
-      <div id="cantrip-list"></div>
-      <div class="spell-section-title"><span>Prepared</span><span class="spell-count" id="prepared-count"></span></div>
-      <div id="prepared-list"></div>
       </div>
     </details>
 
@@ -5214,6 +5247,8 @@ const DEFAULT_STATE = {
   exhaustion: 0,
   heroicInspiration: false,
   sneakAttackUsed: false,    // Rogue: Sneak Attack used this turn — manual toggle, reset by the player each turn
+  mistyStepFreeCastUsed: false,   // Fey Touched: Misty Step free cast (1/long rest, independent of Hunter's Mark's)
+  huntersMarkFreeCastUsed: false, // Fey Touched: Hunter's Mark free cast (1/long rest, independent of Misty Step's)
   // Phase 2D: Spell/feat picks driven by the level-up modal.
   cantripsKnown: [],   // array of spell names currently known as cantrips
   preparedSpells: [],  // array of spell names currently prepared (Artificer-only for now)
@@ -6387,11 +6422,22 @@ function renderMagicCard(level) {
       }
       const row = document.createElement('div');
       row.className = 'spell-row';
+      // Fey Touched grants Misty Step and the chosen spell (here: Hunter's Mark)
+      // each their OWN 1/long-rest free cast, independent of one another and
+      // separate from spending an actual slot on them (still available via the
+      // normal Cast button once the free use is spent).
+      const freeCastKey = spell.name === 'Misty Step' ? 'mistyStepFreeCastUsed'
+                         : spell.name === 'Hunter\'s Mark' ? 'huntersMarkFreeCastUsed'
+                         : null;
+      const freeCastBtn = freeCastKey
+        ? `<button class="spell-free-cast${state[freeCastKey] ? ' used' : ''}" data-spell="${spell.name}" data-free-key="${freeCastKey}" ${state[freeCastKey] ? 'disabled' : ''} title="Fey Touched: cast this once per long rest without a slot">${state[freeCastKey] ? 'Free: Used' : 'Free (1/LR)'}</button>`
+        : '';
       row.innerHTML = `
         <span class="spell-name">${spell.name}${spell.concentration ? '<span class="conc-tag">C</span>' : ''}${always ? '<span class="always-tag">auto</span>' : ''}${feat ? '<span class="always-tag">feat</span>' : ''}</span>
         <span class="spell-meta">${spell.school} · ${spell.range}</span>
         <span class="spell-actions">
           <button class="spell-info" data-spell="${spell.name}" title="Spell details">ⓘ</button>
+          ${freeCastBtn}
           <button class="spell-cast" data-spell="${spell.name}">Cast</button>
         </span>
       `;
@@ -6405,6 +6451,33 @@ function renderMagicCard(level) {
       const s = SPELLS.find(x => x.name === btn.dataset.spell);
       if (!s) return;
       showSpellInfo(s);
+    });
+  });
+
+  // Wire Fey Touched free-cast buttons (Misty Step / Hunter's Mark, 1/long rest
+  // each, no slot spent). Hunter's Mark is Concentration so it gets the same
+  // handoff confirm as a slot-based cast; Misty Step is Instantaneous.
+  card.querySelectorAll('.spell-free-cast').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const spellName = btn.dataset.spell;
+      const key = btn.dataset.freeKey;
+      const s = SPELLS.find(x => x.name === spellName);
+      if (!s || state[key]) return;
+      const finalize = () => {
+        state[key] = true;
+        if (s.concentration) state.concentratingOn = spellName;
+        saveState();
+        render();
+      };
+      if (s.concentration && state.concentratingOn && state.concentratingOn !== spellName) {
+        showConfirm('Break Concentration?',
+          `<p>Casting <strong>${spellName}</strong> will break your current Concentration on <strong>${state.concentratingOn}</strong>.</p><p>Continue?</p>`,
+          finalize,
+          { okLabel: `Cast ${spellName}` });
+        return;
+      }
+      finalize();
     });
   });
 
@@ -6987,6 +7060,18 @@ function openCastPopover(spell, anchor) {
   title.className = 'cast-popover-title';
   title.textContent = `Cast ${spell.name} with`;
   pop.appendChild(title);
+
+  // Roll reference: always show both, since spell data has no structured
+  // attack-vs-save field to key off of — cheap, safe, and she just uses
+  // whichever her spell actually calls for (see its ⓘ description).
+  const rollStats = computeStats(state.level);
+  const rollPb = profBonus(state.level);
+  const rollAtkBonus = rollPb + mod(rollStats.int);
+  const rollSaveDC = 8 + rollPb + mod(rollStats.int);
+  const rollInfo = document.createElement('div');
+  rollInfo.className = 'cast-popover-rollinfo';
+  rollInfo.innerHTML = `<span>Spell Attack: <strong>${rollAtkBonus >= 0 ? '+' : ''}${rollAtkBonus}</strong></span><span>Spell Save DC: <strong>${rollSaveDC}</strong></span>`;
+  pop.appendChild(rollInfo);
 
   const tiers = getValidSlotTiers(spell, state.level);
   const usable = tiers.filter(t => (t.max - t.used) > 0);
@@ -9881,6 +9966,8 @@ document.getElementById('long-rest-btn').addEventListener('click', () => {
   if (a >= 3 && armorModel === 'Guardian') items.push('Refill Defensive Field use');
   if (a >= 15 && armorModel === 'Guardian') items.push('Refill Guardian Reaction (Force Pull) uses');
   if (r >= 20) items.push('Refill Stroke of Luck');
+  if ((state.preparedSpells || []).includes('Misty Step')) items.push('Refill Misty Step free cast (Fey Touched)');
+  if ((state.preparedSpells || []).includes('Hunter\'s Mark')) items.push('Refill Hunter\'s Mark free cast (Fey Touched)');
   items.push('Reset death saves');
   const body = `
     <p>This will:</p>
@@ -9902,6 +9989,8 @@ document.getElementById('long-rest-btn').addEventListener('click', () => {
     state.defensiveFieldUsed = 0;
     state.guardianReactionUsed = 0;
     state.strokeOfLuckUsed = 0;
+    state.mistyStepFreeCastUsed = false;
+    state.huntersMarkFreeCastUsed = false;
     // Active replicas + attunement persist (RAW). Concentration not auto-reset.
     saveState();
     render();
